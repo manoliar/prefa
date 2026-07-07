@@ -4,6 +4,14 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Prefa Scorer Version 2026_07_05</title>
+<meta name="theme-color" content="#1B5E20">
+<link rel="manifest" href="manifest.json">
+<script>
+// PWA: εγγραφή service worker για offline λειτουργία (μόνο σε http/https, όχι file://)
+if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) {
+  navigator.serviceWorker.register('sw.js').catch(() => {});
+}
+</script>
 <style>
   /* Αποτροπή native context menu/callout στα εικονίδια & ρολόγια (Android long-press) */
   .top-bar img, #game-clock, #notify-clock, #btn-info, #btn-start {
@@ -1319,6 +1327,7 @@
   <div class="top-bar" style="flex-wrap:nowrap;gap:4px">
     <h1 style="font-size:1rem;display:flex;justify-content:space-between;align-items:flex-end;white-space:nowrap;overflow:hidden;gap:8px;flex:1;min-width:0"><span style="flex-shrink:0;background:linear-gradient(135deg,#1B5E20,#69F000);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-weight:800">♠ Το τεφτέρι της πρέφας</span></h1>
     <span style="display:inline-flex;align-items:center;gap:4px;flex-shrink:0">
+      <button id="voice-toggle" onclick="toggleVoiceCommands()" title="Φωνητικές εντολές on/off" style="background:none;border:none;cursor:pointer;padding:0;user-select:none;display:flex;align-items:center;margin-right:8px"><img id="voice-mic-img" src="" style="height:2.4em;width:2.4em;object-fit:contain;opacity:1;transition:opacity 0.2s;background:#fff;border-radius:50%;padding:4px;box-sizing:border-box"></button>
       <span style="display:inline-flex;flex-direction:column;align-items:flex-start;margin-right:8px">
         <span id="game-clock" onclick="toggleGameClock()" title="Κλικ: παύση/συνέχεια χρόνου" style="display:inline-flex;align-items:center;font-family:'Courier New',monospace;font-weight:800;font-size:1.2rem;color:#69F000;background:none;border:none;padding:0;letter-spacing:1px;cursor:pointer;user-select:none">00:00:00</span>
         <span id="notify-clock" style="display:inline-flex;align-items:center;font-family:'Courier New',monospace;font-weight:800;font-size:1.2rem;color:#69F000;background:none;border:none;padding:0;margin-top:-2px;letter-spacing:1px;user-select:none"><span id="notify-h" ondblclick="editNotifyHours()" title="Διπλό κλικ: αλλαγή ωρών" style="cursor:pointer">24</span>:<span id="notify-m" ondblclick="editNotifyMins()" title="Διπλό κλικ: αλλαγή λεπτών" style="cursor:pointer">00</span><span style="visibility:hidden">:</span><span style="margin-left:1px;display:inline-flex;align-items:center"><img src="data:image/webp;base64,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" style="height:1em;width:auto;vertical-align:middle"></span></span>
@@ -2143,8 +2152,60 @@ function voiceSupported() {
 // Εικονίδιο κόκκινου μικροφώνου με διαγραφή (mic3) - SVG με διαφανές φόντο
 const MIC_ICON_B64 = 'data:image/svg+xml;base64,' + btoa('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><mask id="g"><rect width="100" height="100" fill="#fff"/><line x1="18" y1="18" x2="82" y2="82" stroke="#000" stroke-width="18" stroke-linecap="round"/></mask></defs><g fill="#E81010" mask="url(#g)"><rect x="37" y="6" width="26" height="52" rx="13"/><path d="M24 44a26 26 0 0 0 52 0" fill="none" stroke="#E81010" stroke-width="11"/><rect x="45" y="70" width="10" height="14"/><rect x="32" y="82" width="36" height="10" rx="4"/></g><line x1="18" y1="18" x2="82" y2="82" stroke="#E81010" stroke-width="10" stroke-linecap="round"/></svg>');
 
+// Εικονίδιο κόκκινου μικροφώνου ΧΩΡΙΣ διαγραφή (για το toggle στο top bar)
+const MIC_ON_B64 = 'data:image/svg+xml;base64,' + btoa('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><g fill="#E81010"><rect x="37" y="6" width="26" height="52" rx="13"/><path d="M24 44a26 26 0 0 0 52 0" fill="none" stroke="#E81010" stroke-width="11"/><rect x="45" y="70" width="10" height="14"/><rect x="32" y="82" width="36" height="10" rx="4"/></g></svg>');
+
+let voiceEnabled = false; // toggle χρήστη για φωνητικές εντολές - απενεργοποιημένες by default
+let voiceErrorCount = 0;   // συνεχόμενα σφάλματα υπηρεσίας χωρίς κανένα επιτυχές αποτέλεσμα
+let voiceHadResult = false; // true μόλις έρθει το πρώτο επιτυχές αποτέλεσμα αναγνώρισης
+let voiceServiceFailed = false; // browser με API αλλά χωρίς λειτουργική υπηρεσία (Avast, Brave κλπ.)
+const VOICE_TIP_ON = 'Ενεργοποίηση φωνητικών εντολών. Δουλεύει μόνο σε Chrome και Edge. Με μεγάλη καθυστέρηση σε tablet και Mobile. Wake Word: google.';
+const VOICE_TIP_UNSUPPORTED = 'Οι φωνητικές εντολές απαιτούν Chrome ή Edge';
+
+function voiceMarkServiceFailed() {
+  voiceServiceFailed = true;
+  voiceEnabled = false;
+  voiceActive = false;
+  try { if (voiceRecognition) voiceRecognition.stop(); } catch(e) {}
+  let img = document.getElementById('voice-mic-img');
+  let btn = document.getElementById('voice-toggle');
+  if (img) img.style.opacity = '0.35';
+  if (btn) { btn.title = VOICE_TIP_UNSUPPORTED; btn.style.cursor = 'default'; }
+}
+
+function toggleVoiceCommands() {
+  if (!voiceSupported() || voiceServiceFailed) return; // μόνιμα dimmed σε browser χωρίς υποστήριξη
+  voiceEnabled = !voiceEnabled;
+  let img = document.getElementById('voice-mic-img');
+  let btn = document.getElementById('voice-toggle');
+  if (voiceEnabled) {
+    if (img) img.style.opacity = '1';
+    if (btn) btn.title = 'Απενεργοποίηση φωνητικών εντολών';
+    startVoiceRecognition();
+  } else {
+    if (img) img.style.opacity = '0.35';
+    if (btn) btn.title = VOICE_TIP_ON;
+    voiceActive = false;
+    try { if (voiceRecognition) voiceRecognition.stop(); } catch(e) {}
+  }
+}
+
 function initVoiceSupportIcon() {
-  if (voiceSupported()) return; // υποστηρίζεται: κανένα εικονίδιο
+  // Εικονίδιο toggle στο top bar (πάντα ορατό)
+  let img = document.getElementById('voice-mic-img');
+  let btn = document.getElementById('voice-toggle');
+  if (img) img.src = MIC_ON_B64;
+  if (voiceSupported() && !voiceEnabled) {
+    // Απενεργοποιημένες by default: dimmed μέχρι να τις ανοίξει ο χρήστης
+    if (img) img.style.opacity = '0.35';
+    if (btn) btn.title = VOICE_TIP_ON;
+  }
+  if (!voiceSupported()) {
+    // Μόνιμα dimmed όταν ο browser δεν υποστηρίζει φωνή
+    if (img) img.style.opacity = '0.35';
+    if (btn) { btn.title = VOICE_TIP_UNSUPPORTED; btn.style.cursor = 'default'; }
+  }
+  if (voiceSupported()) return; // υποστηρίζεται: κανένα εικονίδιο στην αρχική
   let infoBtn = document.getElementById('btn-info');
   if (!infoBtn || document.getElementById('mic-unsupported-icon')) return;
   let mic = document.createElement('img');
@@ -2191,6 +2252,21 @@ function voiceShowHeard(text) {
   el._hideTimer = setTimeout(() => { el.style.opacity = '0'; }, 3500);
 }
 
+function voiceBlinkMic() {
+  // Οπτική ένδειξη "δεν κατάλαβα": το κουμπί μικροφώνου αναβοσβήνει 3 φορές
+  let img = document.getElementById('voice-mic-img');
+  if (!img) return;
+  let n = 0;
+  let iv = setInterval(() => {
+    img.style.opacity = (n % 2 === 0) ? '0.1' : '1';
+    n++;
+    if (n >= 6) {
+      clearInterval(iv);
+      img.style.opacity = voiceEnabled ? '1' : '0.35';
+    }
+  }, 200);
+}
+
 function voiceSpeak(text) {
   try {
     if (!window.speechSynthesis) return;
@@ -2201,17 +2277,34 @@ function voiceSpeak(text) {
   } catch(e) {}
 }
 
+function voiceLat2Gr(s) {
+  // Φωνητική μεταγραφή λατινικών σε ελληνικά (π.χ. "many"/"meni" -> "μενι")
+  if (!/[a-z]/.test(s)) return s;
+  let t = s.replace(/ou/g, 'ου').replace(/th/g, 'θ').replace(/ch/g, 'χ').replace(/ps/g, 'ψ')
+    .replace(/ks|x/g, 'ξ').replace(/b/g, 'μπ').replace(/d/g, 'ντ').replace(/g/g, 'γκ').replace(/j/g, 'τζ');
+  const single = { a:'α', e:'ε', i:'ι', o:'ο', u:'ι', y:'ι', v:'β', f:'φ', k:'κ', l:'λ',
+    m:'μ', n:'ν', p:'π', r:'ρ', s:'σ', t:'τ', z:'ζ', w:'ο', h:'', c:'κ', q:'κ' };
+  t = t.split('').map(ch => single[ch] !== undefined ? single[ch] : ch).join('');
+  t = t.replace(/(.)\1+/g, '$1'); // διπλά γράμματα -> μονά (manny -> μανι)
+  return t.replace(/ει|οι|υι/g, 'ι').replace(/αι/g, 'ε').replace(/[ηυ]/g, 'ι').replace(/ω/g, 'ο');
+}
+
 function voiceMatchPlayer(word, strict) {
   // Επιστρέφει το όνομα παίκτη που ταιριάζει φωνητικά, αλλιώς null
   // strict=true: μικρότερη ανοχή (για επιλογή τζογαδόρου με σκέτο όνομα)
   if (!word || word.length < 2 || !players || !players.length) return null;
   let w = voiceNorm(word);
+  let variants = [w];
+  let wl = voiceLat2Gr(w);
+  if (wl !== w) variants.push(wl);
   for (let p of players) {
     let np = voiceNorm(p);
-    if (np === w || np.startsWith(w) || w.startsWith(np)) return p;
-    // Ανεκτικό ταίριασμα ανάλογα με το μήκος του ονόματος
-    let maxD = strict ? 1 : Math.max(1, Math.floor(np.length / 3));
-    if (voiceLev(np, w) <= maxD) return p;
+    for (let w2 of variants) {
+      if (np === w2 || np.startsWith(w2) || w2.startsWith(np)) return p;
+      // Ανεκτικό ταίριασμα ανάλογα με το μήκος του ονόματος
+      let maxD = strict ? 1 : Math.max(1, Math.floor(np.length / 3));
+      if (voiceLev(np, w2) <= maxD) return p;
+    }
   }
   return null;
 }
@@ -2299,7 +2392,7 @@ function voiceDoKatagrafi() {
     voiceFollowUp = { type: 'diavasa', until: Date.now() + 25000 };
     return true;
   }
-  voiceSpeak('Άντε πάλι');
+  voiceBlinkMic();
   return false;
 }
 
@@ -2307,7 +2400,7 @@ function voiceDoDiavasa() {
   let overlay = document.getElementById('modal-overlay');
   let okBtn = document.getElementById('modal-ok-btn');
   if (overlay && overlay.classList.contains('open') && okBtn) { okBtn.click(); return true; }
-  voiceSpeak('Άντε πάλι');
+  voiceBlinkMic();
   return false;
 }
 
@@ -2315,10 +2408,14 @@ function voiceTzogByElimination(word) {
   // Ταίριασμα ονόματος τζογαδόρου με λογική αποκλεισμού:
   // αν η λέξη ΔΕΝ μοιάζει με Ν-1 από τις διαθέσιμες επιλογές, είναι η Νιοστή
   let w = voiceNorm(word);
+  let wl = voiceLat2Gr(w); // λατινική μεταγραφή (meni -> μενι)
   let radios = Array.from(document.querySelectorAll('input[name="tzog"]'));
   let cands = radios.map(r => r.value).filter(Boolean);
   if (!cands.length) return null;
-  let scored = cands.map(p => ({ p, np: voiceNorm(p), d: voiceLev(voiceNorm(p), w) }));
+  let scored = cands.map(p => {
+    let np = voiceNorm(p);
+    return { p, np, d: Math.min(voiceLev(np, w), voiceLev(np, wl)) };
+  });
   // "Μοιάζει": στενό όριο ή πρόθεμα
   let like = scored.filter(s => s.d <= Math.max(1, Math.floor(s.np.length / 3)) || s.np.startsWith(w) || w.startsWith(s.np));
   if (like.length === 1) return like[0].p;
@@ -2357,12 +2454,20 @@ function handleVoiceCommand(raw) {
 
   // Wake word "ρότζερ" (fuzzy, δεκτό και σπασμένο σε 2 λέξεις)
   let tok = null;
-  if (voiceLike(tokens[0], 'ροτζερ') || voiceLike(tokens[0], 'roger', true)) tok = tokens.slice(1);
-  else if (tokens.length >= 2 && voiceLike(tokens[0] + tokens[1], 'ροτζερ')) tok = tokens.slice(2);
+  let viaWake = true;
+  const wakeWords = ['google','γκουγκλ','γκουγκλε','γκουγλ','γουγκλ','γκογκλ','γκουκλ'];
+  const isWake = (w) => wakeWords.some(v => voiceLike(w, v));
+  if (isWake(tokens[0])) tok = tokens.slice(1);
+  else if (tokens.length >= 2 && isWake(tokens[0] + tokens[1])) tok = tokens.slice(2);
+  else if (voiceFollowUp && Date.now() < voiceFollowUp.until && voiceFollowUp.type === 'any') {
+    // Παράθυρο συνέχειας: δεκτή οποιαδήποτε εντολή χωρίς wake word
+    tok = tokens;
+    viaWake = false;
+  }
   if (!tok) return; // χωρίς wake word: αγνοείται σιωπηλά
-  if (!tok.length) { voiceSpeak('Άντε πάλι'); return; }
+  if (!tok.length) { voiceBlinkMic(); return; }
   const hasTok = (target, strict) => tok.some(t => voiceLike(t, target, strict));
-  const suitMap = { 'μπαστουνια':2,'σπαθια':3,'καρα':4,'καρο':4,'κουπεσ':5,'κουπα':5,'αχροα':6,'αχρομα':6,'αχροματα':6 };
+  const suitMap = { 'μπαστουνια':2,'σπαθια':3,'καρα':4,'καρο':4,'κουπεσ':5,'κουπα':5,'αχροα':6,'αχρομα':6,'αχροματα':6,'αχρονα':6,'χρονια':6 };
   const findSuit = () => { for (let t of tok) { for (let key in suitMap) { if (voiceLike(t, key)) return suitMap[key]; } } return null; };
   const selectSuit = (sv) => {
     let sr = document.querySelector(`input[name="suit"][value="${sv}"]`);
@@ -2374,37 +2479,55 @@ function handleVoiceCommand(raw) {
   if (hasTok('διαβασα')) { voiceFollowUp = null; voiceDoDiavasa(); return; }
   // --- "καταγραφη" ---
   if (hasTok('καταγραφι')) { voiceFollowUp = null; voiceDoKatagrafi(); return; }
+  // --- "αναιρεση" ---
+  if (hasTok('ανερεσι')) {
+    let b = document.getElementById('btn-undo');
+    if (b && !b.classList.contains('btn-disabled')) { b.click(); return; }
+    voiceBlinkMic(); return;
+  }
+  // --- "στατιστικα" ---
+  if (hasTok('στατιστικα')) {
+    let b = document.getElementById('btn-stats-ingame');
+    if (b) { b.click(); return; }
+    voiceBlinkMic(); return;
+  }
+  // --- "ληξη" ---
+  if (hasTok('λιξι')) {
+    let b = document.getElementById('btn-end');
+    if (b) { b.click(); return; }
+    voiceBlinkMic(); return;
+  }
   // --- "φιρφιρια" ---
   if (hasTok('φιρφιρια')) {
     let r = document.querySelector('input[name="tzog-or-fir"]');
     if (r) { r.checked = true; onFirfiriaSelected(); return; }
-    voiceSpeak('Άντε πάλι'); return;
+    voiceBlinkMic(); return;
   }
   // --- "ανοιχτη μιζερια" / "μιζερια" ---
   if (hasTok('μιζερια')) {
     let val = (hasTok('ανιχτι') || hasTok('ανοιχτι')) ? 'anoichti' : 'mizeria';
     let r = document.querySelector(`input[name="contract"][value="${val}"]`);
     if (r) { r.checked = true; updateContractLabel(); return; }
-    voiceSpeak('Άντε πάλι'); return;
+    voiceBlinkMic(); return;
   }
   // --- "τζογαδορος <όνομα ή αριθμός>" (η λέξη τζογαδόρος είναι προαιρετική) ---
   if (voiceLike(tok[0], 'τζογαδοροσ') || tok[0].startsWith('τζογαδορ')) {
     let rest = tok.slice(1);
-    if (!rest.length) { voiceSpeak('Άντε πάλι'); return; }
+    if (!rest.length) { voiceBlinkMic(); return; }
     let n = voiceWordToNumber(rest[0]);
     if (n !== null) {
       if (voiceClickBazes('bg-tzog', n)) {
-        voiceFollowUp = { type: 'katagrafi', until: Date.now() + 12000 };
+        voiceFollowUp = { type: 'any', until: Date.now() + 8000 };
         return;
       }
-      voiceSpeak('Άντε πάλι'); return;
+      voiceBlinkMic(); return;
     }
     let p = voiceMatchPlayer(rest.join(' ')) || voiceTzogByElimination(rest.join(' '));
     if (p) {
       let r = document.querySelector(`input[name="tzog"][value="${p}"]`);
       if (r) { r.checked = true; onTzogChange(r); return; }
     }
-    voiceSpeak('Άντε πάλι'); return;
+    voiceBlinkMic(); return;
   }
   // --- Ονόματα παικτών ---
   let pFirst = voiceMatchPlayer(tok[0]);
@@ -2437,11 +2560,11 @@ function handleVoiceCommand(raw) {
     }
     if (applied > 0) {
       // Μπάζες δόθηκαν: περίμενε "καταγραφή" χωρίς wake word
-      voiceFollowUp = { type: 'katagrafi', until: Date.now() + 12000 };
-      if (!ok) voiceSpeak('Άντε πάλι'); // κάτι εφαρμόστηκε, κάτι όχι
+      voiceFollowUp = { type: 'any', until: Date.now() + 8000 };
+      if (!ok) voiceBlinkMic(); // κάτι εφαρμόστηκε, κάτι όχι
       return;
     }
-    voiceSpeak('Άντε πάλι'); return;
+    voiceBlinkMic(); return;
   }
   if (tok.length === 1) {
     // Σκέτο όνομα = επιλογή τζογαδόρου (με λογική αποκλεισμού μεταξύ των διαθέσιμων)
@@ -2468,16 +2591,16 @@ function handleVoiceCommand(raw) {
       if (sv !== null) selectSuit(sv);
       return;
     }
-    voiceSpeak('Άντε πάλι'); return;
+    voiceBlinkMic(); return;
   }
   // --- Μόνο χρώμα ---
   let sv = findSuit();
   if (sv !== null) {
     if (selectSuit(sv)) return;
-    voiceSpeak('Άντε πάλι'); return;
+    voiceBlinkMic(); return;
   }
-  // --- Λογική αποκλεισμού: εκτέλεση της πλησιέστερης γνωστής εντολής ---
-  {
+  // --- Λογική αποκλεισμού: εκτέλεση της πλησιέστερης γνωστής εντολής (μόνο με wake word) ---
+  if (viaWake) {
     let cands = [];
     cands.push({ t: 'φιρφιρια', act: () => { let r = document.querySelector('input[name="tzog-or-fir"]'); if (r) { r.checked = true; onFirfiriaSelected(); } } });
     cands.push({ t: 'μιζερια', act: () => { let r = document.querySelector('input[name="contract"][value="mizeria"]'); if (r) { r.checked = true; updateContractLabel(); } } });
@@ -2485,17 +2608,23 @@ function handleVoiceCommand(raw) {
     cands.push({ t: 'καταγραφι', act: () => { voiceFollowUp = null; voiceDoKatagrafi(); } });
     cands.push({ t: 'διαβασα', act: () => { voiceFollowUp = null; voiceDoDiavasa(); } });
     cands.push({ t: 'τοδιαβασα', act: () => { voiceFollowUp = null; voiceDoDiavasa(); } });
+    cands.push({ t: 'ανερεσι', act: () => { let b = document.getElementById('btn-undo'); if (b && !b.classList.contains('btn-disabled')) b.click(); } });
+    cands.push({ t: 'στατιστικα', act: () => { let b = document.getElementById('btn-stats-ingame'); if (b) b.click(); } });
+    cands.push({ t: 'λιξι', act: () => { let b = document.getElementById('btn-end'); if (b) b.click(); } });
     for (let key in suitMap) {
       let sv2 = suitMap[key];
       cands.push({ t: key, act: () => selectSuit(sv2) });
     }
     (players || []).forEach(p => {
-      cands.push({ t: voiceNorm(p).replace(/ /g, ''), act: () => {
+      // Τα ονόματα παικτών με μεγαλύτερη ανοχή (cap 0.65)
+      cands.push({ t: voiceNorm(p).replace(/ /g, ''), cap: 0.65, act: () => {
         let r = document.querySelector(`input[name="tzog"][value="${p}"]`);
         if (r) { r.checked = true; onTzogChange(r); }
       } });
     });
     let words = [tok.join('')].concat(tok);
+    // Προσθήκη μεταγραμμένων παραλλαγών για λατινικές λέξεις (meni -> μενι)
+    words.slice().forEach(w => { let wl = voiceLat2Gr(w); if (wl !== w) words.push(wl); });
     let best = null;
     for (let w of words) {
       if (!w || w.length < 3) continue;
@@ -2505,13 +2634,14 @@ function handleVoiceCommand(raw) {
         if (!best || score < best.score) best = { cand: cc, score: score };
       }
     }
-    if (best && best.score <= 0.55) { best.cand.act(); return; }
+    if (best && best.score <= (best.cand.cap || 0.55)) { best.cand.act(); return; }
   }
-  voiceSpeak('Άντε πάλι');
+  // Χωρίς wake word (παράθυρο συνέχειας): σιωπηλή αγνόηση άσχετης κουβέντας
+  if (viaWake) voiceBlinkMic();
 }
 
 function startVoiceRecognition() {
-  if (!voiceSupported() || voiceActive) return;
+  if (!voiceSupported() || voiceActive || !voiceEnabled) return;
   let SR = window.SpeechRecognition || window.webkitSpeechRecognition;
   voiceRecognition = new SR();
   voiceRecognition.lang = 'el-GR';
@@ -2522,6 +2652,8 @@ function startVoiceRecognition() {
   voiceRecognition.onresult = (ev) => {
     for (let i = ev.resultIndex; i < ev.results.length; i++) {
       if (ev.results[i].isFinal) {
+        voiceHadResult = true;
+        voiceErrorCount = 0;
         let t = ev.results[i][0].transcript;
         voiceShowHeard(t);
         try { handleVoiceCommand(t); } catch(e) { console.warn('voice cmd error:', e); }
@@ -2533,8 +2665,19 @@ function startVoiceRecognition() {
     if (voiceActive) setTimeout(() => { try { voiceRecognition.start(); } catch(e) {} }, 300);
   };
   voiceRecognition.onerror = (ev) => {
-    if (ev.error === 'not-allowed' || ev.error === 'service-not-allowed') {
+    if (ev.error === 'not-allowed') {
       voiceActive = false; // δεν δόθηκε άδεια μικροφώνου
+      return;
+    }
+    if (ev.error === 'service-not-allowed' || ev.error === 'language-not-supported') {
+      // Browser με το API αλλά χωρίς υπηρεσία αναγνώρισης (Chromium clones: Avast, Brave κλπ.)
+      voiceMarkServiceFailed();
+      return;
+    }
+    if ((ev.error === 'network' || ev.error === 'audio-capture') && !voiceHadResult) {
+      // Επαναλαμβανόμενες αποτυχίες χωρίς ποτέ επιτυχές αποτέλεσμα = η υπηρεσία δεν δουλεύει
+      voiceErrorCount++;
+      if (voiceErrorCount >= 3) voiceMarkServiceFailed();
     }
   };
   voiceActive = true;
