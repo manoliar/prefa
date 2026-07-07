@@ -2263,6 +2263,14 @@ function voiceShowHeard(text) {
 
 let voiceLastHeard = ''; // τελευταία αναγνωρισμένη φράση - για εμφάνιση σε αποτυχία
 
+function voicePulseMic() {
+  // Διακριτικός παλμός: η αναγνώριση επέστρεψε φράση (είτε με wake word είτε όχι)
+  let img = document.getElementById('voice-mic-img');
+  if (!img || img.style.animation.includes('pulse-dot')) return;
+  img.style.animation = 'pulse-dot 0.3s ease-in-out 1';
+  setTimeout(() => { img.style.animation = ''; }, 350);
+}
+
 function voiceBlinkMic() {
   // Οπτική ένδειξη "δεν κατάλαβα": αναβόσβημα μικροφώνου 3 φορές + τι ακούστηκε
   if (voiceLastHeard) voiceShowHeard(voiceLastHeard);
@@ -2476,7 +2484,7 @@ function handleVoiceCommand(raw) {
     tok = tokens;
     viaWake = false;
   }
-  if (!tok) return; // χωρίς wake word: αγνοείται σιωπηλά
+  if (!tok) { voicePulseMic(); return; } // χωρίς wake word: παλμός "σε άκουσα" και αγνόηση
   if (!tok.length) { voiceBlinkMic(); return; }
   const hasTok = (target, strict) => tok.some(t => voiceLike(t, target, strict));
   const suitMap = { 'μπαστουνια':2,'σπαθια':3,'καρα':4,'καρο':4,'κουπεσ':5,'κουπα':5,'αχροα':6,'αχρομα':6,'αχροματα':6,'αχρονα':6,'χρονια':6 };
