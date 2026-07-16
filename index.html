@@ -4516,6 +4516,18 @@ function editHistoryRow(event) {
   };
 
   window._modalCb = () => {
+    // Έλεγχος: δεν επιτρέπεται ΝΕΑ αρνητική τιμή φιρφιριών στη διόρθωση
+    // (η αρχική αρνητική τιμή γύρου εκκαθάρισης επιτρέπεται να μείνει ως έχει)
+    for (let i = 0; i < players.length; i++) {
+      let cellV = cells[i+2];
+      if (!cellV) continue;
+      let oldFV = parseInt(cellV.getAttribute('data-f') || '0') || 0;
+      let nfV = parseInt(document.getElementById('ef'+i)?.value || '0') || 0;
+      if (nfV < 0 && nfV !== oldFV) {
+        showModal('Σφάλμα', `Δεν επιτρέπεται αρνητικό πλήθος φιρφιριών στη διόρθωση!\n(${players[i]}: ${nfV})\nΗ διόρθωση δεν αποθηκεύτηκε.`);
+        return;
+      }
+    }
     // Αναίρεση παλιών τιμών
     players.forEach((p, i) => {
       let cell = cells[i+2];
