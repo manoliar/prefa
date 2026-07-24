@@ -2419,8 +2419,12 @@ function layoutPlayerCircle() {
   if (!bl) return;
   const sel = document.getElementById('init-tembelis');
   const tembIdx = sel ? parseInt(sel.value) : -1;
-  bl.innerHTML = CIRC_CENTERS.map((c, i) =>
-    `<path id="blade${i}" d="${circBladePath(c)}" fill="url(#${i === tembIdx ? 'cgT' : 'cg' + i})"/>`).join('');
+  bl.innerHTML = CIRC_CENTERS.map((c, i) => {
+    const isT = (i === tembIdx);
+    // λευκό περίγραμμα στο πέταλο του Τεμπέλη ώστε να ξεχωρίζει ανεξάρτητα από χρώμα
+    const st = isT ? ' stroke="#fff" stroke-width="3.5" stroke-linejoin="round"' : '';
+    return `<path id="blade${i}" d="${circBladePath(c)}" fill="url(#${isT ? 'cgT' : 'cg' + i})"${st}/>`;
+  }).join('');
   const ar = document.getElementById('ccw-arrows');
   if (ar) ar.innerHTML = circCcwArc(38, 142, 142) + circCcwArc(218, 322, 322);
   CIRC_CENTERS.forEach((c, i) => {
