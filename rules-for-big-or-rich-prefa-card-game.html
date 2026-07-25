@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Κανόνες Μεγάλης / Πλούσιας Πρέφας — Rules for Big (Rich) Prefa Card Game</title>
+<meta name="description" content="Πλήρεις κανόνες για τη Μεγάλη (Πλούσια) Πρέφα στα ελληνικά: συμβόλαια, αξία μπάζας, φιρφίρια, μιζέρια & ανοιχτή μιζέρια, υποχρεώσεις άμυνας, πολλαπλασιαστές, γλύψιμο κάσας και λήξη παιχνιδιού. Complete rules of the Big (Rich) Prefa / Preferans card game.">
+<meta name="keywords" content="πρέφα, κανόνες πρέφας, μεγάλη πρέφα, πλούσια πρέφα, φιρφίρια, μιζέρια, ανοιχτή μιζέρια, χαρτιά, τράπουλα, prefa, preferans, big prefa, rich prefa, card game rules, greek card game">
+<meta name="author" content="Μανώλης (manoliar)">
+<link rel="canonical" href="https://manoliar.github.io/prefa/rules-for-big-or-rich-prefa-card-game.html">
+<meta name="robots" content="index, follow">
+
+<!-- Open Graph / link preview -->
+<meta property="og:type" content="article">
+<meta property="og:locale" content="el_GR">
+<meta property="og:site_name" content="Το τεφτέρι της πρέφας">
+<meta property="og:title" content="Κανόνες Μεγάλης / Πλούσιας Πρέφας — Rules for Big (Rich) Prefa">
+<meta property="og:description" content="Πλήρεις κανόνες της Μεγάλης (Πλούσιας) Πρέφας: συμβόλαια, αξία μπάζας, φιρφίρια, μιζέρια, άμυνα, πολλαπλασιαστές, γλύψιμο κάσας, λήξη.">
+<meta property="og:url" content="https://manoliar.github.io/prefa/rules-for-big-or-rich-prefa-card-game.html">
+<meta property="og:image" content="https://manoliar.github.io/prefa/prefa-og-v3.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Κανόνες Μεγάλης / Πλούσιας Πρέφας — Rules for Big (Rich) Prefa">
+<meta name="twitter:description" content="Πλήρεις κανόνες της Μεγάλης (Πλούσιας) Πρέφας στα ελληνικά.">
+<meta name="twitter:image" content="https://manoliar.github.io/prefa/prefa-og-v3.jpg">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "Κανόνες Μεγάλης / Πλούσιας Πρέφας",
+  "inLanguage": "el",
+  "author": { "@type": "Person", "name": "Μανώλης (manoliar)" },
+  "about": "Κανόνες του παιχνιδιού με χαρτιά Μεγάλη / Πλούσια Πρέφα (Preferans)",
+  "url": "https://manoliar.github.io/prefa/rules-for-big-or-rich-prefa-card-game.html",
+  "mainEntityOfPage": "https://manoliar.github.io/prefa/rules-for-big-or-rich-prefa-card-game.html"
+}
+</script>
+
+<style>
+  :root{ --green:#1B5E20; --green2:#2E7D32; --accent:#C62828; --ink:#1b1b1b; --muted:#555; --line:#ddd; }
+  *{ box-sizing:border-box; }
+  html{ scroll-behavior:smooth; }
+  body{
+    margin:0; background:#eef1f4; color:var(--ink);
+    font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+    line-height:1.6; font-size:16px;
+  }
+  .wrap{ max-width:820px; margin:0 auto; padding:16px; }
+  .sheet{ background:#fff; border-radius:12px; padding:22px 22px 32px; box-shadow:0 6px 24px rgba(0,0,0,.08); }
+
+  header.top{ text-align:center; margin-bottom:10px; }
+  h1{ font-size:1.6rem; line-height:1.25; margin:.2rem 0 .3rem; color:var(--green); }
+  .subtitle{ color:var(--muted); font-size:.95rem; margin:0 0 2px; }
+  .en{ color:#888; font-size:.85rem; font-style:italic; }
+
+  .app-callout{
+    display:flex; flex-wrap:wrap; align-items:center; gap:6px; justify-content:center;
+    background:linear-gradient(135deg,#1B5E20,#43A047); color:#fff;
+    border-radius:10px; padding:12px 16px; margin:16px 0 6px; text-align:center; font-size:.95rem;
+  }
+  .app-callout a{ color:#fff; font-weight:800; text-decoration:underline; word-break:break-all; }
+
+  nav.toc{ background:#f6f8f6; border:1px solid var(--line); border-radius:10px; padding:12px 16px; margin:18px 0; }
+  nav.toc strong{ display:block; margin-bottom:6px; color:var(--green); }
+  nav.toc ol{ margin:0; padding-left:1.2rem; columns:2; column-gap:24px; }
+  nav.toc a{ color:#1b5e20; text-decoration:none; }
+  nav.toc a:hover{ text-decoration:underline; }
+
+  h2{
+    background:var(--green); color:#fff; font-size:1.08rem;
+    padding:8px 14px; border-radius:8px; margin:26px 0 12px; scroll-margin-top:12px;
+  }
+  h3{ font-size:1rem; margin:16px 0 6px; color:#0d3d12; }
+  p{ margin:6px 0; }
+  .lead{ font-size:1.02rem; }
+
+  ul.rules{ list-style:none; margin:6px 0; padding:0; }
+  ul.rules > li{ position:relative; padding-left:1.5em; margin:5px 0; }
+  ul.rules > li::before{ content:"\2666"; color:var(--accent); position:absolute; left:0; top:0; }
+  ul.rules ul{ list-style:none; margin:4px 0; padding-left:1.4em; }
+  ul.rules ul > li{ position:relative; padding-left:1.4em; margin:4px 0; }
+  ul.rules ul > li::before{ content:"\2666"; color:var(--accent); position:absolute; left:0; top:0; opacity:.7; }
+
+  .formula{ background:var(--green); color:#fff; text-align:center; font-weight:700;
+    padding:8px 12px; border-radius:8px; margin:10px 0; }
+  .callout{ background:#fff8e1; border:1px solid #ffe082; border-radius:8px; padding:8px 12px; margin:8px 0; font-size:.95rem; }
+
+  .tablewrap{ overflow-x:auto; margin:14px 0; }
+  table.value{ border-collapse:collapse; margin:0 auto; min-width:340px; }
+  table.value th, table.value td{ border:1px solid #bbb; padding:6px 10px; text-align:center; }
+  table.value thead th{ background:var(--green); color:#fff; }
+  table.value tbody th{ background:#f2f2f2; }
+  table.value tbody tr:nth-child(even) td{ background:#fafafa; }
+  .suit{ font-size:1.15rem; display:block; }
+  .s-black{ color:#111; } .s-red{ color:#C62828; }
+  .achroa{ display:inline-block; width:1.05em; height:1.05em; border-radius:50%; border:3px solid #F9A825; background:#fff; }
+  .caption{ text-align:center; font-weight:700; margin:6px 0 2px; }
+
+  .scenario{ background:#f6f8f6; border-left:4px solid var(--green); border-radius:6px; padding:10px 14px; margin:10px 0; }
+  .scenario h4{ margin:0 0 4px; color:var(--green); }
+
+  footer.foot{ margin-top:28px; border-top:1px solid var(--line); padding-top:16px; color:var(--muted); font-size:.9rem; text-align:center; }
+  footer.foot a{ color:var(--green); font-weight:700; }
+  .totop{ text-align:center; margin-top:18px; }
+  .totop a{ color:var(--green); text-decoration:none; font-weight:700; }
+
+  @media (max-width:520px){
+    h1{ font-size:1.35rem; } nav.toc ol{ columns:1; } .wrap{ padding:10px; } .sheet{ padding:16px 14px 26px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="sheet">
+
+<header class="top" id="top">
+  <h1>Κανόνες Μεγάλης / Πλούσιας Πρέφας</h1>
+  <p class="subtitle">Το παιχνίδι με χαρτιά «Μεγάλη» ή «Πλούσια» Πρέφα — πλήρεις κανόνες</p>
+  <p class="en">Rules for the “Big” (Rich) Prefa / Preferans card game — in Greek</p>
+</header>
+
+<div class="app-callout">
+  Οι κανόνες αυτοί χρησιμοποιούνται στην εφαρμογή «Το τεφτέρι της πρέφας»:&nbsp;
+  <a href="https://manoliar.github.io/prefa/" target="_blank" rel="noopener">manoliar.github.io/prefa</a>
+</div>
+<p style="text-align:center;color:#666;font-size:.9rem;margin:2px 0 0">
+  Μια δωρεάν εφαρμογή που κρατάει αυτόματα τα «λογιστικά» του παιχνιδιού (κάσες, καπίκια, φιρφίρια) — καταργεί το γράψιμο και τις πράξεις στο χαρτί. Δίνει σε πραγματικό χρόνο αναλυτικές στατιστικές πληροφορίες και αποτελέσματα.
+</p>
+
+<p class="lead" style="margin-top:18px">
+  Οι παραλλαγές της πρέφας είναι πολλές. Η σελίδα αυτή περιγράφει τη λεγόμενη <strong>«Μεγάλη»</strong> ή <strong>«Πλούσια»</strong> πρέφα,
+  στην οποία υπάρχουν τα λεγόμενα <strong>«Φιρφίρια»</strong>, η <strong>«Μιζέρια»</strong>, η <strong>«Ανοιχτή μιζέρια»</strong>,
+  και στην οποία η αξία της κάθε μπάζας είναι μοναδική για κάθε διαφορετική περίπτωση συμβολαίου.
+</p>
+
+<nav class="toc" aria-label="Περιεχόμενα">
+  <strong>Περιεχόμενα</strong>
+  <ol>
+    <li><a href="#domi">Βασική δομή</a></li>
+    <li><a href="#symvolaia">Συμβόλαια & αξία μπάζας</a></li>
+    <li><a href="#amyna">Άμυνα — υποχρεώσεις</a></li>
+    <li><a href="#pollaplasiastes">Πολλαπλασιαστές</a></li>
+    <li><a href="#apotelesma">Αποτέλεσμα γύρου</a></li>
+    <li><a href="#firfiria">Φιρφίρια</a></li>
+    <li><a href="#spanies">Σπάνιες περιπτώσεις</a></li>
+    <li><a href="#glypsimo">Γλύψιμο κάσας</a></li>
+    <li><a href="#lixi">Λήξη & εκκαθάριση</a></li>
+  </ol>
+</nav>
+
+<h2 id="domi">Βασική δομή του παιχνιδιού</h2>
+<ul class="rules">
+  <li>Παίζουν <strong>3 ή 4 παίκτες</strong>. Αν παίζουν 4, σε κάθε γύρο ένας είναι <strong>τεμπέλης</strong> (δεν παίζει στον γύρο) και ο ρόλος εναλλάσσεται κυκλικά σύμφωνα με τη σειρά των παικτών. Αν παίζουν μόνο τρεις, ο τέταρτος θεωρείται <strong>μόνιμος τεμπέλης</strong>.</li>
+  <li>Η σειρά των παικτών και το μοίρασμα γίνονται <strong>αριστερόστροφα</strong>.</li>
+  <li>Κάθε παίκτης ξεκινά με <strong>κάσα 100</strong> (ή άλλη συμφωνημένη τιμή).</li>
+  <li>Οι λογαριασμοί κρατούνται σε δύο μεγέθη: την <strong>κάσα</strong> και τα <strong>καπίκια</strong>.</li>
+</ul>
+
+<h2 id="symvolaia">Συμβόλαια & υποχρεώσεις τζογαδόρου</h2>
+
+<h3>Συμβόλαιο Κανονικό</h3>
+<p>Υποχρέωση του τζογαδόρου για <strong>6 έως 10 μπάζες</strong>.</p>
+<ul class="rules">
+  <li>Το χρώμα παίζει ρόλο.</li>
+  <li>Ο τζογαδόρος δηλώνει πόσες μπάζες θα κάνει και με ποιο χρώμα.</li>
+  <li><strong>Αξία μπάζας = Αξία χρώματος + (μπάζες συμβολαίου − 6) × 5 + ενεργά φιρφίρια</strong>.</li>
+  <li>Οι αξίες χρώματος είναι:</li>
+</ul>
+<div class="formula">Μπαστούνια = 2, Σπαθιά = 3, Καρά = 4, Κούπες = 5, Άχροα = 6</div>
+
+<p class="caption">Αξία κάθε μπάζας (χωρίς να υπολογίζονται ενεργά φιρφίρια)</p>
+<p style="text-align:center;margin:0 0 4px">Αξία χρώματος + (μπάζες συμβολαίου − 6) × 5</p>
+<div class="tablewrap">
+  <table class="value">
+    <thead>
+      <tr>
+        <th rowspan="2">Δηλωθείσες<br>μπάζες</th>
+        <th colspan="5">Χρώμα συμβολαίου</th>
+      </tr>
+      <tr>
+        <th><span class="suit s-black">&#9824;</span>Μπαστούνια</th>
+        <th><span class="suit s-black">&#9827;</span>Σπαθιά</th>
+        <th><span class="suit s-red">&#9830;</span>Καρά</th>
+        <th><span class="suit s-red">&#9829;</span>Κούπες</th>
+        <th><span class="suit"><span class="achroa"></span></span>Άχροα</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><th>6</th><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td></tr>
+      <tr><th>7</th><td>7</td><td>8</td><td>9</td><td>10</td><td>11</td></tr>
+      <tr><th>8</th><td>12</td><td>13</td><td>14</td><td>15</td><td>16</td></tr>
+      <tr><th>9</th><td>17</td><td>18</td><td>19</td><td>20</td><td>21</td></tr>
+      <tr><th>10</th><td>22</td><td>23</td><td>24</td><td>25</td><td>26</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<ul class="rules">
+  <li>Η «Αξία χρώματος + (μπάζες συμβολαίου − 6) × 5» δεν μπορεί να υπερβαίνει τη συνολική κάσα όλων των παικτών. Αυτή η διευκρίνιση έχει νόημα μόνο για το τέλος του παιχνιδιού.</li>
+  <li>Π.χ. οι κάσες όλων των παικτών έχουν άθροισμα 3 και υπάρχουν 4 φιρφίρια. Ο τζογαδόρος έβγαλε συμβόλαιο 7 κούπες (5 + (7−6)×5 = 10). Θα κατεβάσει κάσα 3 αντί 10, και η κάθε μπάζα που πληρώνει θα έχει αξία 3+4 και όχι 10+4.</li>
+</ul>
+
+<h3>Συμβόλαιο Μιζέρια</h3>
+<p>Υποχρέωση του τζογαδόρου είναι να κάνει <strong>0 μπάζες</strong>.</p>
+
+<h3>Συμβόλαιο Ανοιχτή Μιζέρια</h3>
+<p>Υποχρέωση του τζογαδόρου είναι να κάνει <strong>0 μπάζες</strong>, παίζοντας έναν γύρο και μετά τους υπόλοιπους εννέα με τα χαρτιά του ανοικτά.</p>
+
+<h3>Φιρφίρια (συμβόλαιο)</h3>
+<p>Ενεργοποιείται όταν όλοι οι παίκτες πάνε πάσο.</p>
+<ul class="rules">
+  <li>Δεν υπάρχει τζογαδόρος.</li>
+  <li>Υποχρέωση κάθε παίκτη είναι να κάνει το πολύ 3 μπάζες. Δεν υπάρχει πάσο.</li>
+</ul>
+
+<h2 id="amyna">Άμυνα στο κανονικό συμβόλαιο — υποχρεώσεις αμυνόμενων</h2>
+
+<h3>Συλλογικές υποχρεώσεις</h3>
+<ul class="rules">
+  <li>Σε κανονικό συμβόλαιο, οι δύο αμυνόμενοι έχουν συλλογική υποχρέωση μπαζών: <strong>δέκα μπάζες μείον τις μπάζες του συμβολαίου</strong>.
+    <ul>
+      <li>Σε συμβόλαιο με 6 μπάζες, και οι δύο μαζί έχουν υποχρέωση για 4 μπάζες.</li>
+      <li>Σε συμβόλαιο με 7 μπάζες, και οι δύο μαζί έχουν υποχρέωση για 3 μπάζες, κ.λπ.</li>
+      <li>Αν κάποιος αμυνόμενος κάνει μπάζες πάνω από την υποχρέωσή του, το πλεόνασμα καλύπτει τον άλλο.</li>
+    </ul>
+  </li>
+</ul>
+
+<h3>Ατομικές υποχρεώσεις</h3>
+<ul class="rules">
+  <li>Αν η άμυνα κάνει λιγότερες μπάζες από τη συλλογική υποχρέωση, τότε παίζει ρόλο η ατομική υποχρέωση του κάθε αμυνόμενου.
+    <ul>
+      <li>Σε κανονικό συμβόλαιο 6 μπαζών, ο κάθε αμυνόμενος έχει υποχρέωση για 2 μπάζες.</li>
+      <li>Σε κανονικό συμβόλαιο 7 μπαζών, ο 1ος παίκτης έχει υποχρέωση για 2 μπάζες και ο 2ος για 1. Αν ο πρώτος πάει πάσο, την υποχρέωση για 2 αναλαμβάνει αυτός που παίζει.</li>
+      <li>Σε κανονικό συμβόλαιο 8 μπαζών, ο καθένας έχει υποχρέωση για 1 μπάζα.</li>
+      <li>Σε συμβόλαιο 9 μπαζών, ο πρώτος αμυνόμενος έχει υποχρέωση για μία μπάζα. Αν πάει πάσο, η υποχρέωση μεταβιβάζεται στον δεύτερο.</li>
+    </ul>
+  </li>
+  <li><strong>Πάσο:</strong> ένας αμυνόμενος παραιτείται. Ο άλλος αναλαμβάνει μόνος με την ατομική του υποχρέωση.</li>
+  <li><strong>Πήρε τον άλλο:</strong> ο ένας αμυνόμενος αναλαμβάνει τις υποχρεώσεις και των δύο. Ο άλλος γίνεται άμισθος βοηθός — δεν πληρώνει και δεν εισπράττει τίποτα.</li>
+</ul>
+
+<h2 id="pollaplasiastes">Πολλαπλασιαστές (για τζογαδόρους και αμυνόμενους)</h2>
+<ul class="rules">
+  <li>Μέσα Απλά (μία μπάζα λιγότερη). Πολλαπλασιαστής = 1</li>
+  <li>Μέσα Σόλο (δύο μπάζες λιγότερες). Πολλαπλασιαστής = 2</li>
+  <li>Μέσα Δίσολο (τρεις μπάζες λιγότερες). Πολλαπλασιαστής = 4</li>
+  <li>Μέσα με τέσσερις μπάζες λιγότερες. Πολλαπλασιαστής = 8</li>
+  <li>Γενικότερα: <strong>Πολλαπλασιαστής = 2<sup>(N−1)</sup></strong>, όπου N οι μπάζες που υπολείπονται της υποχρέωσης.</li>
+</ul>
+
+<h2 id="apotelesma">Αποτέλεσμα γύρου</h2>
+
+<h3>Εκπληρώνεται το συμβόλαιο</h3>
+<ul class="rules">
+  <li>Ο τζογαδόρος <strong>κατεβάζει κάσα</strong> κατά την αξία του συμβολαίου.</li>
+  <li><strong>Πληρώνει</strong> σε κάθε αμυνόμενο τις μπάζες που έκανε: <strong>Μπάζες × αξία μπάζας</strong>. (Στην αξία κάθε μπάζας μετράνε και τα ενεργά φιρφίρια.)</li>
+  <li>Διαγράφει (κερδίζει) τα ενεργά φιρφίρια. Αν είναι δικά του, διαγράφονται. Αν είναι άλλου παίκτη, τα διαγράφει και πληρώνεται από αυτόν 10 καπίκια για κάθε φιρφίρι που διέγραψε.</li>
+</ul>
+
+<h3>Ο τζογαδόρος βγαίνει σε Μιζέρια / Ανοιχτή μιζέρια</h3>
+<ul class="rules">
+  <li>Σε μιζέρια κατεβάζει κάσα 15.</li>
+  <li>Σε ανοιχτή μιζέρια κατεβάζει κάσα 25.</li>
+  <li>Δεν πληρώνει κανέναν αμυνόμενο.</li>
+</ul>
+
+<h3>Ο τζογαδόρος μπαίνει μέσα σε κανονικό συμβόλαιο</h3>
+<ul class="rules">
+  <li>Ο τζογαδόρος ανεβάζει κάσα: <strong>Μπάζες συμβολαίου × Πολλαπλασιαστής</strong>.</li>
+  <li>Οι αμυνόμενοι εισπράττουν από τον τζογαδόρο ανάλογα με τις μπάζες τους: <strong>Μπάζες × Αξία μπάζας × Πολλαπλασιαστής</strong>. (Μετράνε και τα ενεργά φιρφίρια.)</li>
+  <li>Χρεώνεται (γράφει) και τα ενεργά φιρφίρια.</li>
+</ul>
+
+<h3>Ο/οι αμυνόμενος/νοι μπαίνει/νουν μέσα σε κανονικό συμβόλαιο</h3>
+<ul class="rules">
+  <li>Ο τζογαδόρος δεν κατεβάζει κάσα.</li>
+  <li>Ο αμυνόμενος που μπήκε μέσα πληρώνει τις μπάζες που έκανε ο άλλος αμυνόμενος και ο τζογαδόρος: <strong>Μπάζες × Αξία μπάζας × Πολλαπλασιαστής</strong>.</li>
+  <li>Αν μπούνε μέσα και οι δύο, τότε και οι δύο πληρώνουν τον τζογαδόρο τις μπάζες που έκανε: <strong>Μπάζες × Αξία μπάζας × Πολλαπλασιαστής</strong>.</li>
+</ul>
+
+<h3>Ο τζογαδόρος μπαίνει μέσα σε Μιζέρια / Ανοιχτή μιζέρια</h3>
+<ul class="rules">
+  <li>Σε μιζέρια ανεβάζει κάσα 15 για κάθε μπάζα που έκανε.</li>
+  <li>Σε ανοιχτή μιζέρια ανεβάζει κάσα 25 για κάθε μπάζα που έκανε.</li>
+  <li>Δεν πληρώνει κανέναν παίκτη.</li>
+  <li>Δεν γράφει ενεργά φιρφίρια.</li>
+</ul>
+
+<h2 id="firfiria">Φιρφίρια</h2>
+<ul class="rules">
+  <li>Όταν παίζονται φιρφίρια, οι παίκτες που κάνουν πάνω από τρεις μπάζες γράφουν (χρεώνονται) φιρφίρια όσα και οι μπάζες που έκαναν.</li>
+  <li>Τα ενεργά φιρφίρια εκκαθαρίζονται <strong>μόνο όταν κάποιος παίκτης εκπληρώσει κανονικό συμβόλαιο</strong>.
+    <ul>
+      <li>Τα ενεργά φιρφίρια δεν μπορεί να είναι πάνω από 10.</li>
+      <li>Αν είναι κάτω από 10, τα ενεργά είναι όσα και τα συνολικά.</li>
+      <li>Αν είναι από 11 μέχρι 20, τα ενεργά είναι τα μισά. Σε περιττό αριθμό στρογγυλοποιούνται στην αμέσως επόμενη μονάδα.</li>
+      <li>Αν είναι από 21 και πάνω, ενεργά είναι τα 10.</li>
+      <li>Σειρά εκκαθάρισης: 1ος ο τζογαδόρος, 2ος αυτός με τα περισσότερα, μετά οι υπόλοιποι.</li>
+      <li>Για κάθε φιρφίρι που εκκαθαρίζεται, ο παίκτης που το έχει χρεωθεί πληρώνει 10 καπίκια στον τζογαδόρο.</li>
+      <li>Αν υπάρχουν φιρφίρια, η αξία της μπάζας αυξάνεται κατά το πλήθος των ενεργών φιρφιριών.</li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="spanies">Ειδική μνεία — μερικές σπάνιες περιπτώσεις</h2>
+<div class="scenario">
+  <h4>Σενάριο [Α]</h4>
+  <p>Ο τζογαδόρος δήλωσε συμβόλαιο με 6 μπάζες κάποιου χρώματος. Ο αμυνόμενος Α πήρε μαζί του τον παίκτη Β. Δηλαδή ο Α έχει αναλάβει τις υποχρεώσεις και των δύο παικτών. Ο τζογαδόρος τελικά έκανε 9 μπάζες. Δηλαδή η άμυνα έκανε 3 μπάζες λιγότερες από τη συλλογική υποχρέωσή της. Τότε ο Α μπαίνει μέσα Σόλο και επιπλέον μπαίνει μέσα και Απλά. Άρα θα πληρώσει 9 × [Αξία μπάζας] × 2 λόγω του Σόλο και επιπλέον 9 × [Αξία μπάζας] × 1 λόγω του ότι μπήκε μέσα και Απλά.</p>
+</div>
+<div class="scenario">
+  <h4>Σενάριο [Β]</h4>
+  <p>Ο τζογαδόρος δήλωσε συμβόλαιο με 7 μπάζες κάποιου χρώματος. Ο αμυνόμενος Α πήρε μαζί του τον παίκτη Β. Ο τζογαδόρος τελικά έκανε 10 μπάζες. Δηλαδή η άμυνα έκανε 3 μπάζες λιγότερες. Τότε ο Α μπαίνει μέσα Σόλο και επιπλέον μπαίνει μέσα και Απλά. Άρα θα πληρώσει 10 × [Αξία μπάζας] × 2 λόγω του Σόλο και επιπλέον 10 × [Αξία μπάζας] × 1.</p>
+</div>
+<p>Γενικότερα, αυτές είναι οι μοναδικές περιπτώσεις για να μπει μέσα ένας αμυνόμενος Σόλο + Απλά. Προϋπόθεση είναι ο ένας αμυνόμενος να έχει πάρει τον άλλο. Με αυτή την προϋπόθεση μπορεί να μπει μέσα και Απλά + Απλά ή και Σόλο + Σόλο.</p>
+
+<h2 id="glypsimo">Γλύψιμο κάσας</h2>
+<ul class="rules">
+  <li>Αν ο τζογαδόρος έχει λιγότερη κάσα από το συμβόλαιο, μηδενίζεται η δική του και «γλύφει» το υπόλοιπο από τον παίκτη με τη μεγαλύτερη κάσα (διαδοχικά αν χρειαστεί), λαμβάνοντας από τον παίκτη από τον οποίο έγλυψε την κάσα 10 καπίκια για κάθε μονάδα κάσας.</li>
+</ul>
+
+<h2 id="lixi">Λήξη παιχνιδιού & εκκαθάριση</h2>
+<ul class="rules">
+  <li>Το παιχνίδι τελειώνει όταν όλες οι κάσες μηδενιστούν ή όταν οι παίκτες το αποφασίσουν. Προϋπόθεση είναι να μην υπάρχουν φιρφίρια.</li>
+</ul>
+<h3>Εκκαθάριση στις κάσες για να λήξει το παιχνίδι</h3>
+<ul class="rules">
+  <li>Αφαιρείται η χαμηλότερη κάσα από όλους τους παίκτες.</li>
+  <li>Κατόπιν, κάθε παίκτης πληρώνει στρογγυλοποιημένο (κάσα / Ν) καπίκια σε κάθε άλλο παίκτη, όπου Ν το πλήθος των παικτών (3 έως 4 παίκτες).</li>
+</ul>
+
+<footer class="foot">
+  <p>Οι κανόνες αυτοί χρησιμοποιούνται στη δωρεάν εφαρμογή <strong>«Το τεφτέρι της πρέφας»</strong>, που κρατάει αυτόματα κάσες, καπίκια και φιρφίρια:</p>
+  <p><a href="https://manoliar.github.io/prefa/" target="_blank" rel="noopener">https://manoliar.github.io/prefa/</a></p>
+  <p style="margin-top:10px">Αφιερωμένο από τον Μανώλη στους παίκτες: Μένη, Κλειώ, Μύρση, Μιχάλη, Γιώργο.</p>
+</footer>
+
+<div class="totop"><a href="#top">↑ Επιστροφή στην αρχή</a></div>
+
+</div>
+</div>
+</body>
+</html>
