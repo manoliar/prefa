@@ -1628,7 +1628,7 @@ if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.
   </div>
 
   <div id="stats-panel" style="display:none;margin-top:1rem">
-    <button class="btn-print no-print" onclick="window.print()">🖨️ Εκτύπωση / Αποθήκευση PDF</button>
+    <button class="btn-print no-print" onclick="printStats()">🖨️ Εκτύπωση / Αποθήκευση PDF</button>
     <div id="stats-content"></div>
   </div>
 </div>
@@ -1821,6 +1821,9 @@ function showModal(title, msg, cb, imgSrc, imgTop, colorTitle) {
   // Εικόνα: κόκκινο X δίπλα στον τίτλο για "Μέσα", check mark κάτω από msg για "Εντάξει"
   let titleEl = document.getElementById('modal-title');
   titleEl.innerHTML = titleEl.textContent; // reset
+  // Επαναφορά στοίχισης (μην κολλάει το κεντράρισμα από προηγούμενο "Σφάλμα")
+  titleEl.style.textAlign = '';
+  document.getElementById('modal-msg').style.textAlign = '';
   // Εικονίδιο math1 κάτω από τον τίτλο "Σφάλμα", όλα κεντραρισμένα
   if (title === 'Σφάλμα' && typeof MATH1_B64 !== 'undefined') {
     titleEl.style.textAlign = 'center';
@@ -1876,6 +1879,8 @@ function closeModal() {
 function showConfirm(title, msg, cbYes) {
   stopModalReadClock(); // τα παράθυρα επιβεβαίωσης δεν έχουν countdown
   document.getElementById('modal-title').textContent = title;
+  document.getElementById('modal-title').style.textAlign = '';
+  document.getElementById('modal-msg').style.textAlign = '';
   document.getElementById('modal-ok-btn').textContent = 'Ναι';
   // Μετατροπή msg σε HTML
   let msgHtml = msg
