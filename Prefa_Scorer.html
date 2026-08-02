@@ -1265,7 +1265,7 @@ if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.
 				<strong>Συμβόλαια. Υποχρεώσεις Τζογαδόρου</strong>
 			</p>
 			<p style="margin-top:3pt; margin-bottom:3pt">
-				<strong>Συμβόλαιο Κανονικό: </strong>Υποχρέωση του Τζογαδόρου για 6 έως 10 μπάζες.
+				<strong>Συμβόλαιο Κανονικό(Αγορά): </strong>Υποχρέωση του Τζογαδόρου για 6 έως 10 μπάζες.
 			</p>
 			<p style="margin-top:0pt; margin-left:18pt; margin-bottom:0pt; text-indent:-18pt">
 				<p><span style="color:#C62828">♦</span> Το χρώμα παίζει ρόλο.</p>			</p>
@@ -1327,7 +1327,7 @@ if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.
 			<p style="margin-top:0pt; margin-left:18pt; margin-bottom:0pt; text-indent:-18pt">
 				<p><span style="color:#C62828">♦</span> Υποχρέωση κάθε παίκτη είναι να κάνει το πολύ 3 μπάζες. Δεν υπάρχει πάσο.</p>			</p>
 			<p style="margin-top:6pt; margin-bottom:6pt; background-color:#ffccff">
-				<strong>Άμυνα στο Κανονικό Συμβόλαιο. Υποχρεώσεις αμυνόμενων παικτών</strong>
+				<strong>Άμυνα στο Κανονικό(Αγορά) Συμβόλαιο. Υποχρεώσεις αμυνόμενων παικτών</strong>
 			</p>
 			<p style="margin-top:3pt; margin-bottom:3pt">
 				<strong>Συλλογικές υποχρεώσεις:</strong>
@@ -1558,7 +1558,7 @@ if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.
     <div class="tick-group" id="contract-group" style="display:none;align-items:center">
       <span id="lbl-symvolaio-inline" style="flex-shrink:0;background:linear-gradient(135deg,#1B5E20,#69F000);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;border-radius:6px;padding:5px 10px;font-size:0.85rem;font-weight:800;white-space:nowrap;margin-right:6px">Επίλεξε συμβόλαιο:</span>
       <label class="tick-btn contract-normal" id="lbl-normal">
-        <input type="radio" name="contract" value="normal" onchange="updateContractLabel()" style="display:none"> Κανονικό
+        <input type="radio" name="contract" value="normal" onchange="updateContractLabel()" style="display:none"> Αγορά
       </label>
       <label class="tick-btn contract-mizeria" id="lbl-mizeria">
         <input type="radio" name="contract" value="mizeria" onchange="updateContractLabel()" style="display:none"> Μιζέρια
@@ -5417,13 +5417,13 @@ function buildStatsTo(targetId) {
       <div class="stats-row" style="background:#e8f4fd;border-radius:4px;padding:3px 0;margin-bottom:2px">
         <span style="font-weight:700;color:#1565C0;font-size:0.9rem">★ Φορές που ήταν τζογαδόρος [${s.tzog_total||0}]</span>
       </div>
-      <div class="stats-row"><span><span style="color:#000">♠</span> Έβγαλε κανονικό:</span><span class="stats-val" style="color:#2E7D32">${tzogSuccessNormal}</span></div>
+      <div class="stats-row"><span><span style="color:#000">♠</span> Έβγαλε Αγορά:</span><span class="stats-val" style="color:#2E7D32">${tzogSuccessNormal}</span></div>
       <div class="stats-row"><span><span style="color:#000">♠</span> Έβγαλε Μιζέρια/Ανοιχτή:</span><span class="stats-val" style="color:#2E7D32">${s.tzog_success_mizeria||0}/${s.tzog_success_anoichti||0}</span></div>
-      <div class="stats-row"><span><span style="color:#C62828!important;-webkit-print-color-adjust:exact;print-color-adjust:exact">♦</span> Συνολικά μπήκε μέσα σε κανονικό:</span><span class="stats-val" style="color:#C62828">${tzogMesa}</span></div>
+      <div class="stats-row"><span><span style="color:#C62828!important;-webkit-print-color-adjust:exact;print-color-adjust:exact">♦</span> Συνολικά μπήκε μέσα σε Αγορά:</span><span class="stats-val" style="color:#C62828">${tzogMesa}</span></div>
       <div class="stats-row" style="padding-left:12px"><span><span style="color:#C62828!important;-webkit-print-color-adjust:exact;print-color-adjust:exact">♦</span> Απλά/Σόλο/Δίσολο:</span><span class="stats-val">${s.tzog_mesa_apla||0}/${s.tzog_mesa_solo||0}/${s.tzog_mesa_disolo||0}</span></div>
       <div class="stats-row" style="padding-left:12px"><span><span style="color:#C62828!important;-webkit-print-color-adjust:exact;print-color-adjust:exact">♦</span> Μιζέρια/Ανοιχτή:</span><span class="stats-val" style="color:#C62828">${s.tzog_mesa_mizeria||0}/${s.tzog_mesa_anoichti||0}</span></div>
       <div class="stats-row" style="background:#fef3e2;border-radius:4px;padding:3px 0;margin:2px 0">
-        <span style="font-weight:700;color:#E65100;font-size:0.9rem">★ Αμυνόμενος σε κανονικό [${s.def_total||0}]</span>
+        <span style="font-weight:700;color:#E65100;font-size:0.9rem">★ Αμυνόμενος σε Αγορά [${s.def_total||0}]</span>
       </div>
       <div class="stats-row"><span><span style="color:#C62828!important;-webkit-print-color-adjust:exact;print-color-adjust:exact">♦</span> Συνολικά μπήκε μέσα:</span><span class="stats-val" style="color:#C62828">${defMesa}</span></div>
       <div class="stats-row" style="padding-left:12px"><span><span style="color:#C62828!important;-webkit-print-color-adjust:exact;print-color-adjust:exact">♦</span> Απλά/Σόλο/Δίσολο:</span><span class="stats-val">${s.def_mesa_apla||0}/${s.def_mesa_solo||0}/${s.def_mesa_disolo||0}</span></div>
