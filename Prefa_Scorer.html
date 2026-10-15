@@ -3167,67 +3167,29 @@ function handleVoiceCommand(raw) {
   if (viaWake) voiceBlinkMic();
 }
 
-// Android: το Chrome παίζει ηχητικό «μπιπ» σε ΚΑΘΕ εκκίνηση/λήξη αναγνώρισης (δεν απενεργοποιείται από τη
-// σελίδα). Με continuous=false η αναγνώριση έκλεινε και ξανάνοιγε κάθε λίγα δευτερόλεπτα → συνεχή μπιπ
-// ΚΑΙ «νεκρά» διαστήματα χωρίς ακρόαση. Στο Android λοιπόν: continuous=true (μακρές συνεδρίες =
-// λιγότερα μπιπ) + εκτέλεση της εντολής ΜΟΛΙΣ ο χρήστης κάνει μικρή παύση (debounce στα ενδιάμεσα
-// αποτελέσματα), γιατί το «τελικό» αποτέλεσμα σε continuous έρχεται με μεγάλη καθυστέρηση.
-// Σε υπολογιστή η συμπεριφορά παραμένει η παλιά (continuous=false).
-const VOICE_CONT = /Android/i.test(navigator.userAgent || '');
-const VOICE_INTERIM_PAUSE_MS = 1300;   // παύση ομιλίας που θεωρείται «τέλος εντολής»
-let voiceHandled = {};                 // δείκτες αποτελεσμάτων που ήδη εκτελέστηκαν (ανά συνεδρία)
-let voiceInterimTimer = null;
-let voiceSessionStart = 0;
-let voiceFastEnds = 0;                 // συνεχόμενες πολύ σύντομες συνεδρίες (προστασία από «καταιγίδα» μπιπ)
-window.__voiceStarts = [];             // διάγνωση: χρονοσφραγίδες εκκινήσεων (console: __voiceStarts)
-
 function startVoiceRecognition() {
   if (!voiceSupported() || voiceActive || !voiceEnabled) return;
   let SR = window.SpeechRecognition || window.webkitSpeechRecognition;
   voiceRecognition = new SR();
   voiceRecognition.lang = 'el-GR';
-  // Desktop: continuous=false → το τελικό αποτέλεσμα έρχεται αμέσως μετά την παύση ομιλίας
-  // (με true ο Chrome καθυστερούσε 10-15s) - επανεκκίνηση αυτόματα στο onend.
-  voiceRecognition.continuous = VOICE_CONT;
-  voiceRecognition.interimResults = VOICE_CONT;
-  const runCmd = (t, idx) => {
-    if (voiceHandled[idx]) return;       // ήδη εκτελέστηκε (από debounce ή από τελικό αποτέλεσμα)
-    voiceHandled[idx] = true;
-    voiceHadResult = true;
-    voiceErrorCount = 0;
-    voiceLastHeard = t;                  // εμφανίζεται μόνο σε αποτυχία (μέσω voiceBlinkMic)
-    try { handleVoiceCommand(t); } catch(e) { console.warn('voice cmd error:', e); }
-  };
-  voiceRecognition.onstart = () => {
-    voiceHandled = {};
-    clearTimeout(voiceInterimTimer);
-    voiceSessionStart = performance.now();
-    try { window.__voiceStarts.push(Math.round(voiceSessionStart)); if (window.__voiceStarts.length > 200) window.__voiceStarts.shift(); } catch (e) {}
-  };
+  // continuous=false: το τελικό αποτέλεσμα έρχεται αμέσως μετά την παύση ομιλίας
+  // (με true ο Chrome καθυστερούσε 10-15s) - επανεκκίνηση αυτόματα στο onend
+  voiceRecognition.continuous = false;
+  voiceRecognition.interimResults = false;
   voiceRecognition.onresult = (ev) => {
     for (let i = ev.resultIndex; i < ev.results.length; i++) {
-      let res = ev.results[i];
-      let t = res[0].transcript;
-      if (res.isFinal) {
-        clearTimeout(voiceInterimTimer);
-        runCmd(t, i);
-      } else if (VOICE_CONT) {
-        // ενδιάμεσο αποτέλεσμα: εκτέλεση όταν σταματήσει να αλλάζει για VOICE_INTERIM_PAUSE_MS
-        clearTimeout(voiceInterimTimer);
-        voiceLastHeard = t;
-        let idx = i;
-        voiceInterimTimer = setTimeout(() => runCmd(t, idx), VOICE_INTERIM_PAUSE_MS);
+      if (ev.results[i].isFinal) {
+        voiceHadResult = true;
+        voiceErrorCount = 0;
+        let t = ev.results[i][0].transcript;
+        voiceLastHeard = t; // εμφανίζεται μόνο σε αποτυχία (μέσω voiceBlinkMic)
+        try { handleVoiceCommand(t); } catch(e) { console.warn('voice cmd error:', e); }
       }
     }
   };
   voiceRecognition.onend = () => {
-    clearTimeout(voiceInterimTimer);
-    // Ο Chrome σταματά περιοδικά: αυτόματη επανεκκίνηση. Αν οι συνεδρίες τελειώνουν σχεδόν αμέσως
-    // (π.χ. άλλη εφαρμογή κρατά το μικρόφωνο), επιβράδυνση ώστε να μη γίνει καταιγίδα μπιπ.
-    let dur = performance.now() - voiceSessionStart;
-    voiceFastEnds = (dur < 1500) ? voiceFastEnds + 1 : 0;
-    let delay = voiceFastEnds >= 3 ? 2500 : 300;
-    if (voiceActive) setTimeout(() => { try { voiceRecognition.start(); } catch(e) {} }, delay);
+    // Ο Chrome σταματά περιοδικά: αυτόματη επανεκκίνηση
+    if (voiceActive) setTimeout(() => { try { voiceRecognition.start(); } catch(e) {} }, 300);
   };
   voiceRecognition.onerror = (ev) => {
     if (ev.error === 'not-allowed') {
@@ -3246,7 +3208,6 @@ function startVoiceRecognition() {
     }
   };
   voiceActive = true;
-  voiceFastEnds = 0;
   try { voiceRecognition.start(); } catch(e) { voiceActive = false; }
 }
 
