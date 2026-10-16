@@ -1556,7 +1556,7 @@ if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.
       <button id="read-secs-btn" onclick="editModalReadSecs()" title="Χρόνος αυτόματου κλεισίματος παραθύρων πληροφοριών." style="background:none;border:none;cursor:pointer;padding:0;user-select:none;display:flex;align-items:center;"><svg viewBox="0 0 44 44" style="height:2.4em;width:2.4em"><circle cx="22" cy="22" r="22" fill="#ffffff"/><line x1="22" y1="10" x2="22" y2="3" stroke="#E81010" stroke-width="2.5" stroke-linecap="round"/><text id="read-secs-num" x="22" y="27" text-anchor="middle" font-size="14" font-weight="700" fill="#E81010">30</text></svg></button>
       <button id="voice-toggle" onclick="toggleVoiceCommands()" title="Φωνητικές εντολές on/off" style="background:none;border:none;cursor:pointer;padding:0;user-select:none;display:flex;align-items:center;"><img id="voice-mic-img" src="" style="height:2.4em;width:2.4em;object-fit:contain;opacity:1;transition:opacity 0.2s;background:#fff;border-radius:50%;padding:4px;box-sizing:border-box"></button>
       <span style="display:inline-flex;flex-direction:column;align-items:flex-start;">
-        <span id="game-clock" onclick="toggleGameClock()" title="Κλικ: παύση/συνέχεια χρόνου" style="display:inline-flex;align-items:center;font-family:'Courier New',monospace;font-weight:800;font-size:1.2rem;color:#69F000;background:none;border:none;padding:0;letter-spacing:1px;cursor:pointer;user-select:none">00:00:00</span>
+        <span id="game-clock" onclick="gameClockClick()" title="Κλικ: παύση/συνέχεια · Διπλό κλικ: μηδενισμός" style="display:inline-flex;align-items:center;font-family:'Courier New',monospace;font-weight:800;font-size:1.2rem;color:#69F000;background:none;border:none;padding:0;letter-spacing:1px;cursor:pointer;user-select:none">00:00:00</span>
         <span id="notify-clock" style="display:inline-flex;align-items:center;font-family:'Courier New',monospace;font-weight:800;font-size:1.2rem;color:#69F000;background:none;border:none;padding:0;margin-top:-2px;letter-spacing:1px;user-select:none"><span id="notify-h" ondblclick="editNotifyHours()" title="Διπλό κλικ: αλλαγή ωρών" style="cursor:pointer">24</span>:<span id="notify-m" ondblclick="editNotifyMins()" title="Διπλό κλικ: αλλαγή λεπτών" style="cursor:pointer">00</span><span style="visibility:hidden">:</span><span id="notify-sound-toggle" onclick="toggleNotifySound()" title="Ήχος ειδοποίησης: alarm — κλικ για φωνή" style="margin-left:3px;display:inline-flex;align-items:center;cursor:pointer;font-size:1.05em;line-height:1"><span id="notify-bell-emoji">🔔</span><span id="notify-face-emoji" style="display:none">😏</span></span></span>
       </span>
       <button id="monitor-btn" onclick="toggleFullscreenSwitch()" title="Πλήρης οθόνη on/off" style="background:none;border:none;cursor:pointer;padding:0;user-select:none;display:flex;align-items:center;"><img id="monitor-img" src="" style="height:2.4em;width:auto;opacity:1"></button>
@@ -2663,7 +2663,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if (dimg) dimg.src = DISK_B64;
 });
 
-// ===== ΦΩΝΗΤΙΚΕΣ ΕΝΤΟΛΕΣ (Web Speech API, wake word: "ρορο") =====
+// ===== ΦΩΝΗΤΙΚΕΣ ΕΝΤΟΛΕΣ (Web Speech API, wake word: "google") =====
 let voiceRecognition = null;
 let voiceActive = false;
 
@@ -2977,7 +2977,7 @@ function handleVoiceCommand(raw) {
     }
   }
 
-  // Wake word "ρότζερ" (fuzzy, δεκτό και σπασμένο σε 2 λέξεις)
+  // Wake word "google" (fuzzy, δεκτό και σπασμένο σε 2 λέξεις)
   let tok = null;
   let viaWake = true;
   const wakeWords = ['google','γκουγκλ','γκουγκλε','γκουγλ','γουγκλ','γκογκλ','γκουκλ'];
@@ -3407,6 +3407,36 @@ function toggleGameClock() {
     _gameClockLastTick = Date.now();
   }
   renderGameClock();
+}
+// Κλικ στο χρονόμετρο: ΜΟΝΟ κλικ = παύση/συνέχεια (άμεσα). ΔΙΠΛΟ κλικ (2 κλικ σε <400ms) =
+// μηδενισμός μετά από επιβεβαίωση. Δεν στηριζόμαστε στο γεγονός dblclick (δεν δουλεύει αξιόπιστα σε αφή),
+// αλλά μετράμε τον χρόνο ανάμεσα σε δύο κλικ. Το 2ο κλικ ΑΝΑΙΡΕΙ την παύση/συνέχεια του 1ου, ώστε το
+// χρονόμετρο να μένει στην κατάσταση που είχε πριν το διπλό κλικ.
+let _gameClockLastClick = 0;
+const GAME_CLOCK_DBL_MS = 400;
+function gameClockClick() {
+  // Όσο είναι ανοιχτό παράθυρο (π.χ. επιβεβαίωση μηδενισμού) τα κλικ στο χρονόμετρο αγνοούνται
+  if (document.getElementById('modal-overlay')?.classList.contains('open')) return;
+  let now = Date.now();
+  if (_gameClockLastClick && now - _gameClockLastClick < GAME_CLOCK_DBL_MS) {
+    _gameClockLastClick = 0;       // το 3ο κλικ ξεκινά νέο κύκλο
+    toggleGameClock();             // αναίρεση του 1ου κλικ (πίσω στην αρχική κατάσταση)
+    showConfirm('Μηδενισμός Χρονομέτρου', '<center>Θέλεις να μηδενίσεις το χρονόμετρο;</center>', () => {
+      resetGameClock();
+    });
+    return;
+  }
+  _gameClockLastClick = now;
+  toggleGameClock();
+}
+function resetGameClock() {
+  // Μηδενισμός χρόνου· παραμένει στην ίδια κατάσταση (τρέχει / σε παύση)
+  _gameClockElapsed = 0;
+  _gameClockLastTick = Date.now();
+  _notifyFired = false;            // το ηχητικό όριο ειδοποίησης οπλίζεται ξανά
+  renderGameClock();
+  // Αν υπάρχει παιχνίδι σε εξέλιξη, αποθήκευση ώστε να μη γυρίσει ο παλιός χρόνος στο επόμενο άνοιγμα
+  try { if (players && players.length && roundNumber > 0) saveToStorage(); } catch (e) {}
 }
 function getGameClockElapsed() {
   // επιστρέφει τρέχοντα συσσωρευμένο χρόνο (συμπεριλαμβανομένου του τρέχοντος διαστήματος)
