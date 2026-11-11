@@ -540,6 +540,9 @@ if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.
   .mx-table td { color: #546E7A; text-align: center; padding: 4px 2px; border-bottom: 1px solid rgba(0,0,0,.1); line-height: 1.15; }
   .mx-table td.mx-b { padding: 3px 0; border-left: 1px solid rgba(0,0,0,.08); vertical-align: top; }
   .mx-grid { display: flex; padding: 0 2px; min-height: calc(var(--s) + 2px); }
+  /* Χρώμα της λοξής γραμμής «μέσα»: κόκκινη στα μαύρα (μπαστούνια/σπαθιά), μαύρη στα κόκκινα (καρά/κούπες), πορτοκαλί στο άχροα */
+  .mx-ic.mx-m[data-su="4"]::after, .mx-ic.mx-m[data-su="5"]::after { background: #111; }
+  .mx-ic.mx-m[data-su="6"]::after { background: #F9A825; }
   .mx-col { display: flex; flex-direction: column; align-items: center; gap: 2px; min-height: calc(var(--s) + 2px); }
   .mx-sc { flex: 1; min-width: 0; display: flex; flex-direction: column; align-items: center; gap: 2px; }
   .mx-ic { position: relative; display: block; width: var(--s); height: var(--s); }
