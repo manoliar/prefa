@@ -520,6 +520,18 @@ if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.
   #katag-float .kf-btn { pointer-events: auto; display: flex; align-items: center; justify-content: center; width: 100%; max-width: 460px; margin: 0 auto; height: 48px; padding: 0 12px; background: #2E7D32; color: #fff; border: 2px solid #69F000; border-radius: var(--radius); font-size: 1rem; font-weight: 700; line-height: 1.2; cursor: pointer; box-shadow: 0 4px 14px rgba(0,0,0,.6); }
   #katag-float .kf-btn img { height: 2.2em; width: auto; margin-right: 6px; }
   @media print { #katag-float { display: none !important; } }
+  /* Φίλτρο ιστορικού γύρων (μόνο για την οθόνη): οι γραμμές ΚΡΥΒΟΝΤΑΙ, δεν διαγράφονται — η αποθήκευση, τα Στατιστικά και το PDF τις διαβάζουν όλες */
+  #history-body tr.hf-hide { display: none; }
+  #btn-hfilter { position: relative; display: inline-flex; width: 32px; height: 32px; cursor: pointer; opacity: .4; transition: opacity .2s; flex-shrink: 0; -webkit-tap-highlight-color: transparent; }
+  #btn-hfilter.on { opacity: 1; }
+  #btn-hfilter img { width: 100%; height: 100%; display: block; user-select: none; -webkit-user-drag: none; }
+  #hf-badge { display: none; position: absolute; top: -6px; right: -9px; min-width: 17px; height: 17px; padding: 0 4px; box-sizing: border-box; border-radius: 9px; background: #2B66C3; color: #fff; border: 1px solid #fff; font-size: .62rem; font-weight: 800; line-height: 15px; text-align: center; }
+  #btn-hfilter.on #hf-badge { display: block; }
+  .hf-row { display: flex; align-items: center; gap: 8px; margin-bottom: 9px; }
+  .hf-row > label { flex: 0 0 90px; color: #cfe0ff; font-weight: 700; font-size: .85rem; }
+  .hf-row select, .hf-row input[type="text"] { flex: 1; min-width: 0; width: auto; padding: 7px 8px; font-size: .9rem; }
+  .hf-checks { flex: 1; display: grid; grid-template-columns: 1fr 1fr; gap: 6px 8px; }
+  .hf-checks label { display: flex; align-items: center; gap: 6px; color: #fff; font-weight: 600; font-size: .85rem; }
 
   /* HISTORY */
   .history-panel {
@@ -1322,6 +1334,7 @@ if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.
 				<p><span style="color:#C62828">♦</span> Με διπλό κλικ επάνω στην καταχώρηση ενός γύρου στο ιστορικό γύρων μπορούν να γίνουν διορθώσεις. Με απλό κλικ επάνω στον αριθμό του γύρου εμφανίζεται η αναλυτική περιγραφή για το αποτέλεσμα του γύρου.</p>				</p>
 				<p><span style="color:#C62828">♦</span> Στο ιστορικό γύρων, δίπλα στον διορθωμένο γύρο εμφανίζεται το σύμβολο *</p>
 				<p><span style="color:#C62828">♦</span> Στο ιστορικό γύρων το παιχνίδι του γύρου εμφανίζεται με κόκκινο αν μπει μέσα κάποιος παίκτης.</p>
+				<p><span style="color:#C62828">♦</span> Δεξιά από τον τίτλο «Ιστορικό Γύρων» υπάρχει το φίλτρο (μπλε χωνί). Πατώντας το επιλέγεις κριτήρια (παίκτη και ρόλο, αποτέλεσμα, συμβόλαιο, χρώμα, μπάζες από–έως, είδος «μπήκε μέσα», κείμενο) και στο ιστορικό εμφανίζονται μόνο οι γύροι που τα ικανοποιούν όλα. Αν επιλέξεις παίκτη και «μπήκε μέσα», το κριτήριο αφορά τον ίδιο τον παίκτη (π.χ. «Άμυνα» = ο παίκτης ήταν αμυνόμενος και μπήκε μέσα). Το φίλτρο ισχύει μόνο για την οθόνη: τα στατιστικά και το PDF περιλαμβάνουν πάντα όλους τους γύρους. Όταν είναι ενεργό, το εικονίδιο φαίνεται έντονο με τον αριθμό των γύρων που εμφανίζονται.</p>
 				<p><span style="color:#C62828">♦</span> Το κουμπί μεγάφωνο ενεργοποιεί και απενεργοποιεί την φωνητική ανακοίνωση του τεμπέλη ή στην περίπτωση τριών μόνο παικτών το όνομα αυτού που έχει σειρά να μοιράσει. Το κουμπί ηχείο ενεργοποιεί και απενεργοποιεί την φωνητική ανακοίνωση για τα φιρφίρια.</p>
 				<p><span style="color:#C62828">♦</span> Αριστερά από το μεγάφωνο υπάρχει το εικονίδιο της επανάληψης με το οποίο επαναλαμβάνεται η ανακοίνωση για το όνομα του Τεμπέλη ή στην περίπτωση τριών μόνο παικτών το όνομα αυτού που έχει σειρά να μοιράσει. Στην περίπτωση των τριών παικτών, επάνω από το πλαίσιο του παίκτη που μοιράζει εμφανίζεται η ετικέτα «ΜΟΙΡΑΖΕΙ» και το πλαίσιό του αναβοσβήνει με χρυσό φως.</p>
 				<p><span style="color:#C62828">♦</span> Στην περίπτωση τριών παικτών (μόνιμος τεμπέλης) ο τεμπέλης μπαίνει πάντα στη θέση 4. Πατώντας το εικονίδιο 7<span style="color:#C62828">♦</span> που αναβοσβήνει πάνω από το «Μόνιμος Τεμπέλης» επιλέγεις ποιος έχει το 7<span style="color:#C62828">♦</span> και παίζει πρώτος. Εικονικά θεωρείται ότι μοίρασε ο προηγούμενος παίκτης.</p>
@@ -1569,6 +1582,27 @@ if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.
 </div>
 
 <!-- STATS MODAL -->
+<div id="hf-overlay" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.6);z-index:95;align-items:center;justify-content:center;padding:14px;box-sizing:border-box;">
+  <div style="background:#0f2540;border:2px solid #2B66C3;border-radius:16px;padding:18px 16px;max-width:370px;width:100%;max-height:92vh;overflow-y:auto;box-shadow:0 10px 40px rgba(0,0,0,0.5);">
+    <div style="text-align:center;color:#fff;font-weight:800;font-size:1.05rem;margin-bottom:14px">Φίλτρο γύρων</div>
+    <div class="hf-row"><label for="hf-player">Παίκτης</label><select id="hf-player" onchange="hfSyncPlayerUi()"></select></div>
+    <div class="hf-row"><label for="hf-role">Ρόλος</label><select id="hf-role"><option value="any">Οποιοσδήποτε</option><option value="tzog">Τζογαδόρος</option><option value="def">Αμυνόμενος</option></select></div>
+    <div class="hf-row"><label for="hf-result">Αποτέλεσμα</label><select id="hf-result"><option value="any">Οποιοδήποτε</option><option value="win">Κέρδισε καπίκια</option><option value="lose">Έχασε καπίκια</option></select></div>
+    <div class="hf-row"><label for="hf-ctype">Συμβόλαιο</label><select id="hf-ctype"><option value="">Όλα</option><option value="normal">Αγορά</option><option value="mizeria">Μιζέρια</option><option value="anoichti">Ανοιχτή Μιζέρια</option><option value="firfiria">Φιρφίρια</option></select></div>
+    <div class="hf-row"><label for="hf-suit">Χρώμα</label><select id="hf-suit"><option value="">Όλα</option><option value="2">Μπαστούνια</option><option value="3">Σπαθιά</option><option value="4">Καρά</option><option value="5">Κούπες</option><option value="6">Άχροα</option></select></div>
+    <div class="hf-row"><label>Μπάζες</label><span style="color:#cfe0ff;font-size:.85rem">από</span><select id="hf-bfrom"><option value="">—</option><option>6</option><option>7</option><option>8</option><option>9</option><option>10</option></select><span style="color:#cfe0ff;font-size:.85rem">έως</span><select id="hf-bto"><option value="">—</option><option>6</option><option>7</option><option>8</option><option>9</option><option>10</option></select></div>
+    <div class="hf-row" style="align-items:flex-start"><label>Μπήκε μέσα</label><div class="hf-checks">
+      <label><input type="checkbox" id="hf-m-tzog">Τζογαδόρος</label><label><input type="checkbox" id="hf-m-def">Άμυνα</label>
+      <label><input type="checkbox" id="hf-m-miz">Μιζέρια</label><label><input type="checkbox" id="hf-m-anoichti">Ανοιχτή μιζέρια</label></div></div>
+    <div class="hf-row"><label for="hf-text">Κείμενο</label><input type="text" id="hf-text" placeholder="στην περιγραφή του γύρου" autocomplete="off"></div>
+    <div style="display:flex;gap:8px;margin-top:14px">
+      <button class="btn btn-sm" onclick="applyHistFilterFromModal()" style="flex:1.2;background:#2B66C3;color:#fff;border:none">Εφαρμογή</button>
+      <button class="btn btn-sm" onclick="clearHistFilterFromModal()" style="flex:1;background:#546E7A;color:#fff;border:none">Καθαρισμός</button>
+      <button class="btn btn-sm" onclick="closeHistFilter()" style="flex:1;background:#37474F;color:#fff;border:none">Άκυρο</button>
+    </div>
+  </div>
+</div>
+
 <div id="stats-modal-overlay" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.7);z-index:1000;overflow-y:auto;padding:16px">
   <div style="background:var(--card);border-radius:var(--radius);max-width:700px;margin:0 auto;padding:1.5rem;position:relative">
     <button onclick="closeStatsModal()" style="position:absolute;top:10px;right:10px;background:#C62828;color:white;border:none;border-radius:50%;width:32px;height:32px;font-size:1.1rem;cursor:pointer;font-weight:700">✕</button>
@@ -1671,7 +1705,7 @@ if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.
   <div class="score-bars" id="score-bars"></div>
 
   <div class="history-panel">
-    <div class="panel-title" style="display:flex;justify-content:space-between;align-items:center">Ιστορικό Γύρων <img id="btn-info-history" onclick="document.getElementById('help-modal-overlay').style.display='block'; document.getElementById('help-modal-overlay').style.pointerEvents='auto'" src="" title="Χρήσιμες Πληροφορίες" style="width:32px;height:32px;object-fit:contain;cursor:pointer;flex-shrink:0"></div>
+    <div class="panel-title" style="display:flex;justify-content:space-between;align-items:center"><span style="display:inline-flex;align-items:center;gap:12px">Ιστορικό Γύρων <span id="btn-hfilter" onclick="openHistFilter()" title="Φίλτρο γύρων" role="button" aria-label="Φίλτρο γύρων"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0Ij48cGF0aCBmaWxsPSJub25lIiBzdHJva2U9IiMyQjY2QzMiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIgc3Ryb2tlLXdpZHRoPSIyIiBkPSJNMjIgM0gybDggOS40NlYxOWw0IDJ2LTguNTR6Ii8+PC9zdmc+" alt="Φίλτρο"><span id="hf-badge"></span></span></span><img id="btn-info-history" onclick="document.getElementById('help-modal-overlay').style.display='block'; document.getElementById('help-modal-overlay').style.pointerEvents='auto'" src="" title="Χρήσιμες Πληροφορίες" style="width:32px;height:32px;object-fit:contain;cursor:pointer;flex-shrink:0"></div>
     <div style="overflow-x:auto">
       <table class="history-table" id="history-table" ondblclick="editHistoryRow(event)">
         <thead><tr id="history-head"></tr></thead>
@@ -2353,7 +2387,7 @@ function saveToStorage() {
       savedAt: Date.now(),
       clockElapsed: getGameClockElapsed(),
       history: Array.from(document.getElementById('history-body')?.querySelectorAll('tr') || [])
-        .map(tr => ({ mesa: tr.getAttribute('data-mesa'), desc: tr.getAttribute('data-desc') || '', dtitle: tr.getAttribute('data-dtitle') || '', cells: Array.from(tr.querySelectorAll('td')).map(td => ({
+        .map(tr => ({ mesa: tr.getAttribute('data-mesa'), desc: tr.getAttribute('data-desc') || '', dtitle: tr.getAttribute('data-dtitle') || '', ctype: tr.getAttribute('data-ctype'), tzog: tr.getAttribute('data-tzog'), defs: tr.getAttribute('data-defs'), cbazes: tr.getAttribute('data-cbazes'), suit: tr.getAttribute('data-suit'), mesak: tr.getAttribute('data-mesak'), defin: tr.getAttribute('data-defin'), cells: Array.from(tr.querySelectorAll('td')).map(td => ({
           html: td.innerHTML,
           k: td.getAttribute('data-k'),
           kap: td.getAttribute('data-kap'),
@@ -2426,6 +2460,7 @@ function loadFromStorage() {
     // Επαναφορά ιστορικού - νεότερος πρώτα (ίδια λογική με calculateRound)
     let tbody = document.getElementById('history-body');
     tbody.innerHTML = '';
+    resetHistFilter();
     (state.history || []).forEach(row => {
       let tr = document.createElement('tr');
       // Συμβατότητα: παλιά format (array) ή νέο (object με mesa)
@@ -2433,6 +2468,7 @@ function loadFromStorage() {
       if (row.mesa !== undefined) tr.setAttribute('data-mesa', row.mesa);
       if (row.desc) tr.setAttribute('data-desc', row.desc);
       if (row.dtitle) tr.setAttribute('data-dtitle', row.dtitle);
+      ['ctype', 'tzog', 'defs', 'cbazes', 'suit', 'mesak', 'defin'].forEach(k => { if (row[k] !== undefined && row[k] !== null) tr.setAttribute('data-' + k, row[k]); });
       cells.forEach((cell, idx) => {
         let td = document.createElement('td');
         if (typeof cell === 'string') {
@@ -3357,6 +3393,7 @@ function startGame() {
   // Καθαρισμός ιστορικού από προηγούμενο παιχνίδι
   let hb = document.getElementById('history-body');
   if (hb) hb.innerHTML = '';
+  resetHistFilter();
   roundNumber = 0;
   // 3 παίκτες: πρώτος ΠΑΙΖΕΙ ο παίκτης με το 7♦ (F) και εικονικά μοίρασε ο προηγούμενος κατά σειρά → dealerIdx = F-1.
   // 4 παίκτες: καμία αλλαγή (dealerIdx = 0, δεν χρησιμοποιείται).
@@ -4234,7 +4271,7 @@ function updateKatagFloatNow() {
   let gameOn = !!(gs && gs.classList.contains('active'));
   let enabled = !btn.classList.contains('btn-disabled');
   let modalOpen = !!document.getElementById('modal-overlay')?.classList.contains('open') ||
-    ['stats-modal-overlay', 'help-modal-overlay', 'names-modal-overlay', 'seven-modal-overlay'].some(id => {
+    ['stats-modal-overlay', 'help-modal-overlay', 'names-modal-overlay', 'seven-modal-overlay', 'hf-overlay'].some(id => {
       let o = document.getElementById(id); return o && getComputedStyle(o).display !== 'none';
     });
   // ανοχή 8px στο όριο ώστε να μην «τρεμοπαίζει» όταν το κουμπί είναι μισοφανές
@@ -4280,6 +4317,116 @@ function initKatagFloat() {
   updateKatagFloat();
 }
 document.addEventListener('DOMContentLoaded', initKatagFloat);
+
+// ===== Φίλτρο ιστορικού γύρων (μόνο για την οθόνη) =====
+// Κρύβει γραμμές του #history-body μέσω της κλάσης hf-hide (CSS: display:none)· ΔΕΝ τις διαγράφει, άρα η αποθήκευση
+// του παιχνιδιού, τα Στατιστικά και το PDF διαβάζουν πάντα ΟΛΟΥΣ τους γύρους. Τα κριτήρια διαβάζουν κρυφά data-*
+// που γράφονται στην καταχώρηση του γύρου (calculateRound).
+// Λογική: ΚΑΙ ανάμεσα στα κριτήρια· ΕΝΑ ΑΠΟ τα επιλεγμένα στο «Μπήκε μέσα».
+const HF_DEFAULT = () => ({ player: '', role: 'any', result: 'any', ctype: '', suit: '', bFrom: '', bTo: '', mesa: [], text: '' });
+let histFilter = HF_DEFAULT();
+function hfNorm(s) { return (s || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/ς/g, 'σ'); }
+function hfStrip(h) { return (h || '').replace(/<[^>]*>/g, ''); }
+function hfNum(td, a) { let v = parseInt(td ? td.getAttribute(a) : '0'); return isNaN(v) ? 0 : v; }
+function hfFacts(tr) {
+  // Τα κρυφά δεδομένα γράφονται στην καταχώρηση του γύρου (calculateRound). Αν λείπουν, το πεδίο θεωρείται κενό.
+  let g = a => tr.getAttribute(a) || '';
+  return { ctype: g('data-ctype'), tzog: g('data-tzog'), defs: g('data-defs'), cbazes: g('data-cbazes'), suit: g('data-suit'), mesak: g('data-mesak'), defin: g('data-defin') };
+}
+function hfRowMatches(tr, F) {
+  let f = hfFacts(tr);
+  if (F.ctype && f.ctype !== F.ctype) return false;
+  if (F.suit && String(f.suit) !== F.suit) return false;
+  if (F.bFrom || F.bTo) {
+    let b = parseInt(f.cbazes);
+    if (isNaN(b)) return false;                              // μιζέρια/φιρφίρια δεν έχουν μπάζες συμβολαίου
+    let lo = F.bFrom ? parseInt(F.bFrom) : 0, hi = F.bTo ? parseInt(F.bTo) : 99;
+    if (lo > hi) { let t = lo; lo = hi; hi = t; }
+    if (b < lo || b > hi) return false;
+  }
+  if (F.mesa.length) {
+    // «Μπήκε μέσα»: αν έχει επιλεγεί παίκτης, αφορά ΑΥΤΟΝ τον παίκτη (άμυνα → αυτός από τους αμυνόμενους που μπήκε μέσα·
+    // τζογαδόρος/μιζέρια/ανοιχτή μιζέρια → αυτός ήταν ο τζογαδόρος). Χωρίς παίκτη αφορά τον γύρο.
+    let ks = (f.mesak || '').split(' ').filter(Boolean);
+    let pname = F.player !== '' ? players[parseInt(F.player)] : null;
+    let din = (f.defin || '').split('|').filter(Boolean);
+    let okMesa = F.mesa.some(k => {
+      if (ks.indexOf(k) === -1) return false;
+      if (pname === null) return true;
+      return k === 'def' ? din.indexOf(pname) !== -1 : f.tzog === pname;
+    });
+    if (!okMesa) return false;
+  }
+  if (F.player !== '') {
+    let i = parseInt(F.player), name = players[i], c = tr.cells[i + 2];
+    let k = hfNum(c, 'data-k'), kap = hfNum(c, 'data-kap'), fir = hfNum(c, 'data-f');
+    let defs = (f.defs || '').split('|').filter(Boolean);
+    let isTz = !!f.tzog && f.tzog === name, isDef = defs.indexOf(name) !== -1;
+    let involved = isTz || isDef || k !== 0 || kap !== 0 || fir !== 0;
+    if (F.role === 'tzog' && !isTz) return false;
+    if (F.role === 'def' && !isDef) return false;
+    if (F.role === 'any' && !involved) return false;
+    if (F.result === 'win' && !(kap > 0)) return false;
+    if (F.result === 'lose' && !(kap < 0)) return false;
+  }
+  if (F.text) {
+    let hay = hfNorm(hfStrip(tr.getAttribute('data-desc') || '') + ' ' + (tr.cells[1] ? tr.cells[1].textContent : ''));
+    let words = hfNorm(F.text).split(/\s+/).filter(Boolean);
+    if (!words.every(w => hay.indexOf(w) !== -1)) return false;
+  }
+  return true;
+}
+function hfIsActive() {
+  let F = histFilter;
+  return F.player !== '' || F.ctype !== '' || F.suit !== '' || F.bFrom !== '' || F.bTo !== '' || F.mesa.length > 0 || F.text !== '';
+}
+function applyHistoryFilter() {
+  let rows = Array.prototype.slice.call(document.querySelectorAll('#history-body tr'));
+  let active = hfIsActive(), shown = 0;
+  rows.forEach(tr => {
+    let ok = true;
+    if (active) { try { ok = hfRowMatches(tr, histFilter); } catch (e) { ok = true; } }   // σε σφάλμα η γραμμή μένει ορατή
+    tr.classList.toggle('hf-hide', !ok);
+    if (ok) shown++;
+  });
+  let btn = document.getElementById('btn-hfilter'), badge = document.getElementById('hf-badge');
+  if (btn) {
+    btn.classList.toggle('on', active);
+    btn.title = active ? 'Φίλτρο ενεργό: ' + shown + ' από ' + rows.length + ' γύροι (πάτησε για αλλαγή)' : 'Φίλτρο γύρων';
+  }
+  if (badge) badge.textContent = shown;
+}
+function resetHistFilter() { histFilter = HF_DEFAULT(); applyHistoryFilter(); }
+function hfSyncPlayerUi() {
+  let has = document.getElementById('hf-player').value !== '';
+  ['hf-role', 'hf-result'].forEach(id => { let e = document.getElementById(id); e.disabled = !has; e.style.opacity = has ? '' : '0.45'; });
+}
+function openHistFilter() {
+  let $ = id => document.getElementById(id), F = histFilter;
+  let ps = $('hf-player'); ps.innerHTML = '<option value="">Όλοι</option>';
+  players.forEach((p, i) => {
+    if (isMonimos && i === currentTembelisIdx) return;      // ο μόνιμος τεμπέλης δεν παίζει
+    let o = document.createElement('option'); o.value = i; o.textContent = p; ps.appendChild(o);
+  });
+  ps.value = F.player; if (ps.value !== F.player) ps.value = '';
+  $('hf-role').value = F.role; $('hf-result').value = F.result;
+  $('hf-ctype').value = F.ctype; $('hf-suit').value = F.suit; $('hf-bfrom').value = F.bFrom; $('hf-bto').value = F.bTo;
+  ['tzog', 'def', 'miz', 'anoichti'].forEach(k => { $('hf-m-' + k).checked = F.mesa.indexOf(k) !== -1; });
+  $('hf-text').value = F.text;
+  hfSyncPlayerUi();
+  $('hf-overlay').style.display = 'flex';
+}
+function closeHistFilter() { let o = document.getElementById('hf-overlay'); if (o) o.style.display = 'none'; }
+function applyHistFilterFromModal() {
+  let $ = id => document.getElementById(id), has = $('hf-player').value !== '';
+  histFilter = {
+    player: $('hf-player').value, role: has ? $('hf-role').value : 'any', result: has ? $('hf-result').value : 'any',
+    ctype: $('hf-ctype').value, suit: $('hf-suit').value, bFrom: $('hf-bfrom').value, bTo: $('hf-bto').value,
+    mesa: ['tzog', 'def', 'miz', 'anoichti'].filter(k => $('hf-m-' + k).checked), text: $('hf-text').value.trim()
+  };
+  closeHistFilter(); applyHistoryFilter();
+}
+function clearHistFilterFromModal() { histFilter = HF_DEFAULT(); closeHistFilter(); applyHistoryFilter(); }
 
 function tryShowDefenders() {
   // Εμφάνιση defenders μόνο αν έχουν επιλεγεί και μπάζες και χρώμα
@@ -4531,6 +4678,7 @@ function undoRound() {
     if (s.gameStats) gameStats = JSON.parse(JSON.stringify(s.gameStats));
     let tbody = document.getElementById('history-body');
     if (tbody.firstChild) tbody.removeChild(tbody.firstChild);
+    applyHistoryFilter();
     updateScoreBoard();
     nextRoundSetup();
     saveToStorage();
@@ -4551,6 +4699,7 @@ function calculateRound() {
   let contractText = '';
   let roundDescParts = []; // Περιγραφές modal (χωρίς τίτλο) για αποθήκευση στο ιστορικό
   let mesaFlag = false; // true αν κάποιος μπήκε μέσα σε αυτόν τον γύρο
+  let hfMesa = [], hfDefIn = [], hfBazes = '', hfSuit = ''; // κρυφά δεδομένα για το φίλτρο ιστορικού (είδος «μέσα», μπάζες, χρώμα)
 
   if (ct === 'firfiria') {
     contractText = 'Φιρφίρια';
@@ -4609,7 +4758,7 @@ let mizType2 = ct === 'mizeria' ? 'Μιζέρια' : 'Ανοιχτή Μιζέρ�
       mizMesaMsg += `♦ Η κάσα ανεβαίνει κατά: +${baseKasa * bTzog}. Από το ${mizOldKasa} ανέβηκε στο ${kasa[tzog]}\n`;
       playBeeps(4);
       let mizMesaTitle = mizType2 === 'Μιζέρια' ? 'Μιζέρια Μέσα' : 'Ανοιχτή Μιζέρια Μέσα';
-      mesaFlag = true;
+      mesaFlag = true; hfMesa.push(ct === 'mizeria' ? 'miz' : 'anoichti');
       showModal(mizMesaTitle, mizMesaMsg);
       roundDescParts.push(mizMesaTitle + '::' + mizMesaMsg);
     }
@@ -4635,6 +4784,7 @@ let mizType2 = ct === 'mizeria' ? 'Μιζέρια' : 'Ανοιχτή Μιζέρ�
     let contractBazes = getContractBazes();
     let baseVal = getContractSuit();
     let suitName = suitNames[baseVal];
+    hfBazes = contractBazes; hfSuit = baseVal;
 
     let totalFir = Object.values(firfiria).reduce((a,b) => a+b, 0);
     let activeFir = getActiveFirfiria();
@@ -4792,6 +4942,7 @@ let mizType2 = ct === 'mizeria' ? 'Μιζέρια' : 'Ανοιχτή Μιζέρ�
 
       const penalizeDefender = (badDef, goodDef, bBad, bGood, bTzogLocal, under) => {
         if (under <= 0) return;
+        if (hfDefIn.indexOf(badDef) === -1) hfDefIn.push(badDef);   // φίλτρο ιστορικού: ποιος αμυνόμενος μπήκε μέσα
         let mult = getMultiplier(under);
         let term = getTerminology(under);
         let payToTzog = bTzogLocal * contractValue * mult;
@@ -4818,6 +4969,7 @@ let mizType2 = ct === 'mizeria' ? 'Μιζέρια' : 'Ανοιχτή Μιζέρ�
       // μερίδιο πληρώνεται με τον δικό του πολλαπλασιαστή. Πληρώνει μόνο αυτός που πήρε.
       const penalizeTaker = (taker, helper, underTotal) => {
         if (underTotal <= 0) return;
+        if (hfDefIn.indexOf(taker) === -1) hfDefIn.push(taker);   // φίλτρο ιστορικού: ποιος αμυνόμενος μπήκε μέσα
         let n1 = Math.ceil(underTotal / 2);
         let n2 = Math.floor(underTotal / 2);
         let mult1 = getMultiplier(n1);
@@ -4923,7 +5075,7 @@ let mizType2 = ct === 'mizeria' ? 'Μιζέρια' : 'Ανοιχτή Μιζέρ�
       if (pire1 && gameStats.playerStats[def1]) gameStats.playerStats[def1].def_pire = (gameStats.playerStats[def1].def_pire||0) + 1;
       if (pire2 && gameStats.playerStats[def2]) gameStats.playerStats[def2].def_pire = (gameStats.playerStats[def2].def_pire||0) + 1;
       playBeeps(2);
-      mesaFlag = true;
+      mesaFlag = true; hfMesa.push('def');
       showModal('Αμάν! Η άμυνα μπήκε μέσα', msg);
       roundDescParts.push('Αμάν! Η άμυνα μπήκε μέσα::' + msg);
 
@@ -5001,7 +5153,7 @@ let mizType2 = ct === 'mizeria' ? 'Μιζέρια' : 'Ανοιχτή Μιζέρ�
       if (pire1 && gameStats.playerStats[def1]) gameStats.playerStats[def1].def_pire = (gameStats.playerStats[def1].def_pire||0) + 1;
       if (pire2 && gameStats.playerStats[def2]) gameStats.playerStats[def2].def_pire = (gameStats.playerStats[def2].def_pire||0) + 1;
       playBeeps(4);
-      mesaFlag = true;
+      mesaFlag = true; hfMesa.push('tzog');
       showModal('Τζογαδόρος Μέσα', msg);
       roundDescParts.push('Τζογαδόρος Μέσα::' + msg);
     }
@@ -5031,6 +5183,14 @@ let mizType2 = ct === 'mizeria' ? 'Μιζέρια' : 'Ανοιχτή Μιζέρ�
   tr.setAttribute('data-dtitle', firstDescTitle);
   let roundDesc = cleanDescParts.join('\n');
   tr.setAttribute('data-desc', roundDesc);
+  // Κρυφά δεδομένα για το φίλτρο ιστορικού (δεν εμφανίζονται· αποθηκεύονται μαζί με το παιχνίδι)
+  tr.setAttribute('data-ctype', ct);
+  tr.setAttribute('data-tzog', ct === 'firfiria' ? '' : (tzog || ''));
+  tr.setAttribute('data-defs', ct === 'normal' ? [def1, def2].filter(Boolean).join('|') : '');
+  tr.setAttribute('data-cbazes', hfBazes);
+  tr.setAttribute('data-suit', hfSuit);
+  tr.setAttribute('data-mesak', hfMesa.join(' '));
+  tr.setAttribute('data-defin', hfDefIn.join('|'));
   let contractStyle = anyMesaRound ? 'color:#FF4444' : '';
   tr.innerHTML = `<td style="cursor:pointer" onclick="showRoundDescription(this)">${roundNumber}</td><td style="font-size:0.9rem;${contractStyle}">${contractText}</td>` +
     players.map(p => {
@@ -5039,6 +5199,7 @@ let mizType2 = ct === 'mizeria' ? 'Μιζέρια' : 'Ανοιχτή Μιζέρ�
       return `<td data-k="${c.kasa}" data-kap="${c.kapikia}" data-f="${c.firfiria}" style="white-space:nowrap;min-width:90px;max-width:130px">${formatHistoryCell(c.kasa, c.kapikia, c.firfiria)}</td>`;
     }).join('');
   tbody.insertBefore(tr, tbody.firstChild);
+  applyHistoryFilter();   // ο νέος γύρος υπακούει στο ενεργό φίλτρο
 
   if (!isMonimos) currentTembelisIdx = (currentTembelisIdx + 1) % 4;
   else dealerIdx = (dealerIdx + 1); // κυκλικά μεταξύ 3 παικτών
@@ -5219,6 +5380,7 @@ function editHistoryRow(event) {
       contractCell.textContent = '* ' + contractCell.textContent;
     }
     updateScoreBoard();
+    applyHistoryFilter();
   };
 }
 
@@ -6072,6 +6234,7 @@ function newGame() {
         roundNumber = 0; historyStates = [];
         gameStats = { rounds: [], playerStats: {} };
         document.getElementById('history-body').innerHTML = '';
+        resetHistFilter();
         showScreen('setup-screen');
         checkForSavedGame();
       });
