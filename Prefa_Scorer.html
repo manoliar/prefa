@@ -522,6 +522,10 @@ if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.
   @media print { #katag-float { display: none !important; } }
   /* Φίλτρο ιστορικού γύρων (μόνο για την οθόνη): οι γραμμές ΚΡΥΒΟΝΤΑΙ, δεν διαγράφονται — η αποθήκευση, τα Στατιστικά και το PDF τις διαβάζουν όλες */
   #history-body tr.hf-hide { display: none; }
+  /* Αριθμός γύρου = πατήσιμος (hot spot): μωβ κυκλάκι. ΠΡΟΣΟΧΗ: το πλάτος/ύψος της στήλης και της γραμμής ΔΕΝ πρέπει να αλλάζουν
+     (οι αρνητικά margin ακυρώνουν ακριβώς το padding· ίδιο font/βάρος → ίδιο πλάτος κειμένου)· μόνο οθόνη, το PDF παίρνει τον αριθμό από το textContent */
+  /* Πραγματικός κύκλος διαμέτρου --d. Τα ψηφία έχουν ίσο πλάτος (1ch)· το περιθώριο αριστερά/δεξιά ακυρώνει ακριβώς τη διαφορά ώστε το πλάτος της στήλης να μένει ίσο με το πλάτος του κειμένου (--n = πλήθος ψηφίων). */
+  #history-body .rn { --d: 20px; display: inline-block; box-sizing: border-box; min-width: var(--d); height: var(--d); line-height: var(--d); text-align: center; border-radius: 999px; background: var(--purple); color: #fff; cursor: pointer; vertical-align: baseline; margin: var(--my, -2px) calc((var(--n, 1) * 1ch - max(var(--d), var(--n, 1) * 1ch)) / 2); -webkit-tap-highlight-color: transparent; }
   #btn-hfilter { position: relative; display: inline-flex; width: 32px; height: 32px; cursor: pointer; opacity: .4; transition: opacity .2s; flex-shrink: 0; -webkit-tap-highlight-color: transparent; }
   #btn-hfilter.on { opacity: 1; }
   #btn-hfilter img { width: 100%; height: 100%; display: block; user-select: none; -webkit-user-drag: none; }
@@ -2506,7 +2510,8 @@ function loadFromStorage() {
     let tbody = document.getElementById('history-body');
     tbody.innerHTML = '';
     resetHistFilter();
-    (state.history || []).forEach(row => {
+    // Το ιστορικό αποθηκεύεται νεότερος-πρώτα (σειρά DOM) και κάθε γραμμή μπαίνει με insertBefore → διατρέχουμε από το τέλος ώστε να μείνει νεότερος-πρώτα
+    (state.history || []).slice().reverse().forEach(row => {
       let tr = document.createElement('tr');
       // Συμβατότητα: παλιά format (array) ή νέο (object με mesa)
       let cells = Array.isArray(row) ? row : (row.cells || row);
@@ -2525,6 +2530,7 @@ function loadFromStorage() {
           if (cell.f !== null && cell.f !== undefined) td.setAttribute('data-f', cell.f);
         }
         if (idx === 0) {
+          td.innerHTML = roundBadge(td.textContent.trim());   // ομοιόμορφα και για παλιά αποθηκευμένα παιχνίδια (χωρίς κυκλάκι)
           td.style.cursor = 'pointer';
           td.onclick = () => showRoundDescription(td);
         }
@@ -4442,6 +4448,8 @@ function applyHistoryFilter() {
   if (badge) badge.textContent = shown;
   mxRefresh();
 }
+// Αριθμός γύρου στο Ιστορικό ως μωβ κυκλάκι (hot spot που ανοίγει τις λεπτομέρειες του γύρου)
+function roundBadge(n) { n = String(n); return '<span class="rn" style="--n:' + n.length + '" title="Πάτησε για τις λεπτομέρειες του γύρου">' + n + '</span>'; }
 function resetHistFilter() { histFilter = HF_DEFAULT(); applyHistoryFilter(); }
 function hfSyncPlayerUi() {
   let has = document.getElementById('hf-player').value !== '';
@@ -5318,7 +5326,7 @@ let mizType2 = ct === 'mizeria' ? 'Μιζέρια' : 'Ανοιχτή Μιζέρ�
   tr.setAttribute('data-mesak', hfMesa.join(' '));
   tr.setAttribute('data-defin', hfDefIn.join('|'));
   let contractStyle = anyMesaRound ? 'color:#FF4444' : '';
-  tr.innerHTML = `<td style="cursor:pointer" onclick="showRoundDescription(this)">${roundNumber}</td><td style="font-size:0.9rem;${contractStyle}">${contractText}</td>` +
+  tr.innerHTML = `<td style="cursor:pointer" onclick="showRoundDescription(this)">${roundBadge(roundNumber)}</td><td style="font-size:0.9rem;${contractStyle}">${contractText}</td>` +
     players.map(p => {
       let c = changes[p];
       let parts = [];
