@@ -1612,7 +1612,39 @@ if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.
 			<p style="margin-top:0pt; margin-left:18pt; margin-bottom:0pt; text-indent:-18pt">
 				<p><span style="color:#C62828">♦</span> Αφαιρείται η χαμηλότερη κάσα από όλους τους παίκτες. </p>			</p>
 			<p style="margin-top:0pt; margin-left:18pt; margin-bottom:0pt; text-indent:-18pt">
-				<p><span style="color:#C62828">♦</span> Κατόπιν, κάθε παίκτης πληρώνει στρογγυλοποιημένο (κάσα/Ν) καπίκια σε κάθε άλλο παίκτη όπου Ν το πλήθος των παικτών (3 έως 4 παίκτες).</p>			</p>
+				<p><span style="color:#C62828">♦</span> Κατόπιν, κάθε παίκτης πληρώνει σε κάθε άλλο παίκτη (Κάσα/Ν) μονάδες κάσας, δηλαδή (Κάσα/Ν)×10 καπίκια, στρογγυλοποιημένα στο καπίκι. Εδώ Κάσα είναι η κάσα του παίκτη μετά την αφαίρεση της χαμηλότερης και Ν το πλήθος των παικτών που παίζουν (3 έως 4 παίκτες).</p>			</p>
+			<p style="margin-top:6pt; margin-left:18pt; margin-bottom:0pt; text-indent:-18pt">
+				<p><span style="color:#C62828">♦</span> <strong>Οι τρεις στήλες δίπλα στις μπάρες των σκορ:</strong><br>
+				<strong>1η στήλη (σκορ):</strong> −(κάσα × 10) + καπίκια. Κάθε μονάδα κάσας μετράει 10 καπίκια, γι' αυτό το σκορ είναι συνήθως αρνητικό. Η μπάρα δείχνει το σκορ από το 0 (κέντρο), αναλογικά με το μεγαλύτερο σκορ.<br>
+				<strong>2η στήλη (σε παρένθεση):</strong> διαφορά = σκορ του παίκτη − σκορ του καλύτερου παίκτη. Το 0 είναι ο καλύτερος και οι υπόλοιποι βγαίνουν αρνητικοί. Με μόνιμο τεμπέλη, ο τεμπέλης δεν μετράει και δείχνει «–».<br>
+				<strong>3η στήλη (πράσινο/κόκκινο):</strong> η εικονική λήξη, δηλαδή τα καπίκια που θα είχε ο παίκτης αν το παιχνίδι τελείωνε τώρα. Είναι ακριβώς η εκκαθάριση που περιγράφεται παραπάνω, υπολογισμένη με τις τρέχουσες κάσες και προστιθέμενη στα τρέχοντα καπίκια. Το άθροισμα όλων των παικτών είναι πάντα 0.</p>			</p>
+			<p style="margin-top:6pt; margin-left:18pt; margin-bottom:0pt; text-indent:-18pt">
+				<p><span style="color:#C62828">♦</span> <strong>Παράδειγμα με τρεις παίκτες ΠΑ, ΠΒ, ΠΓ</strong> (Ν = 3):<br>
+				<strong>Δεδομένα:</strong><br>
+				&nbsp;&nbsp;&nbsp;&nbsp;• ΠΑ: κάσα 100, καπίκια +40<br>
+				&nbsp;&nbsp;&nbsp;&nbsp;• ΠΒ: κάσα 70, καπίκια −20<br>
+				&nbsp;&nbsp;&nbsp;&nbsp;• ΠΓ: κάσα 85, καπίκια −20<br>
+				<strong>1η στήλη (σκορ):</strong><br>
+				&nbsp;&nbsp;&nbsp;&nbsp;• ΠΑ: −100×10 + 40 = −960<br>
+				&nbsp;&nbsp;&nbsp;&nbsp;• ΠΒ: −70×10 − 20 = −720<br>
+				&nbsp;&nbsp;&nbsp;&nbsp;• ΠΓ: −85×10 − 20 = −870<br>
+				<strong>2η στήλη (διαφορά):</strong> καλύτερος είναι ο ΠΒ (−720).<br>
+				&nbsp;&nbsp;&nbsp;&nbsp;• ΠΒ: 0<br>
+				&nbsp;&nbsp;&nbsp;&nbsp;• ΠΑ: −960 − (−720) = −240<br>
+				&nbsp;&nbsp;&nbsp;&nbsp;• ΠΓ: −870 − (−720) = −150<br>
+				<strong>3η στήλη (εικονική λήξη):</strong> η χαμηλότερη κάσα είναι του ΠΒ, 70. Αφαιρείται από όλους:<br>
+				&nbsp;&nbsp;&nbsp;&nbsp;• ΠΑ: 100 − 70 = 30<br>
+				&nbsp;&nbsp;&nbsp;&nbsp;• ΠΒ: 70 − 70 = 0<br>
+				&nbsp;&nbsp;&nbsp;&nbsp;• ΠΓ: 85 − 70 = 15<br>
+				Πληρωμές:<br>
+				&nbsp;&nbsp;&nbsp;&nbsp;• Ο ΠΑ πληρώνει σε καθέναν από τους ΠΒ και ΠΓ (30/3) μονάδες κάσας = 10 μονάδες = 100 καπίκια, δηλαδή συνολικά 200 καπίκια.<br>
+				&nbsp;&nbsp;&nbsp;&nbsp;• Ο ΠΓ πληρώνει σε καθέναν από τους ΠΑ και ΠΒ (15/3) μονάδες κάσας = 5 μονάδες = 50 καπίκια, δηλαδή συνολικά 100 καπίκια.<br>
+				&nbsp;&nbsp;&nbsp;&nbsp;• Ο ΠΒ δεν πληρώνει τίποτα (κάσα 0).<br>
+				<strong>Τελικά καπίκια:</strong><br>
+				&nbsp;&nbsp;&nbsp;&nbsp;• ΠΑ: +40 − 200 + 50 = <strong>−110</strong><br>
+				&nbsp;&nbsp;&nbsp;&nbsp;• ΠΒ: −20 + 100 + 50 = <strong>+130</strong><br>
+				&nbsp;&nbsp;&nbsp;&nbsp;• ΠΓ: −20 + 100 − 100 = <strong>−20</strong><br>
+				Το άθροισμα είναι 0.</p>			</p>
 			<p style="margin-top:0pt; margin-bottom:0pt">
 				&#xa0;
 			</p>
@@ -1751,7 +1783,7 @@ if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.
   </div>
 
   <div class="scores-grid" id="scores-grid"></div>
-  <div class="score-bars" id="score-bars"></div>
+  <div class="score-bars" id="score-bars" style="cursor:help" title="Εξήγηση των τριών στηλών: πάτησε το εικονίδιο πληροφοριών (i) και δες την ενότητα «Εκκαθάριση στις κάσες»."></div>
 
   <div class="history-panel">
     <div class="panel-title" style="display:flex;justify-content:space-between;align-items:center"><span style="display:inline-flex;align-items:center;gap:12px">Ιστορικό Γύρων <span id="btn-hfilter" onclick="openHistFilter()" title="Φίλτρο: εμφάνισε στο Ιστορικό μόνο τους γύρους που ταιριάζουν με τα κριτήρια που θα επιλέξεις (π.χ. παίκτης, συμβόλαιο, χρώμα, μπάζες, «μπήκε μέσα»)" role="button" aria-label="Φίλτρο γύρων"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0Ij48cGF0aCBmaWxsPSJub25lIiBzdHJva2U9IiMyQjY2QzMiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIgc3Ryb2tlLXdpZHRoPSIyIiBkPSJNMjIgM0gybDggOS40NlYxOWw0IDJ2LTguNTR6Ii8+PC9zdmc+" alt="Φίλτρο"><span id="hf-badge"></span></span><span id="btn-matrix" onclick="openMatrix()" title="Πίνακας συμβολαίων: πόσες αγορές έκανε ο κάθε παίκτης ανά μπάζες και χρώμα, μαζί με Μιζέρια και Φιρφίρια" role="button" aria-label="Πίνακας συμβολαίων"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0Ij48cGF0aCBmaWxsPSJub25lIiBzdHJva2U9IiMyQjY2QzMiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIgc3Ryb2tlLXdpZHRoPSIyIiBkPSJNOCAxNmguMDEzbTMuOTk3IDBoLjAwNW00IDBoLjAwNW0tLjAwNS00aC4wMDVtLTguMDEgMGguMDA1bTMuOTk1IDBoLjAwNW00LjAwNS00aC4wMDVtLTguMDEgMGguMDA1bTMuOTk1IDBoLjAwNU03IDRINmEyIDIgMCAwIDAtMiAydjEyYTIgMiAwIDAgMCAyIDJoMU0xNyA0aDFhMiAyIDAgMCAxIDIgMnYxMmEyIDIgMCAwIDEtMiAyaC0xIi8+PC9zdmc+" alt="Πίνακας"></span></span><img id="btn-info-history" onclick="document.getElementById('help-modal-overlay').style.display='block'; document.getElementById('help-modal-overlay').style.pointerEvents='auto'" src="" title="Χρήσιμες Πληροφορίες" style="width:24px;height:24px;padding:4px;box-sizing:content-box;object-fit:contain;cursor:pointer;flex-shrink:0"></div>
