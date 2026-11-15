@@ -379,10 +379,12 @@ if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.
   #sg-tip { position: fixed; z-index: 10001; display: none; max-width: min(92vw, 440px); box-sizing: border-box; padding: 10px 14px; border-radius: 10px; background: #fffbe6; color: #2C1810; border: 1px solid #C9A227; box-shadow: 0 4px 16px rgba(0,0,0,.45); font-size: 1.1rem; font-weight: 600; line-height: 1.35; pointer-events: none; }
   .sg-c.sep.lsep i { border-top-color: rgba(255,255,255,.3); }
   .sg-lbl .sg-ico { flex: none; width: .8rem; height: .8rem; margin-bottom: -.22rem; position: relative; top: .12rem; }   /* κάθονται στη γραμμή βάσης των νούμερων, χωρίς να μεγαλώνουν τη γραμμή */
-  .sc-val { font-size: 0.82rem; font-weight: 700; line-height: 1.1; text-align: right; min-width: 0; overflow-wrap: anywhere; }
+  /* Αριθμοί των ταμπελακιών: Fira Sans Extra Condensed Bold (SIL OFL 1.1, Mozilla/Carrois), υποσύνολο ψηφίων και + − × = με tnum (σταθερό πλάτος ψηφίων), ενσωματωμένο ώστε να δουλεύει παντού */
+  @font-face { font-family: 'PrefaNum'; font-weight: 700; font-style: normal; src: url(data:font/woff2;base64,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) format('woff2'); }
+  .sc-val { font-family: 'PrefaNum', system-ui, -apple-system, sans-serif; font-size: 0.84rem; font-weight: 700; line-height: 1.1; text-align: right; min-width: 0; overflow-wrap: anywhere;  font-variant-numeric: tabular-nums; font-feature-settings: 'tnum' 1;}
   .sc-ex { font-variant-numeric: tabular-nums; }
   .sc-tail { white-space: nowrap; }
-  .sc-eq { display: inline-block; text-align: center; width: .75em; }
+  .sc-eq { display: inline-block; text-align: center; width: .6em; }
   .sc-res { display: inline-block; text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; }   /* πλάτος αποτελέσματος ίδιο σε όλες τις γραμμές → τα «=» ευθυγραμμίζονται */
   .sc-em { display: inline-block; height: 1em; width: 1em; vertical-align: -.14em; margin: 0 1px; opacity: .85; }   /* smile (smile.svg) = η θέση του ίδιου του παίκτη */
   /* Παίκτης που μοιράζει (μόνο σε παιχνίδι 3 παικτών με μόνιμο τεμπέλη): χρυσή ετικέτα «ΜΟΙΡΑΖΕΙ» + αργός παλμός του πλαισίου */
@@ -396,7 +398,7 @@ if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.
     border: 2px solid var(--border);
     border-radius: var(--radius);
     padding: 5px 14px;
-    margin-bottom: 0.4rem;
+    margin-bottom: 4px;
     display: flex;
     align-items: center;
     gap: 12px;
@@ -1700,12 +1702,6 @@ if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.
     </span>
   </div>
 
-  <div class="firfiria-bar" id="firfiria-bar" style="display:none">
-    <span class="firfiria-label">Φιρφίρια:</span>
-    <div class="firfiria-chips" id="firfiria-chips"></div>
-    <span class="active-fir" id="active-fir-badge"></span>
-  </div>
-
   <div class="round-panel" id="round-panel">
 
     <!-- Βήμα 1: Τζογαδόρος ή Φιρφίρια -->
@@ -1764,6 +1760,13 @@ if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.
       <button class="btn btn-stats-blue" id="btn-stats-ingame" onclick="toggleStatsIngame(this)"><img src="data:image/webp;base64,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" style="height:1.8em;width:auto;vertical-align:middle;position:relative;top:-1px;margin-right:6px">Στατιστικά</button>
       <button class="btn btn-danger" id="btn-end" onclick="endGameClick()" style="color:#000000"><img src="data:image/webp;base64,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" style="height:1.8em;width:auto;vertical-align:middle;position:relative;top:-1px;margin-right:12px">Λήξη</button>
     </div>
+  </div>
+
+  <!-- Φιρφίρια: ακριβώς πάνω από τα πλαίσια των παικτών (το αριστερό περιθώριο ρυθμίζεται από την alignFirBar) -->
+  <div class="firfiria-bar" id="firfiria-bar" style="display:none">
+    <span class="firfiria-label">Φιρφίρια:</span>
+    <div class="firfiria-chips" id="firfiria-chips"></div>
+    <span class="active-fir" id="active-fir-badge"></span>
   </div>
 
   <div class="scores-grid" id="scores-grid"></div>
@@ -3781,7 +3784,7 @@ function updateScoreBoard() {
     return { ex: ng(kapikia[pp]) + '<wbr>' + sg(give) + '<wbr>' + sg(take), res: ng(total), total };
   };
   const stlEq = (o, w) => `<span class="sc-ex">${o.ex}</span><span class="sc-tail"><span class="sc-eq">=</span><span class="sc-res" style="min-width:${w}ch">${o.res}</span></span>`;
-  const stlLen = s => [...s].reduce((a, ch) => a + (ch === '−' ? 1.25 : 1), 0);
+  const stlLen = s => [...s].reduce((a, ch) => a + (ch === '−' ? 0.95 : 1), 0);
   const colors = ['#191970','#E65100','#1B5E20','#00838F'];
   // Μετάλλια στο «Τελικό αποτέλεσμα» (ίδια χρώματα/κανόνας με τα στατιστικά: ισοβαθμία = ίδιο μετάλλιο, 4η θέση χωρίς χρώμα, στην αρχή όλοι χρυσό)
   const medalOrder = [...stlActive].sort((a, b) => stlNet(b).total - stlNet(a).total);
@@ -3822,6 +3825,7 @@ function updateScoreBoard() {
     gCells += v(9, stlOn ? stlEq(stlN, stlW) : '–', netColor, medalBox);
   });
   grid.innerHTML = gBg + gCells;
+  alignFirBar();
 
   // Ραβδόγραμμα σκορ
   let barsDiv = document.getElementById('score-bars');
@@ -5768,6 +5772,16 @@ function endGame() {
   }
 }
 
+
+// Το πλαίσιο «Φιρφίρια» ευθυγραμμίζεται με τις στήλες των παικτών (αφήνει κενό όσο η στήλη των περιγραφών)
+function alignFirBar() {
+  const g = document.getElementById('scores-grid'), b = document.getElementById('firfiria-bar');
+  if (!g || !b) return;
+  const cs = getComputedStyle(g);
+  const w = parseFloat(cs.gridTemplateColumns.split(' ')[0]) || 0;
+  b.style.marginLeft = (w + (parseFloat(cs.columnGap) || 0)) + 'px';
+}
+window.addEventListener('resize', alignFirBar);
 
 // Tooltip των περιγραφών στα ταμπελάκια (δικό μας, για να έχει μεγάλα γράμματα· το native title δεν αλλάζει μέγεθος)
 (function () {
