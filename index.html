@@ -341,14 +341,14 @@ if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.
   /* Ταμπελάκια: ΜΙΑ στήλη περιγραφών αριστερά + μία στήλη ανά παίκτη (μόνο νούμερα). Κάθε κελί μπαίνει ρητά (grid-area), οι στήλες-«κάρτες» είναι υπόστρωμα .sg-bg που καλύπτει και τις 10 γραμμές. */
   .scores-grid {
     display: grid;
-    grid-template-columns: fit-content(124px) repeat(4, minmax(0, 1fr));
-    grid-template-rows: repeat(10, auto);
+    grid-template-columns: fit-content(128px) repeat(4, minmax(0, 1fr));
+    grid-template-rows: repeat(9, auto);
     column-gap: 5px;
     align-items: baseline;   /* οι περιγραφές ευθυγραμμίζονται στη γραμμή βάσης των νούμερων */
     margin-bottom: 1rem;
   }
   .sg-bg {
-    grid-row: 1 / span 10;
+    grid-row: 1 / span 9;
     align-self: stretch;
     background: #ffffff;
     border: 2px solid #e0e0e0;
@@ -360,12 +360,23 @@ if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.
   .sg-c { position: relative; z-index: 1; min-width: 0; display: flex; align-items: baseline; padding: 0 5px; }
   .sg-c.t { padding-top: 8px; }
   .sg-c.b { padding-bottom: 8px; }
-  .sg-c.name { display: block; align-self: center; text-align: center; font-size: 0.8rem; font-weight: 800; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding-bottom: 3px; }
+  /* «Αυτοκόλλητο» παίκτη: όνομα + ΤΕΜΠΕΛΗΣ/ΜΟΙΡΑΖΕΙ, κολλημένο στο μέσον της κάρτας πάνω στη γραμμή των Καπικίων (ένα κελί που καλύπτει 2 γραμμές) */
+  .sg-c.stk { grid-row: auto; align-self: stretch; align-items: center; justify-content: center; padding: 0 4px; }
+  .sg-c.stk::before, .sg-c.lhead::before { content: ''; position: absolute; left: 5px; right: 5px; top: 50%; border-top: 1px solid rgba(0,0,0,.22); }
+  .sg-c.lhead { align-self: stretch; }
+  .sg-c.lhead::before { border-top-color: rgba(255,255,255,.3); }
+  .sg-c.lhead span { position: absolute; top: calc(50% + 2px); left: 1px; }
+  .sg-stk { position: relative; z-index: 2; box-sizing: border-box; max-width: 100%; min-width: 0; display: flex; flex-direction: column; align-items: center; padding: 1px 9px; border: 1.5px solid #fff; border-radius: 10px; color: #fff; line-height: 1.1; box-shadow: 0 1px 4px rgba(0,0,0,.4); }
+  .sg-nm { font-size: 0.8rem; font-weight: 800; max-width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .sg-tag { font-size: 0.55rem; font-weight: 800; letter-spacing: .03em; max-width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 9px; margin-bottom: 1px; }   /* κενό μιας γραμμής από το όνομα */
+  .sg-stk.pulse { animation: stk-pulse 2.6s ease-in-out infinite; }   /* διακριτικό «ζουμ-ανζουμ» στο αυτοκόλλητο του τεμπέλη */
+  @keyframes stk-pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.035); } }  .sg-tag.dealer { color: #FFE27A; }
   .sg-c.val { justify-content: flex-end; }
   .sg-c.sep { align-self: center; padding-top: 3px; padding-bottom: 3px; display: block; }
   .sg-c.sep i { display: block; height: 0; border-top: 1px solid rgba(0,0,0,.22); }
   .sg-lbl { font-size: 0.6rem; font-weight: 400; color: #fff; line-height: 1.15; gap: 4px; padding-left: 1px; }   /* υπενθύμιση, όχι πληροφορία: μικρά, λευκά, χωρίς bold, πάνω στο σκούρο φόντο */
   .sg-lbl.tip { cursor: help; }
+  #sg-tip { position: fixed; z-index: 10001; display: none; max-width: min(92vw, 440px); box-sizing: border-box; padding: 10px 14px; border-radius: 10px; background: #fffbe6; color: #2C1810; border: 1px solid #C9A227; box-shadow: 0 4px 16px rgba(0,0,0,.45); font-size: 1.1rem; font-weight: 600; line-height: 1.35; pointer-events: none; }
   .sg-c.sep.lsep i { border-top-color: rgba(255,255,255,.3); }
   .sg-lbl .sg-ico { flex: none; width: .8rem; height: .8rem; margin-bottom: -.22rem; position: relative; top: .12rem; }   /* κάθονται στη γραμμή βάσης των νούμερων, χωρίς να μεγαλώνουν τη γραμμή */
   .sc-val { font-size: 0.82rem; font-weight: 700; line-height: 1.1; text-align: right; min-width: 0; overflow-wrap: anywhere; }
@@ -374,35 +385,7 @@ if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.
   .sc-eq { display: inline-block; text-align: center; width: .75em; }
   .sc-res { display: inline-block; text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; }   /* πλάτος αποτελέσματος ίδιο σε όλες τις γραμμές → τα «=» ευθυγραμμίζονται */
   .sc-em { display: inline-block; height: 1em; width: 1em; vertical-align: -.14em; margin: 0 1px; opacity: .85; }   /* smile (smile.svg) = η θέση του ίδιου του παίκτη */
-  .tembelis-badge {
-    position: absolute;
-    top: -8px; left: 50%;
-    transform: translateX(-50%);
-    background: var(--purple);
-    color: white;
-    font-size: 0.6rem;
-    font-weight: 800;
-    padding: 2px 8px;
-    border-radius: 10px;
-    white-space: nowrap;
-  }
   /* Παίκτης που μοιράζει (μόνο σε παιχνίδι 3 παικτών με μόνιμο τεμπέλη): χρυσή ετικέτα «ΜΟΙΡΑΖΕΙ» + αργός παλμός του πλαισίου */
-  .dealer-badge {
-    position: absolute;
-    top: -8px; left: 50%;
-    transform: translateX(-50%);
-    background: linear-gradient(135deg, #FFF3C4, #C9A227);
-    color: #0d3d12;
-    border: 1px solid #C9A227;
-    font-size: 0.6rem;
-    font-weight: 800;
-    padding: 1px 8px;
-    border-radius: 10px;
-    white-space: nowrap;
-    cursor: default;
-    user-select: none;
-    pointer-events: auto;
-  }
   .sg-bg.dealer-card { animation: dealer-glow 2s ease-in-out infinite; }
   @keyframes dealer-glow {
     0%, 100% { border-color: #e0e0e0; box-shadow: 0 0 0 0 rgba(201,162,39,0), 0 0 0 0 rgba(201,162,39,0); }
@@ -1211,7 +1194,7 @@ if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.
           <linearGradient id="cg0" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#3949AB"/><stop offset="100%" stop-color="#191970"/></linearGradient>
           <linearGradient id="cg1" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#FB8C00"/><stop offset="100%" stop-color="#E65100"/></linearGradient>
           <linearGradient id="cg2" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#43A047"/><stop offset="100%" stop-color="#1B5E20"/></linearGradient>
-          <linearGradient id="cg3" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#E6C34A"/><stop offset="100%" stop-color="#C9A227"/></linearGradient>
+          <linearGradient id="cg3" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#26A6B5"/><stop offset="100%" stop-color="#00838F"/></linearGradient>
           <linearGradient id="cgT" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#F3D9FB"/><stop offset="45%" stop-color="#A845D8"/><stop offset="100%" stop-color="#3D0A66"/></linearGradient>
           <filter id="cshadow" x="-20%" y="-20%" width="140%" height="140%">
             <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#000" flood-opacity="0.45"/>
@@ -1368,7 +1351,7 @@ if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.
 				<p><span style="color:#C62828">♦</span> Δεξιά από τον τίτλο «Ιστορικό Γύρων» υπάρχει το φίλτρο (μπλε χωνί). Πατώντας το επιλέγεις κριτήρια (παίκτη και ρόλο, αποτέλεσμα, συμβόλαιο, χρώμα, μπάζες από–έως, είδος «μπήκε μέσα», κείμενο) και στο ιστορικό εμφανίζονται μόνο οι γύροι που τα ικανοποιούν όλα. Αν επιλέξεις παίκτη και «μπήκε μέσα», το κριτήριο αφορά τον ίδιο τον παίκτη (π.χ. «Άμυνα» = ο παίκτης ήταν αμυνόμενος και μπήκε μέσα). Το φίλτρο ισχύει μόνο για την οθόνη: τα στατιστικά και το PDF περιλαμβάνουν πάντα όλους τους γύρους. Όταν είναι ενεργό, το εικονίδιο φαίνεται έντονο με τον αριθμό των γύρων που εμφανίζονται.</p>
 				<p><span style="color:#C62828">♦</span> Δεξιά από το φίλτρο υπάρχει το κουμπί με τον πίνακα (πλέγμα): δείχνει για κάθε παίκτη τις αγορές που δήλωσε, ανάλογα με τις μπάζες (6 έως 10). Ο αριθμός αριστερά από τις στήλες των μπαζών είναι το σύνολο των αγορών του παίκτη (μετράνε και όσες μπήκε μέσα). Κάτω από κάθε αριθμό μπάζες υπάρχουν πέντε νοητές στήλες, με τη σειρά μπαστούνια, σπαθιά, καρά, κούπες, άχροα (κίτρινος κύκλος). Κάθε συμβόλαιο εμφανίζεται ως εικονίδιο του χρώματός του· αν ξαναδηλωθεί το ίδιο, μπαίνει δεύτερο εικονίδιο από κάτω. Όταν ο τζογαδόρος μπήκε μέσα, το εικονίδιο έχει μια κόκκινη λοξή γραμμή. Για τη Μιζέρια και την Ανοιχτή Μιζέρια εμφανίζεται ένα πράσινο χαρούμενο πρόσωπο για κάθε φορά που την έβγαλε και ένα κόκκινο λυπημένο για κάθε φορά που μπήκε μέσα, το ένα κάτω από το άλλο. Για τα Φιρφίρια εμφανίζονται οι μονάδες που έγραψε ο παίκτης σε γύρο Φιρφίρια, αυτές που ανέβασε όταν μπήκε μέσα ως τζογαδόρος, αυτές που έσβησε ως τζογαδόρος (όσα φιρφίρια κι αν ανήκαν σε άλλους), και το τελικό αλγεβρικό άθροισμα (Έγραψε + Ανέβασε − Έσβησε): θετικό = παθητικό (κόκκινο), αρνητικό = ενεργητικό (πράσινο). Ο πίνακας μετράει πάντα όλους τους γύρους (δεν επηρεάζεται από το φίλτρο) και ενημερώνεται αυτόματα, π.χ. μετά από αναίρεση.</p>
 				<p><span style="color:#C62828">♦</span> Το κουμπί μεγάφωνο ενεργοποιεί και απενεργοποιεί την φωνητική ανακοίνωση του τεμπέλη ή στην περίπτωση τριών μόνο παικτών το όνομα αυτού που έχει σειρά να μοιράσει. Το κουμπί ηχείο ενεργοποιεί και απενεργοποιεί την φωνητική ανακοίνωση για τα φιρφίρια.</p>
-				<p><span style="color:#C62828">♦</span> Αριστερά από το μεγάφωνο υπάρχει το εικονίδιο της επανάληψης με το οποίο επαναλαμβάνεται η ανακοίνωση για το όνομα του Τεμπέλη ή στην περίπτωση τριών μόνο παικτών το όνομα αυτού που έχει σειρά να μοιράσει. Στην περίπτωση των τριών παικτών, επάνω από το πλαίσιο του παίκτη που μοιράζει εμφανίζεται η ετικέτα «ΜΟΙΡΑΖΕΙ» και το πλαίσιό του αναβοσβήνει με χρυσό φως.</p>
+				<p><span style="color:#C62828">♦</span> Αριστερά από το μεγάφωνο υπάρχει το εικονίδιο της επανάληψης με το οποίο επαναλαμβάνεται η ανακοίνωση για το όνομα του Τεμπέλη ή στην περίπτωση τριών μόνο παικτών το όνομα αυτού που έχει σειρά να μοιράσει. Στην περίπτωση των τριών παικτών, στο «αυτοκόλλητο» του παίκτη που μοιράζει, κάτω από το όνομά του, εμφανίζεται η ένδειξη «ΜΟΙΡΑΖΕΙ» και το πλαίσιό του αναβοσβήνει με χρυσό φως.</p>
 				<p><span style="color:#C62828">♦</span> Στην περίπτωση τριών παικτών (μόνιμος τεμπέλης) ο τεμπέλης μπαίνει πάντα στη θέση 4. Πατώντας το εικονίδιο 7<span style="color:#C62828">♦</span> που αναβοσβήνει πάνω από το «Μόνιμος Τεμπέλης» επιλέγεις ποιος έχει το 7<span style="color:#C62828">♦</span> και παίζει πρώτος. Εικονικά θεωρείται ότι μοίρασε ο προηγούμενος παίκτης.</p>
 				<p><span style="color:#C62828">♦</span> Αριστερά από το εικονίδιο της επανάληψης υπάρχει το εικονίδιο της οθόνης με το οποίο επιλέγεται πλήρης οθόνη ή έξοδος από πλήρη οθόνη.</p>
 				<p><span style="color:#C62828">♦</span> Το ψηφιακό ρολόι μετράει τον ενεργό χρόνο του παιχνιδιού. Ο ενεργός χρόνος αρχίζει να μετράει από την στιγμή που πατήθηκε το κουμπί της έναρξης. Με απλό κλικ επάνω στο ρολόι το μέτρημα του χρόνου παγώνει ή συνεχίζει. Ο ενεργός χρόνος αποθηκεύεται σε αρχείο κάθε φορά που ολοκληρώνεται η καταχώρηση ενός γύρου. Κάτω από το ψηφιακό ρολόι εμφανίζεται ο χρόνος ηχητικής ειδοποίησης σε ώρες και λεπτά. Τα νούμερα αυτά μπορούν να αλλάξουν. Όταν συμπληρωθεί ο χρόνος της ηχητικής ειδοποίησης που ορίστηκε, ακούγεται ένας ήχος. Αυτή η ηχητική ειδοποίηση επιλέγεται αν θα γίνει με φωνή ή με ήχο (Submarine Submersion alarm).</p>
@@ -1610,14 +1593,14 @@ if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.
 				<strong>2η στήλη (σε παρένθεση):</strong> διαφορά = σκορ του παίκτη − σκορ του καλύτερου παίκτη. Το 0 είναι ο καλύτερος και οι υπόλοιποι βγαίνουν αρνητικοί. Με μόνιμο τεμπέλη, ο τεμπέλης δεν μετράει και δείχνει «–».<br>
 				<strong>3η στήλη (πράσινο/κόκκινο):</strong> η εικονική λήξη, δηλαδή τα καπίκια που θα είχε ο παίκτης αν το παιχνίδι τελείωνε τώρα. Είναι ακριβώς η εκκαθάριση που περιγράφεται παραπάνω, υπολογισμένη με τις τρέχουσες κάσες και προστιθέμενη στα τρέχοντα καπίκια. Το άθροισμα όλων των παικτών είναι πάντα 0.</p>			</p>
 			<p style="margin-top:6pt; margin-left:18pt; margin-bottom:0pt; text-indent:-18pt">
-				<p><span style="color:#C62828">♦</span> <strong>Τα ταμπελάκια των παικτών:</strong> αριστερά υπάρχει μία στήλη με τις περιγραφές (υπενθυμίσεις) και δίπλα μία στήλη για κάθε παίκτη, που έχει μόνο τα νούμερα. Στην κορυφή κάθε στήλης φαίνεται το όνομα και, όπου χρειάζεται, η ένδειξη «ΤΕΜΠΕΛΗΣ» ή «ΜΟΙΡΑΖΕΙ». Για να δεις ακριβώς τι σημαίνει κάθε νούμερο, κράτα το δάχτυλο ή το ποντίκι πάνω στο εικονίδιο της περιγραφής (εκτός από την κάσα, που δεν χρειάζεται). Οι γραμμές, από πάνω προς τα κάτω:<br>
+				<p><span style="color:#C62828">♦</span> <strong>Τα ταμπελάκια των παικτών:</strong> αριστερά υπάρχει μία στήλη με τις περιγραφές (υπενθυμίσεις) και δίπλα μία στήλη για κάθε παίκτη, που έχει μόνο τα νούμερα. Στο μέσον κάθε στήλης, πάνω στη γραμμή των Καπικίων, είναι κολλημένο σαν «αυτοκόλλητο» το όνομα του παίκτη στο χρώμα του και, όπου χρειάζεται, από κάτω η ένδειξη «ΤΕΜΠΕΛΗΣ» ή «ΜΟΙΡΑΖΕΙ». Για να δεις ακριβώς τι σημαίνει κάθε νούμερο, κράτα το δάχτυλο ή το ποντίκι πάνω στο εικονίδιο της περιγραφής (εκτός από την κάσα, που δεν χρειάζεται). Οι γραμμές, από πάνω προς τα κάτω:<br>
 					<svg style="height:1em;width:1em;vertical-align:-.15em" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256"><path fill="currentColor" d="M184 40H72a56.06 56.06 0 0 0-56 56v96a16 16 0 0 0 16 16h192a16 16 0 0 0 16-16V96a56.06 56.06 0 0 0-56-56m40 56v8h-32V56.8A40.07 40.07 0 0 1 224 96m-88 40h-16v-32h16Zm-24 16h32a8 8 0 0 0 8-8v-24h24v72H80v-72h24v24a8 8 0 0 0 8 8m40-48v-8a8 8 0 0 0-8-8h-32a8 8 0 0 0-8 8v8H80V56h96v48ZM64 56.8V104H32v-8a40.07 40.07 0 0 1 32-39.2M32 120h32v72H32Zm192 72h-32v-72h32z"/></svg> <strong>Κάσα:</strong> η τρέχουσα κάσα του παίκτη.<br>
-					<svg style="height:1em;width:1em;vertical-align:-.15em" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><g fill="none"><path d="M7.75 3.5h8.5v1.75a4.25 4.25 0 0 1-8.5 0z"/><path stroke="currentColor" stroke-linecap="square" stroke-width="2" d="M12 9.5a8 8 0 0 0-8 8v.5a3 3 0 0 0 3 3h6M12 9.5a8 8 0 0 1 7.002 4.128M12 9.5a4.25 4.25 0 0 1-4.25-4.25V3.5h8.5v1.75A4.25 4.25 0 0 1 12 9.5Zm5 7.5h5m-5 4h5"/></g></svg> <strong>Σχετική κάσα:</strong> η κάσα του παίκτη μείον τη χαμηλότερη κάσα (δηλαδή η «Κάσα» της εκκαθάρισης). Η λεπτή λευκή γραμμή από κάτω χωρίζει τις κάσες από τα καπίκια.<br>
+					<svg style="height:1em;width:1em;vertical-align:-.15em" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><g fill="none"><path d="M7.75 3.5h8.5v1.75a4.25 4.25 0 0 1-8.5 0z"/><path stroke="currentColor" stroke-linecap="square" stroke-width="2" d="M12 9.5a8 8 0 0 0-8 8v.5a3 3 0 0 0 3 3h6M12 9.5a8 8 0 0 1 7.002 4.128M12 9.5a4.25 4.25 0 0 1-4.25-4.25V3.5h8.5v1.75A4.25 4.25 0 0 1 12 9.5Zm5 7.5h5m-5 4h5"/></g></svg> <strong>Σχετική κάσα:</strong> η κάσα του παίκτη μείον τη χαμηλότερη κάσα (δηλαδή η «Κάσα» της εκκαθάρισης). Η λεπτή γραμμή από κάτω, που περνά πίσω από το αυτοκόλλητο του ονόματος, χωρίζει τις κάσες από τα καπίκια.<br>
 					<strong>Καπίκια</strong> (επικεφαλίδα): ομαδοποιεί τις τρεις γραμμές που ακολουθούν.<br>
-					<svg style="height:1em;width:1em;vertical-align:-.15em" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linejoin="round" stroke-width="1.5"><path stroke-linecap="round" d="M12 7.5v6.364m3.5-3.182h-7m7 5.818h-7"/><path d="M2.5 12c0-4.478 0-6.718 1.391-8.109S7.521 2.5 12 2.5c4.478 0 6.718 0 8.109 1.391S21.5 7.521 21.5 12c0 4.478 0 6.718-1.391 8.109S16.479 21.5 12 21.5c-4.478 0-6.718 0-8.109-1.391S2.5 16.479 2.5 12Z"/></g></svg> <strong>Πληρωμές/Εισπράξεις:</strong> τα καπίκια που κέρδισε ή έχασε ο παίκτης μέχρι τώρα, διότι ως τζογαδόρος ή αμυνόμενος πλήρωνε και πληρωνόταν. Δεν περιλαμβάνει την εκκαθάριση της κάσας.<br>
+					<svg style="height:1em;width:1em;vertical-align:-.15em" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linejoin="round" stroke-width="1.5"><path stroke-linecap="round" d="M12 7.5v6.364m3.5-3.182h-7m7 5.818h-7"/><path d="M2.5 12c0-4.478 0-6.718 1.391-8.109S7.521 2.5 12 2.5c4.478 0 6.718 0 8.109 1.391S21.5 7.521 21.5 12c0 4.478 0 6.718-1.391 8.109S16.479 21.5 12 21.5c-4.478 0-6.718 0-8.109-1.391S2.5 16.479 2.5 12Z"/></g></svg> <strong>Πληρωμές &amp; Εισπράξεις:</strong> τα καπίκια που κέρδισε ή έχασε ο παίκτης μέχρι τώρα, διότι ως τζογαδόρος ή αμυνόμενος πλήρωνε και πληρωνόταν. Δεν περιλαμβάνει την εκκαθάριση της κάσας.<br>
 					<svg style="height:1em;width:1em;vertical-align:-.15em" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M16.882 12H7.118"/><rect width="18.5" height="18.5" x="2.75" y="2.75" rx="6"/></g></svg> <strong>Πληρώνει από κάσα:</strong> πόσα καπίκια θα έδινε ο παίκτης σε καθέναν από τους άλλους, επί τον αριθμό των άλλων: (Σχετική κάσα/Ν)×10 καπίκια σε καθέναν, όπου Ν είναι το πλήθος των παικτών (3 ή 4) που παίζουν. Π.χ. «3×75=225» σημαίνει 75 καπίκια σε καθέναν από τους 3 άλλους, συνολικά 225. Αν δεν δίνει τίποτα, δείχνει «3×0=0».<br>
 					<svg style="height:1em;width:1em;vertical-align:-.15em" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><g fill="currentColor"><path d="M12.75 9a.75.75 0 0 0-1.5 0v2.25H9a.75.75 0 0 0 0 1.5h2.25V15a.75.75 0 0 0 1.5 0v-2.25H15a.75.75 0 0 0 0-1.5h-2.25z"/><path fill-rule="evenodd" d="M12.057 1.25h-.114c-2.309 0-4.118 0-5.53.19c-1.444.194-2.584.6-3.479 1.494c-.895.895-1.3 2.035-1.494 3.48c-.19 1.411-.19 3.22-.19 5.529v.114c0 2.309 0 4.118.19 5.53c.194 1.444.6 2.584 1.494 3.479c.895.895 2.035 1.3 3.48 1.494c1.411.19 3.22.19 5.529.19h.114c2.309 0 4.118 0 5.53-.19c1.444-.194 2.584-.6 3.479-1.494c.895-.895 1.3-2.035 1.494-3.48c.19-1.411.19-3.22.19-5.529v-.114c0-2.309 0-4.118-.19-5.53c-.194-1.444-.6-2.584-1.494-3.479c-.895-.895-2.035-1.3-3.48-1.494c-1.411-.19-3.22-.19-5.529-.19M3.995 3.995c.57-.57 1.34-.897 2.619-1.069c1.3-.174 3.008-.176 5.386-.176s4.086.002 5.386.176c1.279.172 2.05.5 2.62 1.069c.569.57.896 1.34 1.068 2.619c.174 1.3.176 3.008.176 5.386s-.002 4.086-.176 5.386c-.172 1.279-.5 2.05-1.069 2.62c-.57.569-1.34.896-2.619 1.068c-1.3.174-3.008.176-5.386.176s-4.086-.002-5.386-.176c-1.279-.172-2.05-.5-2.62-1.069c-.569-.57-.896-1.34-1.068-2.619c-.174-1.3-.176-3.008-.176-5.386s.002-4.086.176-5.386c.172-1.279.5-2.05 1.069-2.62" clip-rule="evenodd"/></g></svg> <strong>Εισπράττει από κάσες:</strong> μία θέση για κάθε παίκτη που παίζει, με τη σειρά των ταμπελακιών, που δείχνει πόσα καπίκια εισπράττει ο παίκτης από αυτόν. Η δική του θέση έχει ένα χαμογελαστό προσωπάκι <svg style="height:1em;width:1em;vertical-align:-.15em" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2C6.486 2 2 6.486 2 12s4.486 10 10 10s10-4.486 10-10S17.514 2 12 2m0 18c-4.411 0-8-3.589-8-8s3.589-8 8-8s8 3.589 8 8s-3.589 8-8 8"/><path fill="currentColor" d="M14.828 14.828a4 4 0 0 1-2.02 1.09a4.1 4.1 0 0 1-1.616 0a4 4 0 0 1-.749-.232a4 4 0 0 1-.679-.368a4.1 4.1 0 0 1-1.082-1.082l-1.658 1.117c.215.319.462.619.733.889a5.99 5.99 0 0 0 8.485.002c.272-.271.52-.571.734-.891l-1.658-1.117q-.215.318-.49.592"/><circle cx="8.5" cy="10.5" r="1.5" fill="currentColor"/><path fill="currentColor" d="M15.5 10c-2 0-2.5 2-2.5 2h5s-.501-2-2.5-2"/></svg>, γιατί δεν εισπράττει από τον εαυτό του. Π.χ. στο ταμπελάκι του 2ου παίκτη το «10+<svg style="height:1em;width:1em;vertical-align:-.15em" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2C6.486 2 2 6.486 2 12s4.486 10 10 10s10-4.486 10-10S17.514 2 12 2m0 18c-4.411 0-8-3.589-8-8s3.589-8 8-8s8 3.589 8 8s-3.589 8-8 8"/><path fill="currentColor" d="M14.828 14.828a4 4 0 0 1-2.02 1.09a4.1 4.1 0 0 1-1.616 0a4 4 0 0 1-.749-.232a4 4 0 0 1-.679-.368a4.1 4.1 0 0 1-1.082-1.082l-1.658 1.117c.215.319.462.619.733.889a5.99 5.99 0 0 0 8.485.002c.272-.271.52-.571.734-.891l-1.658-1.117q-.215.318-.49.592"/><circle cx="8.5" cy="10.5" r="1.5" fill="currentColor"/><path fill="currentColor" d="M15.5 10c-2 0-2.5 2-2.5 2h5s-.501-2-2.5-2"/></svg>+20+30=60» σημαίνει ότι εισπράττει 10 από τον 1ο, 20 από τον 3ο και 30 από τον 4ο, συνολικά 60. Με 3 παίκτες έχει 3 θέσεις. Αν κάποιος δεν δίνει τίποτα, η θέση του δείχνει 0.<br>
-					<svg style="height:1em;width:1em;vertical-align:-.15em" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path fill="currentColor" d="M2.5.5A.5.5 0 0 1 3 0h10a.5.5 0 0 1 .5.5q0 .807-.034 1.536a3 3 0 1 1-1.133 5.89c-.79 1.865-1.878 2.777-2.833 3.011v2.173l1.425.356c.194.048.377.135.537.255L13.3 15.1a.5.5 0 0 1-.3.9H3a.5.5 0 0 1-.3-.9l1.838-1.379c.16-.12.343-.207.537-.255L6.5 13.11v-2.173c-.955-.234-2.043-1.146-2.833-3.012a3 3 0 1 1-1.132-5.89A33 33 0 0 1 2.5.5m.099 2.54a2 2 0 0 0 .72 3.935c-.333-1.05-.588-2.346-.72-3.935m10.083 3.935a2 2 0 0 0 .72-3.935c-.133 1.59-.388 2.885-.72 3.935M3.504 1q.01.775.056 1.469c.13 2.028.457 3.546.87 4.667C5.294 9.48 6.484 10 7 10a.5.5 0 0 1 .5.5v2.61a1 1 0 0 1-.757.97l-1.426.356a.5.5 0 0 0-.179.085L4.5 15h7l-.638-.479a.5.5 0 0 0-.18-.085l-1.425-.356a1 1 0 0 1-.757-.97V10.5A.5.5 0 0 1 9 10c.516 0 1.706-.52 2.57-2.864c.413-1.12.74-2.64.87-4.667q.045-.694.056-1.469z"/></svg> <strong>Τελικό αποτέλεσμα:</strong> το αλγεβρικό άθροισμα Πληρωμές/Εισπράξεις − Πληρώνει + Εισπράττει (π.χ. «40−225+88=−97»), δηλαδή το αποτέλεσμα του παίκτη αν το παιχνίδι τελείωνε τώρα. Η λεπτή γραμμή από πάνω και το αποτέλεσμα είναι <span style="color:#2E7D32"><strong>πράσινα</strong></span> όταν ο παίκτης έχει κέρδος και <span style="color:#C62828"><strong>κόκκινα</strong></span> όταν έχει ζημιά. Είναι ίδιο με την 3η στήλη των μπαρών σκορ.<br>
+					<svg style="height:1em;width:1em;vertical-align:-.15em" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path fill="currentColor" d="M2.5.5A.5.5 0 0 1 3 0h10a.5.5 0 0 1 .5.5q0 .807-.034 1.536a3 3 0 1 1-1.133 5.89c-.79 1.865-1.878 2.777-2.833 3.011v2.173l1.425.356c.194.048.377.135.537.255L13.3 15.1a.5.5 0 0 1-.3.9H3a.5.5 0 0 1-.3-.9l1.838-1.379c.16-.12.343-.207.537-.255L6.5 13.11v-2.173c-.955-.234-2.043-1.146-2.833-3.012a3 3 0 1 1-1.132-5.89A33 33 0 0 1 2.5.5m.099 2.54a2 2 0 0 0 .72 3.935c-.333-1.05-.588-2.346-.72-3.935m10.083 3.935a2 2 0 0 0 .72-3.935c-.133 1.59-.388 2.885-.72 3.935M3.504 1q.01.775.056 1.469c.13 2.028.457 3.546.87 4.667C5.294 9.48 6.484 10 7 10a.5.5 0 0 1 .5.5v2.61a1 1 0 0 1-.757.97l-1.426.356a.5.5 0 0 0-.179.085L4.5 15h7l-.638-.479a.5.5 0 0 0-.18-.085l-1.425-.356a1 1 0 0 1-.757-.97V10.5A.5.5 0 0 1 9 10c.516 0 1.706-.52 2.57-2.864c.413-1.12.74-2.64.87-4.667q.045-.694.056-1.469z"/></svg> <strong>Τελικό αποτέλεσμα:</strong> το αλγεβρικό άθροισμα Πληρωμές &amp; Εισπράξεις − Πληρώνει + Εισπράττει (π.χ. «40−225+88=−97»), δηλαδή το αποτέλεσμα του παίκτη αν το παιχνίδι τελείωνε τώρα. Η λεπτή γραμμή από πάνω και το αποτέλεσμα είναι <span style="color:#2E7D32"><strong>πράσινα</strong></span> όταν ο παίκτης έχει κέρδος και <span style="color:#C62828"><strong>κόκκινα</strong></span> όταν έχει ζημιά. Είναι ίδιο με την 3η στήλη των μπαρών σκορ. Το φόντο του αποτελέσματος χρωματίζεται <strong>χρυσό, ασημί ή χάλκινο</strong> για την 1η, 2η και 3η θέση, με τα ίδια χρώματα όπως στα στατιστικά. Όσοι έχουν το ίδιο αποτέλεσμα παίρνουν το ίδιο μετάλλιο (π.χ. 100, 10, 10, −120: χρυσό, ασημί, ασημί, χάλκινο). Ο 4ος δεν χρωματίζεται και στην αρχή, πριν παιχτεί γύρος, είναι όλοι χρυσοί.<br>
 					<strong>Μόνιμος τεμπέλης:</strong> δεν παίζει στην εκκαθάριση και στη στήλη του δείχνει «–».</p>			</p>
 			<p style="margin-top:6pt; margin-left:18pt; margin-bottom:0pt; text-indent:-18pt">
 				<p><span style="color:#C62828">♦</span> <strong>Παράδειγμα με τρεις παίκτες ΠΑ, ΠΒ, ΠΓ</strong> (Ν = 3):<br>
@@ -3799,16 +3782,20 @@ function updateScoreBoard() {
   };
   const stlEq = (o, w) => `<span class="sc-ex">${o.ex}</span><span class="sc-tail"><span class="sc-eq">=</span><span class="sc-res" style="min-width:${w}ch">${o.res}</span></span>`;
   const stlLen = s => [...s].reduce((a, ch) => a + (ch === '−' ? 1.25 : 1), 0);
-  const colors = ['#191970','#E65100','#1B5E20','#C9A227'];
+  const colors = ['#191970','#E65100','#1B5E20','#00838F'];
+  // Μετάλλια στο «Τελικό αποτέλεσμα» (ίδια χρώματα/κανόνας με τα στατιστικά: ισοβαθμία = ίδιο μετάλλιο, 4η θέση χωρίς χρώμα, στην αρχή όλοι χρυσό)
+  const medalOrder = [...stlActive].sort((a, b) => stlNet(b).total - stlNet(a).total);
+  const medalRk = {};
+  medalRanks(medalOrder, q => stlNet(q).total).forEach((r, k) => { medalRk[medalOrder[k]] = r; });
   let gBg = '', gCells = '';
-  const cellAt = (r, c, cls, inner, extra, attrs) => `<div class="sg-c ${cls}${r === 1 ? ' t' : ''}${r === 10 ? ' b' : ''}" style="grid-area:${r} / ${c}${extra || ''}"${attrs || ''}>${inner}</div>`;
+  const cellAt = (r, c, cls, inner, extra, attrs) => `<div class="sg-c ${cls}${r === 1 ? ' t' : ''}${r === 9 ? ' b' : ''}" style="grid-area:${r} / ${c}${extra || ''}"${attrs || ''}>${inner}</div>`;
   // Στήλη περιγραφών (στήλη 1): υπενθυμίσεις, γκρι, μικρά, χωρίς bold
   // Εικονίδια στη στήλη περιγραφών (New_icons/*.svg — inline, currentColor). Tooltip σε κάθε εικονίδιο εκτός από την κάσα.
   const SG_ICO = {"treasure": "<svg class=\"sg-ico\" aria-hidden=\"true\" xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 256 256\"><path fill=\"currentColor\" d=\"M184 40H72a56.06 56.06 0 0 0-56 56v96a16 16 0 0 0 16 16h192a16 16 0 0 0 16-16V96a56.06 56.06 0 0 0-56-56m40 56v8h-32V56.8A40.07 40.07 0 0 1 224 96m-88 40h-16v-32h16Zm-24 16h32a8 8 0 0 0 8-8v-24h24v72H80v-72h24v24a8 8 0 0 0 8 8m40-48v-8a8 8 0 0 0-8-8h-32a8 8 0 0 0-8 8v8H80V56h96v48ZM64 56.8V104H32v-8a40.07 40.07 0 0 1 32-39.2M32 120h32v72H32Zm192 72h-32v-72h32z\"/></svg>", "wealth": "<svg class=\"sg-ico\" aria-hidden=\"true\" xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><g fill=\"none\"><path d=\"M7.75 3.5h8.5v1.75a4.25 4.25 0 0 1-8.5 0z\"/><path stroke=\"currentColor\" stroke-linecap=\"square\" stroke-width=\"2\" d=\"M12 9.5a8 8 0 0 0-8 8v.5a3 3 0 0 0 3 3h6M12 9.5a8 8 0 0 1 7.002 4.128M12 9.5a4.25 4.25 0 0 1-4.25-4.25V3.5h8.5v1.75A4.25 4.25 0 0 1 12 9.5Zm5 7.5h5m-5 4h5\"/></g></svg>", "pm": "<svg class=\"sg-ico\" aria-hidden=\"true\" xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><g fill=\"none\" stroke=\"currentColor\" stroke-linejoin=\"round\" stroke-width=\"1.5\"><path stroke-linecap=\"round\" d=\"M12 7.5v6.364m3.5-3.182h-7m7 5.818h-7\"/><path d=\"M2.5 12c0-4.478 0-6.718 1.391-8.109S7.521 2.5 12 2.5c4.478 0 6.718 0 8.109 1.391S21.5 7.521 21.5 12c0 4.478 0 6.718-1.391 8.109S16.479 21.5 12 21.5c-4.478 0-6.718 0-8.109-1.391S2.5 16.479 2.5 12Z\"/></g></svg>", "minus": "<svg class=\"sg-ico\" aria-hidden=\"true\" xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><g fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M16.882 12H7.118\"/><rect width=\"18.5\" height=\"18.5\" x=\"2.75\" y=\"2.75\" rx=\"6\"/></g></svg>", "plus": "<svg class=\"sg-ico\" aria-hidden=\"true\" xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><g fill=\"currentColor\"><path d=\"M12.75 9a.75.75 0 0 0-1.5 0v2.25H9a.75.75 0 0 0 0 1.5h2.25V15a.75.75 0 0 0 1.5 0v-2.25H15a.75.75 0 0 0 0-1.5h-2.25z\"/><path fill-rule=\"evenodd\" d=\"M12.057 1.25h-.114c-2.309 0-4.118 0-5.53.19c-1.444.194-2.584.6-3.479 1.494c-.895.895-1.3 2.035-1.494 3.48c-.19 1.411-.19 3.22-.19 5.529v.114c0 2.309 0 4.118.19 5.53c.194 1.444.6 2.584 1.494 3.479c.895.895 2.035 1.3 3.48 1.494c1.411.19 3.22.19 5.529.19h.114c2.309 0 4.118 0 5.53-.19c1.444-.194 2.584-.6 3.479-1.494c.895-.895 1.3-2.035 1.494-3.48c.19-1.411.19-3.22.19-5.529v-.114c0-2.309 0-4.118-.19-5.53c-.194-1.444-.6-2.584-1.494-3.479c-.895-.895-2.035-1.3-3.48-1.494c-1.411-.19-3.22-.19-5.529-.19M3.995 3.995c.57-.57 1.34-.897 2.619-1.069c1.3-.174 3.008-.176 5.386-.176s4.086.002 5.386.176c1.279.172 2.05.5 2.62 1.069c.569.57.896 1.34 1.068 2.619c.174 1.3.176 3.008.176 5.386s-.002 4.086-.176 5.386c-.172 1.279-.5 2.05-1.069 2.62c-.57.569-1.34.896-2.619 1.068c-1.3.174-3.008.176-5.386.176s-4.086-.002-5.386-.176c-1.279-.172-2.05-.5-2.62-1.069c-.569-.57-.896-1.34-1.068-2.619c-.174-1.3-.176-3.008-.176-5.386s.002-4.086.176-5.386c.172-1.279.5-2.05 1.069-2.62\" clip-rule=\"evenodd\"/></g></svg>", "trophy": "<svg class=\"sg-ico\" aria-hidden=\"true\" xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 16 16\"><path fill=\"currentColor\" d=\"M2.5.5A.5.5 0 0 1 3 0h10a.5.5 0 0 1 .5.5q0 .807-.034 1.536a3 3 0 1 1-1.133 5.89c-.79 1.865-1.878 2.777-2.833 3.011v2.173l1.425.356c.194.048.377.135.537.255L13.3 15.1a.5.5 0 0 1-.3.9H3a.5.5 0 0 1-.3-.9l1.838-1.379c.16-.12.343-.207.537-.255L6.5 13.11v-2.173c-.955-.234-2.043-1.146-2.833-3.012a3 3 0 1 1-1.132-5.89A33 33 0 0 1 2.5.5m.099 2.54a2 2 0 0 0 .72 3.935c-.333-1.05-.588-2.346-.72-3.935m10.083 3.935a2 2 0 0 0 .72-3.935c-.133 1.59-.388 2.885-.72 3.935M3.504 1q.01.775.056 1.469c.13 2.028.457 3.546.87 4.667C5.294 9.48 6.484 10 7 10a.5.5 0 0 1 .5.5v2.61a1 1 0 0 1-.757.97l-1.426.356a.5.5 0 0 0-.179.085L4.5 15h7l-.638-.479a.5.5 0 0 0-.18-.085l-1.425-.356a1 1 0 0 1-.757-.97V10.5A.5.5 0 0 1 9 10c.516 0 1.706-.52 2.57-2.864c.413-1.12.74-2.64.87-4.667q.045-.694.056-1.469z\"/></svg>"};
-  const SG_TIP = {"wealth": "Σχετική κάσα: η κάσα του παίκτη μείον τη χαμηλότερη κάσα όλων των παικτών που παίζουν. Είναι η «Κάσα» της εκκαθάρισης. Το 0 σημαίνει ότι ο παίκτης δεν πληρώνει τίποτα για κάσα.", "pm": "Πληρωμές/Εισπράξεις: τα καπίκια που έχει κερδίσει ή χάσει ο παίκτης μέχρι τώρα στους γύρους, ως τζογαδόρος ή αμυνόμενος, από πληρωμές και εισπράξεις. Δεν περιλαμβάνει την εκκαθάριση της κάσας.", "minus": "Πληρώνει από κάσα: τα καπίκια που θα πλήρωνε ο παίκτης αν το παιχνίδι τελείωνε τώρα. Δίνει (Σχετική κάσα/Ν)×10 καπίκια σε καθέναν από τους άλλους, όπου Ν είναι το πλήθος των παικτών (3 ή 4) που παίζουν. Π.χ. «3×75=225» σημαίνει 75 καπίκια σε καθέναν από τους 3 άλλους, συνολικά 225.", "plus": "Εισπράττει από κάσες: τα καπίκια που θα εισέπραττε ο παίκτης από τους άλλους αν το παιχνίδι τελείωνε τώρα. Έχει μία θέση για κάθε παίκτη με τη σειρά των ταμπελακιών και το προσωπάκι είναι η δική του θέση (δεν εισπράττει από τον εαυτό του). Μετά το «=» είναι το σύνολο.", "trophy": "Τελικό αποτέλεσμα: τα καπίκια που θα είχε συνολικά ο παίκτης αν το παιχνίδι τελείωνε τώρα = Πληρωμές/Εισπράξεις − Πληρώνει + Εισπράττει. Πράσινο είναι κέρδος και κόκκινο ζημιά. Είναι ίδιο με την 3η στήλη των μπαρών σκορ."};
-  const lblRows = [[2, 'Κάσα', 'treasure'], [3, 'Σχετική κάσα', 'wealth'], [5, 'Καπίκια'], [6, 'Πληρωμές/<wbr>Εισπράξεις', 'pm'], [7, 'Πληρώνει από κάσα', 'minus'], [8, 'Εισπράττει από κάσες', 'plus'], [10, 'Τελικό αποτέλεσμα', 'trophy']];
-  lblRows.forEach(([r, t, k]) => { gCells += cellAt(r, 1, 'sg-lbl' + (SG_TIP[k] ? ' tip' : ''), (k ? SG_ICO[k] : '') + `<span>${t}</span>`, '', SG_TIP[k] ? ` title="${SG_TIP[k]}"` : ''); });
-  gCells += cellAt(4, 1, 'sep lsep', '<i></i>') + cellAt(9, 1, 'sep lsep', '<i></i>');
+  const SG_TIP = {"wealth": "Σχετική κάσα: η κάσα του παίκτη μείον τη χαμηλότερη κάσα όλων των παικτών που παίζουν. Είναι η «Κάσα» της εκκαθάρισης. Το 0 σημαίνει ότι ο παίκτης δεν πληρώνει τίποτα για κάσα.", "pm": "Πληρωμές &amp; Εισπράξεις: τα καπίκια που έχει κερδίσει ή χάσει ο παίκτης μέχρι τώρα στους γύρους, ως τζογαδόρος ή αμυνόμενος, από πληρωμές και εισπράξεις. Δεν περιλαμβάνει την εκκαθάριση της κάσας.", "minus": "Πληρώνει από κάσα: τα καπίκια που θα πλήρωνε ο παίκτης αν το παιχνίδι τελείωνε τώρα. Δίνει (Σχετική κάσα/Ν)×10 καπίκια σε καθέναν από τους άλλους, όπου Ν είναι το πλήθος των παικτών (3 ή 4) που παίζουν. Π.χ. «3×75=225» σημαίνει 75 καπίκια σε καθέναν από τους 3 άλλους, συνολικά 225.", "plus": "Εισπράττει από κάσες: τα καπίκια που θα εισέπραττε ο παίκτης από τους άλλους αν το παιχνίδι τελείωνε τώρα. Έχει μία θέση για κάθε παίκτη με τη σειρά των ταμπελακιών και το προσωπάκι είναι η δική του θέση (δεν εισπράττει από τον εαυτό του). Μετά το «=» είναι το σύνολο.", "trophy": "Τελικό αποτέλεσμα: τα καπίκια που θα είχε συνολικά ο παίκτης αν το παιχνίδι τελείωνε τώρα = Πληρωμές &amp; Εισπράξεις − Πληρώνει + Εισπράττει. Πράσινο είναι κέρδος και κόκκινο ζημιά. Είναι ίδιο με την 3η στήλη των μπαρών σκορ. Το φόντο χρωματίζεται χρυσό, ασημί ή χάλκινο ανάλογα με τη θέση (ισοβαθμία = ίδιο μετάλλιο)."};
+  const lblRows = [[1, 'Κάσα', 'treasure'], [2, 'Σχετική κάσα', 'wealth'], [5, 'Πληρωμές &amp; <wbr>Εισπράξεις', 'pm'], [6, 'Πληρώνει από κάσα', 'minus'], [7, 'Εισπράττει από κάσες', 'plus'], [9, 'Τελικό αποτέλεσμα', 'trophy']];
+  lblRows.forEach(([r, t, k]) => { gCells += cellAt(r, 1, 'sg-lbl' + (SG_TIP[k] ? ' tip' : ''), (k ? SG_ICO[k] : '') + `<span>${t}</span>`, '', SG_TIP[k] ? ` data-tip="${SG_TIP[k]}"` : ''); });
+  gCells += `<div class="sg-c sg-lbl lhead" style="grid-area:3 / 1 / span 2 / span 1"><span>Καπίκια</span></div>` + cellAt(8, 1, 'sep lsep', '<i></i>');
   // Στήλες παικτών (στήλες 2..5): μόνο νούμερα
   players.forEach((p, i) => {
     let c = i + 2;
@@ -3817,26 +3804,29 @@ function updateScoreBoard() {
     let stlOn = stlActive.includes(p);
     let stlG = stlOn ? stlGive(p) : null, stlT = stlOn ? stlTake(p) : null, stlN = stlOn ? stlNet(p) : null;
     let stlW = stlOn ? Math.max(stlLen(stlG.res), stlLen(stlT.res), stlLen(stlN.res)) : 0;   // πλάτος αποτελέσματος (ch) κοινό για τις 3 γραμμές
-    let netColor = !stlOn ? '' : (stlN.total >= 0 ? '#2E7D32' : '#C62828');
+    let mr = stlOn ? medalRk[p] : 9;   // θέση μεταλλίου (0 χρυσό, 1 ασημένιο, 2 χάλκινο)
+    let sepColor = !stlOn ? '' : (stlN.total >= 0 ? '#2E7D32' : '#C62828');
+    let netColor = !stlOn ? '' : (mr < 3 ? (stlN.total >= 0 ? '#1B5E20' : '#B71C1C') : (stlN.total >= 0 ? '#2E7D32' : '#C62828'));
+    let medalBox = mr < 3 ? ';flex:1;margin:-1px -1px;padding:1px 1px;border-radius:6px;' + getMedalCardStyle(mr).replace(/border:[^;]*;/, '') : '';
     let displayKasa = isMonimosTempelis ? '–' : kasa[p];   // μόνιμος τεμπέλης: δεν παίζει → «–»
     let displayKap = isMonimosTempelis ? '–' : (kapikia[p] > 0 ? '+' : '') + kapikia[p];   // το 0 γράφεται «0», όχι «+0»
     let rowColor = isTembelis ? 'var(--purple)' : colors[i];
-    gBg += `<div class="sg-bg ${isTembelis ? 'tembelis-card' : ''} ${p === dealerP ? 'dealer-card' : ''}" style="grid-column:${c}">${isTembelis ? '<span class="tembelis-badge">ΤΕΜΠΕΛΗΣ</span>' : ''}${p === dealerP ? '<span class="dealer-badge" title="Μοιράζει">ΜΟΙΡΑΖΕΙ</span>' : ''}</div>`;
-    const v = (r, txt, color) => cellAt(r, c, 'val', `<span class="sc-val" style="color:${color || rowColor}">${txt}</span>`);
-    gCells += cellAt(1, c, 'name', p, `;color:${rowColor}`);
-    gCells += v(2, displayKasa) + v(3, stlRel(p));
-    gCells += cellAt(4, c, 'sep', '<i></i>');
-    gCells += v(6, displayKap);
-    gCells += v(7, stlOn ? stlEq(stlG, stlW) : '–') + v(8, stlOn ? stlEq(stlT, stlW) : '–');
-    gCells += cellAt(9, c, 'sep', `<i${netColor ? ` style="border-top-color:${netColor}"` : ''}></i>`);
-    gCells += v(10, stlOn ? stlEq(stlN, stlW) : '–', netColor);
+    gBg += `<div class="sg-bg ${isTembelis ? 'tembelis-card' : ''} ${p === dealerP ? 'dealer-card' : ''}" style="grid-column:${c}"></div>`;
+    const v = (r, txt, color, extra) => cellAt(r, c, 'val', `<span class="sc-val" style="color:${color || rowColor}${extra || ''}">${txt}</span>`);
+    const tag = isTembelis ? '<span class="sg-tag">ΤΕΜΠΕΛΗΣ</span>' : (p === dealerP ? '<span class="sg-tag dealer">ΜΟΙΡΑΖΕΙ</span>' : '');
+    gCells += `<div class="sg-c stk" style="grid-area:3 / ${c} / span 2 / span 1"><div class="sg-stk${(isTembelis && !isMonimos) || p === dealerP ? ' pulse' : ''}" style="background:${rowColor}"${p === dealerP && !isTembelis ? ' title="Μοιράζει"' : ''}><span class="sg-nm">${p}</span>${tag}</div></div>`;
+    gCells += v(1, displayKasa) + v(2, stlRel(p));
+    gCells += v(5, displayKap);
+    gCells += v(6, stlOn ? stlEq(stlG, stlW) : '–') + v(7, stlOn ? stlEq(stlT, stlW) : '–');
+    gCells += cellAt(8, c, 'sep', `<i${sepColor ? ` style="border-top-color:${sepColor}"` : ''}></i>`);
+    gCells += v(9, stlOn ? stlEq(stlN, stlW) : '–', netColor, medalBox);
   });
   grid.innerHTML = gBg + gCells;
 
   // Ραβδόγραμμα σκορ
   let barsDiv = document.getElementById('score-bars');
   if (barsDiv) {
-    let barColors = ['#191970','#E65100','#1B5E20','#C9A227'];
+    let barColors = ['#191970','#E65100','#1B5E20','#00838F'];
     let scores = players.map((p, i) => {
       let isMon = isMonimos && i === currentTembelisIdx;
       return isMon ? kapikia[p] : -kasa[p] * 10 + kapikia[p];
@@ -5743,6 +5733,7 @@ function endGame() {
     // Ταξινόμηση: μεγαλύτερα καπίκια = καλύτερα (εξαίρεση μόνιμου τεμπέλη)
     let rankPlayers = isMonimos ? players.filter((p,idx) => idx !== currentTembelisIdx) : players;
     let sorted = [...rankPlayers].sort((a, b) => finalKapikia[b] - finalKapikia[a]);
+    let rk = medalRanks(sorted, p => finalKapikia[p]);
 
     document.getElementById('end-rounds').textContent = roundNumber;
 
@@ -5752,15 +5743,16 @@ function endGame() {
     fc2.innerHTML = `<div style="font-size:0.8rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text3);margin-bottom:4px">ΜΕΤΑ ΑΠΟ ΕΚΚΑΘΑΡΙΣΗ ΤΗΣ ΚΑΣΑΣ</div>` +
     (minNote ? `<div style="font-size:1rem;color:#fff;font-weight:700;margin-bottom:8px">${minNote}</div>` : '') +
     sorted.map((p, i) => {
+      let r = rk[i];
       let adjK = adjustedKasa[p];
       let perPlayer = adjK > 0 ? Math.round((adjK * 10) / n) : 0;
       let detail = adjK > 0
         ? `Κάσα ${kasa[p]}-${minKasa}=${adjK} ➤ έδωσε ${perPlayer} καπίκια σε κάθε παίκτη`
         : `Κάσα ${kasa[p]}-${minKasa}=0 ➤ δεν πληρώνει`;
-      let medalStyle = getMedalCardStyle(i);
-      let darkText = i < 3 ? 'color:#2C1810;' : '';
-      return `<div class="final-card ${i === 0 ? 'winner' : ''}" style="${medalStyle}">
-        <div class="rank-num" style="font-size:3rem;width:auto;min-width:56px;display:flex;align-items:center;justify-content:center">${i === 0 ? '<img src="'+GOLD_B64+'" style="height:2.6em;width:auto;vertical-align:middle">' : i === 1 ? '<img src="'+SILVER_B64+'" style="height:2.6em;width:auto;vertical-align:middle">' : i === 2 ? '<img src="'+BRONZE_B64+'" style="height:2.6em;width:auto;vertical-align:middle">' : '<img src="data:image/webp;base64,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" style="height:2em;width:auto;vertical-align:middle">'}</div>
+      let medalStyle = getMedalCardStyle(r);
+      let darkText = r < 3 ? 'color:#2C1810;' : '';
+      return `<div class="final-card ${r === 0 ? 'winner' : ''}" style="${medalStyle}">
+        <div class="rank-num" style="font-size:3rem;width:auto;min-width:56px;display:flex;align-items:center;justify-content:center">${r === 0 ? '<img src="'+GOLD_B64+'" style="height:2.6em;width:auto;vertical-align:middle">' : r === 1 ? '<img src="'+SILVER_B64+'" style="height:2.6em;width:auto;vertical-align:middle">' : r === 2 ? '<img src="'+BRONZE_B64+'" style="height:2.6em;width:auto;vertical-align:middle">' : '<img src="data:image/webp;base64,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" style="height:2em;width:auto;vertical-align:middle">'}</div>
         <div class="final-info">
           <div class="final-name" style="${darkText}">${p}</div>
           <div class="final-kapikia-line" style="font-size:0.8rem;font-weight:800;${darkText}">Καπίκια: ${kapikia[p] > 0 ? '+' : ''}${kapikia[p]}</div>
@@ -5777,6 +5769,37 @@ function endGame() {
 }
 
 
+// Tooltip των περιγραφών στα ταμπελάκια (δικό μας, για να έχει μεγάλα γράμματα· το native title δεν αλλάζει μέγεθος)
+(function () {
+  let tipEl = null, tipFor = null, tipTimer = null;
+  function hideTip() { if (tipEl) tipEl.style.display = 'none'; tipFor = null; clearTimeout(tipTimer); }
+  function showTip(el, autoHideMs) {
+    if (!tipEl) { tipEl = document.createElement('div'); tipEl.id = 'sg-tip'; document.body.appendChild(tipEl); }
+    tipEl.textContent = el.getAttribute('data-tip');
+    tipEl.style.display = 'block';
+    let r = el.getBoundingClientRect(), tw = tipEl.offsetWidth, th = tipEl.offsetHeight;
+    let left = Math.max(8, Math.min(r.left, window.innerWidth - tw - 8));
+    let top = r.bottom + 6;
+    if (top + th > window.innerHeight - 8) top = Math.max(8, r.top - th - 6);
+    tipEl.style.left = left + 'px'; tipEl.style.top = top + 'px';
+    tipFor = el;
+    clearTimeout(tipTimer);
+    if (autoHideMs) tipTimer = setTimeout(hideTip, autoHideMs);
+  }
+  const findTip = e => e.target && e.target.closest ? e.target.closest('.sg-lbl.tip[data-tip]') : null;
+  document.addEventListener('pointerover', e => { if (e.pointerType === 'mouse') { let el = findTip(e); if (el && el !== tipFor) showTip(el, 0); } });
+  document.addEventListener('pointerout', e => { if (e.pointerType === 'mouse' && findTip(e)) hideTip(); });
+  document.addEventListener('click', e => { let el = findTip(e); if (el) { if (tipFor === el && !('ontouchstart' in window)) return; showTip(el, 9000); } else hideTip(); });
+  window.addEventListener('scroll', hideTip, true);
+})();
+
+// Θέση μεταλλίου με ισοβαθμία (πυκνή κατάταξη): ίδια καπίκια = ίδιο μετάλλιο, το επόμενο μετάλλιο είναι το αμέσως επόμενο
+// (π.χ. 100, 10, 10, -120 → χρυσό, ασημένιο, ασημένιο, χάλκινο· όλοι ίσοι, π.χ. στην αρχή → όλοι χρυσό)
+function medalRanks(sortedPlayers, valFn) {
+  let cur = -1, prev, out = [];
+  sortedPlayers.forEach((p, i) => { let v = valFn(p); if (i === 0 || v !== prev) cur++; prev = v; out.push(cur); });
+  return out;
+}
 function getMedalCardStyle(i) {
   // Επιστρέφει inline style για gradient φόντο + border για 1η/2η/3η θέση (αλλιώς κενό)
   if (i === 0) return 'background:linear-gradient(135deg,#FFF3C4,#C9A227);border:1px solid #C9A227;';
@@ -6221,7 +6244,8 @@ function calcVirtualRanking() {
 
   let rankPlayers2 = isMonimos ? players.filter((p,idx) => idx !== currentTembelisIdx) : players;
   let sorted = [...rankPlayers2].sort((a, b) => finalKapikia[b] - finalKapikia[a]);
-  let colors = ['#191970','var(--accent2)','var(--green)','#C9A227'];
+  let rk = medalRanks(sorted, p => finalKapikia[p]);
+  let colors = ['#191970','var(--accent2)','var(--green)','#00838F'];
   let minNote = minKasa > 0 ? `Με βάση την χαμηλότερη κάσα ${minKasa} μοιράζω σε ${n} παίκτες` : '';
   let medals = ['<img src="'+GOLD_B64+'" style="height:2.6em;width:auto;vertical-align:middle">','<img src="'+SILVER_B64+'" style="height:2.6em;width:auto;vertical-align:middle">','<img src="'+BRONZE_B64+'" style="height:2.6em;width:auto;vertical-align:middle">','<img src="data:image/webp;base64,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\" style=\"height:2em;width:auto;vertical-align:middle">'];
 
@@ -6229,16 +6253,17 @@ function calcVirtualRanking() {
     <div style="font-size:1.2rem;font-weight:800;letter-spacing:1px;color:var(--accent2);margin-bottom:10px">Κατάταξη μετά από ${roundNumber} ${roundNumber === 1 ? "γύρο" : "γύρους"}</div>
     ${minNote ? `<div style="font-size:1.15rem;color:#fff;font-weight:700;margin-bottom:10px">${minNote}</div>` : ''}
     ${sorted.map((p, i) => {
+      let r = rk[i];
       let adjK = adjustedKasa[p];
       let perPlayer = adjK > 0 ? Math.round((adjK * 10) / n) : 0;
       let detail = adjK > 0
         ? `Κάσα ${kasa[p]}-${minKasa}=${adjK} ➤ δίνει ${perPlayer} καπίκια σε κάθε παίκτη`
         : `Κάσα ${kasa[p]}-${minKasa}=0 ➤ δεν πληρώνει`;
       let col = colors[players.indexOf(p)];
-      let medalStyleS = getMedalCardStyle(i);
-      let darkTextS = i < 3 ? 'color:#2C1810;' : '';
-      return `<div class="final-card ${i===0?'winner':''}" style="margin-bottom:6px;padding:10px 14px;${medalStyleS}">
-        <div class="rank-num" style="font-size:3.8rem;width:auto;min-width:72px;display:flex;align-items:center;justify-content:center">${medals[i]}</div>
+      let medalStyleS = getMedalCardStyle(r);
+      let darkTextS = r < 3 ? 'color:#2C1810;' : '';
+      return `<div class="final-card ${r===0?'winner':''}" style="margin-bottom:6px;padding:10px 14px;${medalStyleS}">
+        <div class="rank-num" style="font-size:3.8rem;width:auto;min-width:72px;display:flex;align-items:center;justify-content:center">${medals[r]}</div>
         <div class="final-info">
           <div class="final-name" style="font-size:1.4rem;${darkTextS}">${p}</div>
           <div class="final-kapikia-line" style="font-size:1rem;font-weight:700;${darkTextS}">Καπίκια: ${kapikia[p] > 0 ? '+' : ''}${kapikia[p]}</div>
@@ -6299,7 +6324,7 @@ function buildStats() {
 
 function buildStatsTo(targetId) {
   try {
-  let colors = ['#191970','#E65100','#1B5E20','#C9A227'];
+  let colors = ['#191970','#E65100','#1B5E20','#00838F'];
   let html = '';
 
   // Page break ΠΡΙΝ τα συγκεντρωτικά των παικτών (ξεκινούν από νέα σελίδα)
