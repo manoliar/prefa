@@ -3814,13 +3814,14 @@ function updateScoreBoard() {
   lblRows.forEach(([r, t, k]) => { gCells += cellAt(r, 1, 'sg-lbl' + (SG_TIP[k] ? ' tip' : ''), (k ? SG_ICO[k] : '') + `<span>${t}</span>`, '', SG_TIP[k] ? ` data-tip="${SG_TIP[k]}"` : ''); });
   gCells += `<div class="sg-c sg-lbl lhead" style="grid-area:3 / 1 / span 2 / span 1"><span>Καπίκια</span></div>` + cellAt(8, 1, 'sep lsep', '<i></i>');
   // Στήλες παικτών (στήλες 2..5): μόνο νούμερα
+  const stlWAll = Math.max(0, ...stlActive.map(q => Math.max(stlLen(stlGive(q).res), stlLen(stlTake(q).res), stlLen(stlNet(q).res))));
   players.forEach((p, i) => {
     let c = i + 2;
     let isTembelis = i === currentTembelisIdx;
     let isMonimosTempelis = isMonimos && isTembelis;
     let stlOn = stlActive.includes(p);
     let stlG = stlOn ? stlGive(p) : null, stlT = stlOn ? stlTake(p) : null, stlN = stlOn ? stlNet(p) : null;
-    let stlW = stlOn ? Math.max(stlLen(stlG.res), stlLen(stlT.res), stlLen(stlN.res)) : 0;   // πλάτος αποτελέσματος (ch) κοινό για τις 3 γραμμές
+    let stlW = stlOn ? stlWAll : 0;   // πλάτος αποτελέσματος (ch) κοινό για τις 3 γραμμές ΚΑΙ για όλες τις κάρτες → τα «=» στην ίδια θέση σε όλα τα πλαίσια
     let mr = stlOn ? medalRk[p] : 9;   // θέση (0..3 → 1.png..4.png)
     let sepColor = !stlOn ? '' : (stlN.total >= 0 ? '#2E7D32' : '#C62828');
     let netColor = !stlOn ? '' : (stlN.total >= 0 ? '#2E7D32' : '#C62828');   // χωρίς χρωματισμό φόντου: τα νούμερα διαβάζονται από απόσταση
@@ -3893,7 +3894,7 @@ function updateScoreBoard() {
           <div style="position:absolute;left:50%;top:0;bottom:0;width:1px;background:rgba(0,0,0,0.25)"></div>
           <div class="score-bar-fill" style="position:absolute;left:${barLeft}%;width:${barWidth}%;background:${col}"></div>
         </div>
-        <div class="score-bar-val" style="color:${col};font-family:monospace;white-space:nowrap"><span style="display:inline-block;min-width:52px;text-align:right">${scoreStr}</span> <span style="display:inline-block;min-width:52px;text-align:right;font-size:0.85em;opacity:0.8">(${diffStr})</span> <span style="display:inline-block;min-width:52px;text-align:right;font-family:'PrefaNum',system-ui,-apple-system,sans-serif;font-size:0.84rem;line-height:1;font-weight:700;font-variant-numeric:tabular-nums;font-feature-settings:'tnum' 1;color:${virtColor}">${virtStr}</span></div>
+        <div class="score-bar-val" style="color:${col};font-family:monospace;white-space:nowrap"><span style="display:inline-block;min-width:52px;text-align:right">${scoreStr}</span> <span style="display:inline-block;min-width:52px;text-align:right;font-size:0.85em;opacity:0.8">(${diffStr})</span> <span style="display:inline-block;min-width:52px;text-align:right;font-family:'PrefaNum',system-ui,-apple-system,sans-serif;font-size:0.9rem;line-height:1;margin:-1px 0;font-weight:700;font-variant-numeric:tabular-nums;font-feature-settings:'tnum' 1;color:${virtColor}">${virtStr}</span></div>
       </div>`;
     }).join('');
   }
