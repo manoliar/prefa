@@ -369,7 +369,7 @@ if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.
   .sg-c.lhead { align-self: stretch; }
   .sg-c.lhead::before { border-top-color: rgba(255,255,255,.3); }
   .sg-c.lhead span { position: absolute; top: calc(50% + 2px); left: 1px; }
-  .sg-stk { position: relative; z-index: 2; box-sizing: border-box; max-width: 100%; min-width: 0; display: flex; flex-direction: column; align-items: center; padding: 1px 9px; border: 1.5px solid #fff; border-radius: 10px; color: #fff; line-height: 1.1; box-shadow: 0 1px 4px rgba(0,0,0,.4); }
+  .sg-stk { position: relative; z-index: 2; box-sizing: border-box; max-width: 100%; min-width: 0; display: flex; flex-direction: column; align-items: center; padding: 1px 9px 3px; border: 1.5px solid #fff; border-radius: 10px; color: #fff; line-height: 1.1; box-shadow: 0 1px 4px rgba(0,0,0,.4); }
   .sg-nm { font-size: 0.8rem; font-weight: 800; max-width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .sg-tag { font-size: 0.55rem; font-weight: 800; letter-spacing: .03em; max-width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 9px; margin-bottom: 1px; }   /* κενό μιας γραμμής από το όνομα */
   .sg-stk.pulse { animation: stk-pulse 2.6s ease-in-out infinite; }   /* διακριτικό «ζουμ-ανζουμ» στο αυτοκόλλητο του τεμπέλη */
@@ -1680,9 +1680,9 @@ if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.
 
 <div id="mx-overlay" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.6);z-index:95;align-items:center;justify-content:center;padding:14px;box-sizing:border-box;">
   <div id="mx-modal">
+    <div style="position:sticky;top:0;height:0;z-index:3"><button type="button" onclick="closeMatrix()" aria-label="Κλείσιμο" title="Κλείσιμο" style="position:absolute;top:-8px;right:-4px;background:#C62828;color:white;border:none;border-radius:50%;width:30px;height:30px;font-size:1.05rem;cursor:pointer;font-weight:700;line-height:1;padding:0">✕</button></div>
     <div style="text-align:center;color:#546E7A;font-weight:800;font-size:.85rem;margin-bottom:10px">Συμβόλαια ανά παίκτη</div>
     <div id="mx-body"></div>
-    <div style="display:flex;margin-top:6px"><button class="btn btn-sm" onclick="closeMatrix()" style="flex:1;background:#2B66C3;color:#fff;border:none">Κλείσιμο</button></div>
   </div>
 </div>
 
@@ -1978,7 +1978,9 @@ function showModal(title, msg, cb, imgSrc, imgTop, colorTitle) {
     namesSorted.forEach(nm => {
       if (!nm) return;
       let esc = nm.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-      msgHtml = msgHtml.replace(new RegExp(esc + '(:?)', 'g'), (m, colon) => `<span style="display:inline-block;vertical-align:baseline;text-indent:0;background:linear-gradient(180deg,#ffffff,#d6d6d6);border-radius:8px;padding:1px 8px 4px;line-height:1;font-weight:600;box-shadow:0 1px 1px rgba(0,0,0,.3);color:${_nameColor}">${nm}${colon}</span>`);
+      // Όνομα παίκτη: ίδιο «αυτοκόλλητο» με των καρτών (φόντο στο χρώμα του παίκτη, λευκό περίγραμμα, λευκό κείμενο)
+      let _pc = ['#191970','#E65100','#1B5E20','#00838F'][players.indexOf(nm)] || '#455A64';
+      msgHtml = msgHtml.replace(new RegExp(esc + '(:?)', 'g'), (m, colon) => `<span style="display:inline-block;vertical-align:baseline;text-indent:0;box-sizing:border-box;background:${_pc};border:1.5px solid #fff;border-radius:10px;padding:1px 9px 3px;line-height:1.1;font-weight:800;font-size:1em;color:#fff;box-shadow:0 1px 4px rgba(0,0,0,.4)">${nm}${colon}</span>`);
     });
   }
   // Τυλίγω κάθε γραμμή σε span με hanging indent
@@ -4122,9 +4124,10 @@ function applyDefenderState() {
     setBazesEnabledRange('bg-tzog', 0, 10);
     bazesTouchOrder = ['bg-tzog'];
   } else {
-    setBazesEnabledRange('bg-tzog', 0, 10);
-    setBazesEnabledRange('bg-def1', 0, 10);
-    setBazesEnabledRange('bg-def2', 0, 10);
+    // Αν κάποιος αμυνόμενος μόλις ξαναενεργοποιήθηκε (δεν έχει επιλεγμένη μπάζα), μένει στο 0 και φαίνεται επιλεγμένο
+    ['bg-def1','bg-def2'].forEach(g => { let w = document.getElementById(g + '-wrap'); if (w && !w.querySelector('.bazes-tick.selected')) { let z = w.querySelector('.bazes-tick[data-val="0"]'); if (z) z.classList.add('selected'); } });
+    bazesTouchOrder = ['bg-tzog'];
+    recomputeBazesConstraints(['bg-tzog','bg-def1','bg-def2']);
   }
 
   checkButtonsState();
@@ -4833,7 +4836,11 @@ function refreshDefenders(tzog) {
         ${makeBazesTicks('bg-def2', true, 'paso2', 'pire2', 'def')}
       </div>`;
     // Η προεπιλογή του τζογαδόρου μετράει ως πρώτο "άγγιγμα" ώστε με ένα κλικ σε αμυνόμενο να συμπληρώνεται αυτόματα ο τρίτος
-    if (getContractBazes() > 0) bazesTouchOrder = ['bg-tzog'];
+    if (getContractBazes() > 0) {
+      bazesTouchOrder = ['bg-tzog'];
+      // Οι αμυνόμενοι μπορούν να έχουν το πολύ 10 − (μπάζες τζογαδόρου): τα υπόλοιπα νούμερα είναι ανενεργά από την αρχή
+      recomputeBazesConstraints(['bg-tzog','bg-def1','bg-def2']);
+    }
   }
   document.getElementById('total-check').style.display = 'block';
   checkTotal();
