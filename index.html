@@ -641,6 +641,14 @@ if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.
     color: #fff;
   }
   .modal-msg br { display: block; content: ""; }
+  /* Συμπαγής διάταξη (μετά την καταγραφή γύρου): εικονίδιο ✓/✗ στο κέντρο, μικρό κουμπί «Το διάβασα» + ρολόι στα δεξιά, στην ίδια γραμμή */
+  .modal.compact-ok { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; }
+  .modal.compact-ok > h2, .modal.compact-ok > .modal-msg { grid-column: 1 / -1; }
+  .modal.compact-ok > #modal-icon { grid-column: 2; display: flex; justify-content: center; align-items: center; padding: 0 8px; }
+  .modal.compact-ok > #modal-icon img { width: clamp(34px, 9vw, 58px); height: auto; display: block; }
+  .modal.compact-ok > #modal-btns { grid-column: 3; justify-self: end; align-items: center; flex-wrap: nowrap; gap: 6px; }
+  .modal.compact-ok #modal-ok-btn { width: auto; padding: 6px 12px; font-size: 0.85rem; white-space: nowrap; }
+  .modal.compact-ok .modal-msg { margin-bottom: 0.2rem; }
   @keyframes blink {
     0%, 100% { opacity: 1; }
     50% { opacity: 0; }
@@ -1825,7 +1833,7 @@ if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.
   <div class="modal">
     <h2 id="modal-title"></h2>
     <div class="modal-msg" id="modal-msg"></div>
-    <div style="display:flex; gap:10px; flex-wrap:wrap">
+    <div id="modal-btns" style="display:flex; gap:10px; flex-wrap:wrap">
       <button class="btn btn-primary" id="modal-ok-btn" onclick="closeModal()">Το διάβασα</button>
       <button class="btn btn-secondary" id="modal-cancel-btn" onclick="closeModalCancel()" style="display:none">Ακύρωση</button>
     </div>
@@ -1868,6 +1876,7 @@ function renderModalReadSecs() {
 // ΓΙΑΤΙ: το native prompt() μπλοκάρεται σιωπηλά σε iOS/iPadOS (ιδίως ως PWA),
 // οπότε τα κουμπιά ρυθμίσεων δεν αντιδρούσαν καθόλου.
 function showNumberPrompt(title, label, cur, min, max, onOk) {
+  modalCompactOff();
   document.getElementById('modal-title').textContent = title;
   document.getElementById('modal-msg').innerHTML =
     '<div style="text-align:center">' +
@@ -1899,6 +1908,14 @@ function editModalReadSecs() {
     });
 }
 
+// Συμπαγής διάταξη παραθύρου (εικονίδιο ✓/✗ + κουμπί + ρολόι στην ίδια γραμμή): απενεργοποίηση / καθάρισμα
+function modalCompactOff() {
+  let box = document.querySelector('#modal-overlay .modal');
+  if (box) box.classList.remove('compact-ok');
+  let ic = document.getElementById('modal-icon');
+  if (ic) ic.remove();
+}
+
 function stopModalReadClock() {
   if (_modalClockTimer) { clearInterval(_modalClockTimer); _modalClockTimer = null; }
   let el = document.getElementById('modal-read-clock');
@@ -1915,16 +1932,18 @@ function startModalReadClock() {
   if (okBtn.textContent !== 'Το διάβασα' || okBtn.style.display === 'none') return;
   // Χρώμα ρολογιού = φόντο του κουμπιού "Το διάβασα"
   let clr = getComputedStyle(okBtn).backgroundColor || '#C62828';
+  let compact = box.classList.contains('compact-ok');
+  let host = compact ? document.getElementById('modal-btns') : box;
   box.style.position = 'relative';
   let div = document.createElement('div');
   div.id = 'modal-read-clock';
-  div.style.cssText = 'position:absolute;right:8px;bottom:8px;width:44px;height:44px;pointer-events:none';
-  div.innerHTML = `<svg viewBox="0 0 44 44" width="44" height="44">
+  div.style.cssText = compact ? 'flex:0 0 auto;width:32px;height:32px;pointer-events:none' : 'position:absolute;right:8px;bottom:8px;width:44px;height:44px;pointer-events:none';
+  div.innerHTML = `<svg viewBox="0 0 44 44" width="100%" height="100%">
     <circle cx="22" cy="22" r="21" fill="${clr}" stroke="rgba(255,255,255,0.7)" stroke-width="1.5"/>
     <line id="mrc-hand" x1="22" y1="10" x2="22" y2="3.5" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/>
     <text id="mrc-num" x="22" y="27" text-anchor="middle" font-size="14" font-weight="700" fill="#fff">${MODAL_READ_SECS}</text>
   </svg>`;
-  box.appendChild(div);
+  host.appendChild(div);
   let remaining = MODAL_READ_SECS;
   _modalClockTimer = setInterval(() => {
     remaining--;
@@ -1945,6 +1964,7 @@ function startModalReadClock() {
 }
 
 function showModal(title, msg, cb, imgSrc, imgTop, colorTitle) {
+  modalCompactOff();
   document.getElementById('modal-title').textContent = title;
   document.getElementById('modal-ok-btn').textContent = 'Το διάβασα';
   let _checkTitle = colorTitle || title; // χρήση colorTitle για χρωματισμό ονομάτων αν δοθεί
@@ -2030,7 +2050,18 @@ function showModal(title, msg, cb, imgSrc, imgTop, colorTitle) {
     msgEl2.insertBefore(mathDiv, msgEl2.firstChild);
   }
   // Εικόνες κάτω από msg
-  if (_isOk || _isMesa || _isStop || _isNo) {
+  if (_isOk || _isMesa) {
+    // Εικονίδιο ✓/✗ στο κέντρο της κάτω γραμμής· το κουμπί + ρολόι πάνε δεξιά στην ίδια γραμμή (μικρότερο ύψος παραθύρου)
+    let box = document.querySelector('#modal-overlay .modal');
+    let ic = document.createElement('div');
+    ic.id = 'modal-icon';
+    let im = document.createElement('img');
+    im.src = _isOk ? GREEN_TICK_B64 : RED_X_B64;
+    im.alt = '';
+    ic.appendChild(im);
+    box.insertBefore(ic, document.getElementById('modal-btns'));
+    box.classList.add('compact-ok');
+  } else if (_isStop || _isNo) {
     let imgDiv = document.createElement('div');
     imgDiv.style.cssText = 'text-align:center;margin:8px 0 4px 0';
     let imgEl = document.createElement('img');
@@ -2069,6 +2100,7 @@ function showModal(title, msg, cb, imgSrc, imgTop, colorTitle) {
 
 function closeModal() {
   stopModalReadClock();
+  modalCompactOff();
   document.getElementById('modal-overlay').classList.remove('open');
   document.getElementById('modal-overlay').classList.remove('np-top');
   document.getElementById('modal-cancel-btn').style.display = 'none';
@@ -2082,6 +2114,7 @@ function closeModal() {
 }
 
 function showConfirm(title, msg, cbYes) {
+  modalCompactOff();
   stopModalReadClock(); // τα παράθυρα επιβεβαίωσης δεν έχουν countdown
   document.getElementById('modal-title').textContent = title;
   document.getElementById('modal-title').style.textAlign = '';
@@ -2175,6 +2208,7 @@ function showConfirm(title, msg, cbYes) {
 
 function closeModalCancel() {
   stopModalReadClock();
+  modalCompactOff();
   document.getElementById('modal-overlay').classList.remove('open');
   document.getElementById('modal-overlay').classList.remove('np-top');
   window._modalCb = null;
@@ -5491,6 +5525,7 @@ function showRoundDescription(td) {
 }
 
 function editHistoryRow(event) {
+  modalCompactOff();
   let td = event.target.closest('td');
   let tr = event.target.closest('tr');
   if (!tr || !td) return;
