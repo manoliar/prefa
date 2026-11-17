@@ -400,43 +400,6 @@ if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.
     0%, 100% { border-color: #e0e0e0; box-shadow: 0 0 0 0 rgba(201,162,39,0), 0 0 0 0 rgba(201,162,39,0); }
     50%      { border-color: #C9A227; box-shadow: 0 0 0 2px #C9A227, 0 0 10px 3px rgba(201,162,39,.85); }
   }
-  .firfiria-bar {
-    background: #000000;
-    border: 2px solid var(--border);
-    border-radius: var(--radius);
-    padding: 5px 14px;
-    margin-bottom: 4px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
-  .firfiria-label {
-    font-size: 0.8rem;
-    color: #32CD32;
-    font-weight: 700;
-  }
-  .firfiria-chips {
-    display: flex;
-    gap: 6px;
-    flex-wrap: wrap;
-    flex: 1;
-  }
-  .fir-chip {
-    background: transparent;
-    color: #32CD32;
-    border: none;
-    padding: 2px 6px;
-    border-radius: 0;
-    font-size: 0.8rem;
-    font-weight: 600;
-  }
-  .active-fir {
-    background: transparent;
-    color: #32CD32;
-    padding: 2px 6px;
-    font-size: 0.8rem;
-    font-weight: 700;
-  }
   .round-panel {
     background: #0D1B2A;
     border: 1px solid #0D1B2A;
@@ -806,17 +769,6 @@ if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.
     0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(50,205,50,0.4); }
     50% { opacity: 0.9; box-shadow: 0 0 12px 4px rgba(50,205,50,0.6); }
   }
-  .firfiria-bar.active {
-    animation: blink-fir 1.4s ease-in-out infinite;
-    border-color: #32CD32 !important;
-  }
-  .fir-chip.has-fir {
-    color: #32CD32 !important;
-    background: transparent !important;
-    border: none !important;
-    font-weight: 700;
-  }
-
   .btn-disabled {
     opacity: 0.35;
     pointer-events: none;
@@ -832,24 +784,26 @@ if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.
     border-radius: var(--radius);
     padding: 8px 10px;
     display: grid;
-    grid-template-columns: 60px minmax(0, 1fr) auto;
+    grid-template-columns: 60px minmax(0, 1fr) 30px auto;
     column-gap: 8px;
     row-gap: 5px;
     align-items: center;
   }
-  /* Οι γραμμές των παικτών μπαίνουν κατευθείαν στο πλέγμα (η 1η γραμμή του πλέγματος = επικεφαλίδα του πλαισίου φιρφιριών, πάντα δεσμευμένη) */
+  /* Οι γραμμές των παικτών μπαίνουν κατευθείαν στο πλέγμα (η 1η γραμμή του πλέγματος = πλαίσιο «Ενεργά φιρφίρια», πάντα δεσμευμένη) */
   .score-bar-row { display: contents; }
-  /* Πλαίσιο φιρφιριών: πάνω από το δεξί μισό της μπάρας· οι μπάρες (z-index 2) ζωγραφίζονται ΠΑΝΩ από αυτό */
-  .fir-box { position: relative; z-index: 1; justify-self: end; align-self: stretch; width: calc(50% - 1px); box-sizing: border-box;
-    display: grid; grid-template-rows: subgrid; align-items: center;
-    background: #000; outline: 2px solid var(--border); outline-offset: -2px; border-radius: var(--radius);
-    color: #32CD32; font-weight: 700; }
+  /* Φιρφίρια: (1) «Ενεργά φιρφίρια: x/y» σε δικό του πλαίσιο στη μόνιμη επάνω γραμμή (πάνω από το δεξί μισό της μπάρας, όπου δεν υπάρχουν μπάρες)·
+     (2) στήλη-πλαίσιο με το πλήθος φιρφιριών κάθε παίκτη, ΜΕΤΑ τη μπάρα και πριν τα τρία νούμερα. Η στήλη κρατά πάντα τον χώρο της (σταθερό μέγεθος μπαρών). */
+  .fir-ac { grid-area: 1 / 2; justify-self: end; width: calc(50% - 1px); display: flex; justify-content: center; align-items: center; min-width: 0; }
+  .fir-ac > span { box-sizing: border-box; max-width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 0.66rem; line-height: 1; font-weight: 700; padding: 3px 9px; border-radius: 7px;
+    background: #000; color: #32CD32; outline: 2px solid var(--border); outline-offset: -2px; }
+  .fir-ac.active > span { animation: blink-fir 1.4s ease-in-out infinite; outline-color: #32CD32; }
+  .fir-ac.none > span { background: transparent; outline: none; color: #9aa3ab; opacity: .75; font-weight: 600; }
+  .fir-box { box-sizing: border-box; display: grid; grid-template-rows: subgrid; align-items: center; align-self: stretch; width: 100%; margin: -4px 0; padding: 4px 0;
+    background: #000; outline: 2px solid var(--border); outline-offset: -2px; border-radius: 10px; color: #32CD32; font-weight: 700; }
   .fir-box.active { animation: blink-fir 1.4s ease-in-out infinite; outline-color: #32CD32; }
-  .fir-box.none { background: transparent; outline: none; color: #9aa3ab; opacity: .75; }
-  .fir-hd { font-size: 0.66rem; line-height: 1; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding: 2px 4px 0; }
-  .fir-n { font-size: 0.8rem; line-height: 1; text-align: right; padding-right: 8px; font-variant-numeric: tabular-nums; }
+  .fir-box.none { visibility: hidden; }
+  .fir-n { font-size: 0.8rem; line-height: 1; text-align: center; font-variant-numeric: tabular-nums; }
   .fir-n.zero { opacity: .4; }
-  .fir-box.none .fir-n { visibility: hidden; }
   .score-bar-name {
     font-size: 0.72rem;
     font-weight: 700;
@@ -977,7 +931,7 @@ if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.
     .stats-card-name { color: black !important; border-bottom-color: #333 !important; }
     .stats-row span:not(.stats-val) { color: black !important; }
     #game-screen { background: white !important; padding: 0 !important; }
-    .top-bar, .firfiria-bar, .round-panel, .history-panel, button { display: none !important; }
+    .top-bar, .round-panel, .history-panel, button { display: none !important; }
     .stats-table th { background: white !important; color: black !important; border-bottom: 2px solid #333 !important; }
     .btn-print { display: none !important; }
     .no-print { display: none !important; }
@@ -3906,7 +3860,9 @@ function updateScoreBoard() {
 
     // Πλαίσιο φιρφιριών: πάνω από το δεξί μισό των μπαρών (θετική πλευρά)· επικεφαλίδα + πλήθος φιρφιριών ανά παίκτη, στη γραμμή της μπάρας του
     let firHd = total > 0 ? `Ενεργά φιρφίρια: ${active}/${total}` : 'Χωρίς Φιρφίρια';
-    let firBox = `<div class="fir-box ${total > 0 ? 'active' : 'none'}" style="grid-column:2;grid-row:1 / span ${players.length + 1}"><div class="fir-hd">${firHd}</div>`
+    let firState = total > 0 ? 'active' : 'none';
+    let firBox = `<div class="fir-ac ${firState}"><span>${firHd}</span></div>`
+      + `<div class="fir-box ${firState}" style="grid-area:2 / 3 / span ${players.length}">`
       + players.map(p => `<div class="fir-n${firfiria[p] > 0 ? '' : ' zero'}">${firfiria[p] || 0}</div>`).join('') + `</div>`;
     barsDiv.innerHTML = firBox + players.map((p, i) => {
       let score = scores[i];
@@ -3929,7 +3885,7 @@ function updateScoreBoard() {
           <div style="position:absolute;left:50%;top:0;bottom:0;width:1px;background:rgba(0,0,0,0.25)"></div>
           <div class="score-bar-fill" style="position:absolute;left:${barLeft}%;width:${barWidth}%;background:${col}"></div>
         </div>
-        <div class="score-bar-val" style="grid-area:${i + 2} / 3;color:${col};font-family:monospace;white-space:nowrap"><span style="display:inline-block;min-width:52px;text-align:right">${scoreStr}</span> <span style="display:inline-block;min-width:52px;text-align:right;font-size:0.85em;opacity:0.8">(${diffStr})</span> <span style="display:inline-block;min-width:52px;text-align:right;font-family:'PrefaNum',system-ui,-apple-system,sans-serif;font-size:0.9rem;line-height:1;margin:-1px 0;font-weight:700;font-variant-numeric:tabular-nums;font-feature-settings:'tnum' 1;color:${virtColor}">${virtStr}</span></div>
+        <div class="score-bar-val" style="grid-area:${i + 2} / 4;color:${col};font-family:monospace;white-space:nowrap"><span style="display:inline-block;min-width:52px;text-align:right">${scoreStr}</span> <span style="display:inline-block;min-width:52px;text-align:right;font-size:0.85em;opacity:0.8">(${diffStr})</span> <span style="display:inline-block;min-width:52px;text-align:right;font-family:'PrefaNum',system-ui,-apple-system,sans-serif;font-size:0.9rem;line-height:1;margin:-1px 0;font-weight:700;font-variant-numeric:tabular-nums;font-feature-settings:'tnum' 1;color:${virtColor}">${virtStr}</span></div>
       </div>`;
     }).join('');
   }
