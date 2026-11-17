@@ -831,14 +831,25 @@ if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.
     border: 1px solid #e0e0e0;
     border-radius: var(--radius);
     padding: 8px 10px;
-  }
-  .score-bar-row {
-    display: flex;
+    display: grid;
+    grid-template-columns: 60px minmax(0, 1fr) auto;
+    column-gap: 8px;
+    row-gap: 5px;
     align-items: center;
-    gap: 8px;
-    margin-bottom: 5px;
   }
-  .score-bar-row:last-child { margin-bottom: 0; }
+  /* Οι γραμμές των παικτών μπαίνουν κατευθείαν στο πλέγμα (η 1η γραμμή του πλέγματος = επικεφαλίδα του πλαισίου φιρφιριών, πάντα δεσμευμένη) */
+  .score-bar-row { display: contents; }
+  /* Πλαίσιο φιρφιριών: πάνω από το δεξί μισό της μπάρας· οι μπάρες (z-index 2) ζωγραφίζονται ΠΑΝΩ από αυτό */
+  .fir-box { position: relative; z-index: 1; justify-self: end; align-self: stretch; width: calc(50% - 1px); box-sizing: border-box;
+    display: grid; grid-template-rows: subgrid; align-items: center;
+    background: #000; outline: 2px solid var(--border); outline-offset: -2px; border-radius: var(--radius);
+    color: #32CD32; font-weight: 700; }
+  .fir-box.active { animation: blink-fir 1.4s ease-in-out infinite; outline-color: #32CD32; }
+  .fir-box.none { background: transparent; outline: none; color: #9aa3ab; opacity: .75; }
+  .fir-hd { font-size: 0.66rem; line-height: 1; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding: 2px 4px 0; }
+  .fir-n { font-size: 0.8rem; line-height: 1; text-align: right; padding-right: 8px; font-variant-numeric: tabular-nums; }
+  .fir-n.zero { opacity: .4; }
+  .fir-box.none .fir-n { visibility: hidden; }
   .score-bar-name {
     font-size: 0.72rem;
     font-weight: 700;
@@ -856,6 +867,7 @@ if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.
     overflow: hidden;
   }
   .score-bar-fill {
+    z-index: 2;
     height: 100%;
     border-radius: 5px;
     transition: width 0.4s ease;
@@ -1784,13 +1796,6 @@ if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.
       <div class="btn-split"><button class="btn btn-stats-blue" id="btn-stats-ingame" onclick="toggleStatsIngame(this)" title="Στατιστικά" aria-label="Στατιστικά"><img src="data:image/webp;base64,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" style="height:1.8em;width:auto;vertical-align:middle;position:relative;top:-1px"></button><button class="btn btn-stats-blue" id="btn-matrix" onclick="openMatrix()" title="Πίνακας συμβολαίων: πόσες αγορές έκανε ο κάθε παίκτης ανά μπάζες και χρώμα, μαζί με Μιζέρια και Φιρφίρια" aria-label="Πίνακας συμβολαίων"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0Ij48cGF0aCBmaWxsPSJub25lIiBzdHJva2U9IiNGRkZGRkYiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIgc3Ryb2tlLXdpZHRoPSIyIiBkPSJNOCAxNmguMDEzbTMuOTk3IDBoLjAwNW00IDBoLjAwNW0tLjAwNS00aC4wMDVtLTguMDEgMGguMDA1bTMuOTk1IDBoLjAwNW00LjAwNS00aC4wMDVtLTguMDEgMGguMDA1bTMuOTk1IDBoLjAwNU03IDRINmEyIDIgMCAwIDAtMiAydjEyYTIgMiAwIDAgMCAyIDJoMU0xNyA0aDFhMiAyIDAgMCAxIDIgMnYxMmEyIDIgMCAwIDEtMiAyaC0xIi8+PC9zdmc+" alt="Πίνακας" style="height:1.8em;width:1.8em;vertical-align:middle;position:relative;top:-1px"></button></div>
       <button class="btn btn-danger" id="btn-end" onclick="endGameClick()" style="color:#000000"><img src="data:image/webp;base64,UklGRoAHAABXRUJQVlA4WAoAAAAQAAAAWAAAXwAAQUxQSCEHAAAB8EVrmyFp27btgdO2z8u2bdu2bdu2bdu2beu03TzP84ojjn3h7IjKyryxGhETgDIa9Bzb2tzSZnPruJ4w+E9p0GsGM2f2+s8yjdqWcvr/b8b5Yqx3plLGOQCFGABwzlTFeAAd1z65O2pD7+cvXK8TAG+qYB3QbpM7/ib7FtFHyBF3bOwBZ8tmHDDszF9J6tQ+hUwLkeTPZwwFnCmVAxa6YSYZg3BmMTOpMURyxo0LAq481qD/1Y1kiKTWgWQMZOPV/WBtSTxw6HgyKFk3UgM57iDAl8E4LP4WGZRt1o3UQL6+GJypmwUObmBQJktAqrDhQMDWyaHjfaQwsxSkkHe0h6uLx5BPGZSlowo/HAxXB49lRjAwv7DptZD/8u8l4AvzWH0aA2uMoZi+c/mv1sDAySvBF+SwyiwK86OQjb0LMN0+ICmaR+GMFeAKcVhyKoXZKuT4a1e2tgBgxSsnkKJZFE5aBK4Ai0EjKcwWcuRxvQGYQoA+J44iJYvCP/sYW5Nx7T9lYK4KWy7oAXhbkPVAz/MaKZrDwPe8M7V43MnA3Kh8fUnAG6AgwHhgsVepMYeBN8HX4LAXA3OF4WTAG8xbFGA8cFKg5DBwZ7gsaxZoiJojnLAerEXbxQHWYv0JlJwYpw8xNsfhTQozA39eEB7pegAeC/3CkEHhC3AZDvswMFP4bT94lAQe/b+nZDBwR7iEsT3Ga8wQ/tofDqWBQ/9fKRlRR3a2pi2PixmYjpy0ABxKBIf5J2lMMfB0+DasGdwYNaUS1oZHqeCxroimVKf3MWYejysZmA48Bu1QMnicxJBi4DnwAAz6zlRNCV+BR+ng8SYlFXVSd2MAj+MZmNTYMNzYClizQFPUBIUHwwPG/awxJTwFHhWAx5mUDP0cFg7rMDIZ9Z+O1lTC2M6jNSaoujycx80MKeFB8KgEPI6gpAIvhUf7kYyJyFEdjamIMV3GMyYif3EGq1KZDDwbHhWBx8UMCaouBZzBkFCdMz9sZSwW/VdTgUcBr1ISwjdhURlYfEjJeAJdx1ETgUcYXyGPkxgSkX+0X1GYVlkctkIWy6smlHMW248xEfmHg6mQQYfRjG1Rud3llETg43CoEBxepCSEpz+TdSZ8pTwuZsi4+wvGhHCnyu2bEfnGCGpCuRpcpRw2YMz4blpKKQvDFjZVo7YZdVpxFssyrRzRzKSyeRBMYTOZOaseCwZqamJLTuOA4nqObJjV0OashlE96zC4Jachq2lgUYDp279fsn9fg6INBjalyNZGamr2MNiiSmoxbE5K2TAlJy5WB5Ndj8U1Z/JfKSrXhCusnA5rMTL152eMCeEu8JXy2I2SiPzkKUoi8MzKncOQED5xWdbjcJVyeCrrkn0ZE5G/O1TZwP/FmIjcayVhWmUx2ApZLBWVaVm+6zhqIvBw4yvkzdEMicgxnfEaJSF8DbZCFm9TEsKXgDMZEsqWobCVsZh/DjUReAqwOmOCgafAV8bjbAYmlSsDHUYzJiL/am9MRYzpNJIxETmivfG4TUOCwj3hK+JxIIXJwBvgHdZjTEX9xVtTCWM7/KUxFbkmHIz/nTFB4VHwlfA4mcJk1J+cATxOY0hpnD7A2gpYM7QhairweHjAYECDaoLCJ+Ar4PEihUnVGX2MAeBwA0OKgfvDl87jSAamA6+ABwBrhrdETam0LANXMo9V5oqmNDYMMnYeOFzDkGLkX/3gSuUwdAwj04EXw6FNY/tOjTFF4Rdd4Urk0PsHCtMxTuhpTVtwOJQhg4HvdYUrjUfvLyjMDNwHDmlnPqJkMPDT/vAl8Rj2LQMzhW/BIdNisVbRDAb+uQKcKYF1WGsMAzM1Ni5gbA48jmDIobBpP8CbOhkPHDGHwtx/uR8c8j0eZ8hhJB8aBDhTB+OB+Z8hI3MD74VHjcZ2+ZGSQxVOOro94G1B1gOdT5lOUeYKv+jgTC2wWGgKJYcU8od9OgLWW1ODsd4AXQ/9gxRmC8cNhUXtDmu0MGZRhfz99IUAwHnvnLXWOe8tACx+/ghSlNmRM5eHQ5Eem8xlzCKjkK1vHL9cR+R3Xvm09/4lJTJf2LwWPIr12LyVkkfGQJIjX7rqiK3XXGGZFdfe7uhrXxtDkiGyRmHDuvAo2mOdqQw1kCqBtQdR1ho4bmV4FO+xxK8MWsO8UUIQVWqUECSydg38ZgF41NOj93PUWFvdhXykKxzq64AzAoOWSgNbjwUs6m0sVv+KlPJoID9cDs6ghB7tzphFipZChZx6nIFHOS2w0P1CBq1bDOScW4fCWJTVeGDFR+eSIloHlUi23rMU4FBm64AlrxxNUkLUAlRCJPn3pYsCzqDk1gHddnl6BucViVGVpGoUiZx3yiPbdgacRQWtA9B/u+s+m87ap3x45Za9AXiLihrvAGDwBkff9PK3o2e0zm2dMerrF64/fJ3+AOCcQV0BAFZQOCA4AAAAsAQAnQEqWQBgAD5RKJJHI6KhoSDoAHAKCWkAAAd2VXy9xp7yb6dOnTp06dN8AAD+/PhAAAAAAAA=" style="height:1.8em;width:auto;vertical-align:middle;position:relative;top:-1px;margin-right:12px">Λήξη</button>
     </div>
-  </div>
-
-  <!-- Φιρφίρια: ακριβώς πάνω από τα πλαίσια των παικτών (το αριστερό περιθώριο ρυθμίζεται από την alignFirBar) -->
-  <div class="firfiria-bar" id="firfiria-bar" style="display:none">
-    <span class="firfiria-label">Φιρφίρια:</span>
-    <div class="firfiria-chips" id="firfiria-chips"></div>
-    <span class="active-fir" id="active-fir-badge"></span>
   </div>
 
   <div class="scores-grid" id="scores-grid"></div>
@@ -3785,20 +3790,8 @@ function getActiveFirfiria() {
 function updateScoreBoard() {
   let total = Object.values(firfiria).reduce((a,b) => a+b, 0);
   let active = getActiveFirfiria();
-  const fbar = document.getElementById('firfiria-bar');
-  if (total > 0) {
-    fbar.style.display = 'flex';
-    fbar.classList.add('active');
-    let chips = players.filter(p => firfiria[p] > 0).map(p =>
-      `<span class="fir-chip has-fir">${p}: ${firfiria[p]}</span>`).join('');
-    document.getElementById('firfiria-chips').innerHTML = chips;
-    document.getElementById('active-fir-badge').textContent = `Ενεργά: ${active}/${total}`;
-    startFirfiriaTimer(active);
-  } else {
-    fbar.style.display = 'none';
-    fbar.classList.remove('active');
-    stopFirfiriaTimer();
-  }
+  // Ήχος/υπενθύμιση φιρφιριών (το πλαίσιο των φιρφιριών ζωγραφίζεται πάνω στις μπάρες, παρακάτω)
+  if (total > 0) startFirfiriaTimer(active); else stopFirfiriaTimer();
 
   const grid = document.getElementById('scores-grid');
   grid.innerHTML = '';
@@ -3879,7 +3872,6 @@ function updateScoreBoard() {
     gCells += v(9, stlOn ? stlEq(stlN, stlW) : '–', netColor);
   });
   grid.innerHTML = gBg + gCells;
-  alignFirBar();
 
   // Ραβδόγραμμα σκορ
   let barsDiv = document.getElementById('score-bars');
@@ -3912,7 +3904,11 @@ function updateScoreBoard() {
       }
     });
 
-    barsDiv.innerHTML = players.map((p, i) => {
+    // Πλαίσιο φιρφιριών: πάνω από το δεξί μισό των μπαρών (θετική πλευρά)· επικεφαλίδα + πλήθος φιρφιριών ανά παίκτη, στη γραμμή της μπάρας του
+    let firHd = total > 0 ? `Ενεργά φιρφίρια: ${active}/${total}` : 'Χωρίς Φιρφίρια';
+    let firBox = `<div class="fir-box ${total > 0 ? 'active' : 'none'}" style="grid-column:2;grid-row:1 / span ${players.length + 1}"><div class="fir-hd">${firHd}</div>`
+      + players.map(p => `<div class="fir-n${firfiria[p] > 0 ? '' : ' zero'}">${firfiria[p] || 0}</div>`).join('') + `</div>`;
+    barsDiv.innerHTML = firBox + players.map((p, i) => {
       let score = scores[i];
       let diff = diffs[i];
       let centerPct = 50;
@@ -3928,12 +3924,12 @@ function updateScoreBoard() {
       let virtColor = virt >= 0 ? '#2E7D32' : '#C62828';
       let col = barColors[i];
       return `<div class="score-bar-row">
-        <div class="score-bar-name" style="color:${col}">${p}</div>
-        <div class="score-bar-track" style="position:relative">
+        <div class="score-bar-name" style="grid-area:${i + 2} / 1;color:${col}">${p}</div>
+        <div class="score-bar-track" style="grid-area:${i + 2} / 2;position:relative">
           <div style="position:absolute;left:50%;top:0;bottom:0;width:1px;background:rgba(0,0,0,0.25)"></div>
           <div class="score-bar-fill" style="position:absolute;left:${barLeft}%;width:${barWidth}%;background:${col}"></div>
         </div>
-        <div class="score-bar-val" style="color:${col};font-family:monospace;white-space:nowrap"><span style="display:inline-block;min-width:52px;text-align:right">${scoreStr}</span> <span style="display:inline-block;min-width:52px;text-align:right;font-size:0.85em;opacity:0.8">(${diffStr})</span> <span style="display:inline-block;min-width:52px;text-align:right;font-family:'PrefaNum',system-ui,-apple-system,sans-serif;font-size:0.9rem;line-height:1;margin:-1px 0;font-weight:700;font-variant-numeric:tabular-nums;font-feature-settings:'tnum' 1;color:${virtColor}">${virtStr}</span></div>
+        <div class="score-bar-val" style="grid-area:${i + 2} / 3;color:${col};font-family:monospace;white-space:nowrap"><span style="display:inline-block;min-width:52px;text-align:right">${scoreStr}</span> <span style="display:inline-block;min-width:52px;text-align:right;font-size:0.85em;opacity:0.8">(${diffStr})</span> <span style="display:inline-block;min-width:52px;text-align:right;font-family:'PrefaNum',system-ui,-apple-system,sans-serif;font-size:0.9rem;line-height:1;margin:-1px 0;font-weight:700;font-variant-numeric:tabular-nums;font-feature-settings:'tnum' 1;color:${virtColor}">${virtStr}</span></div>
       </div>`;
     }).join('');
   }
@@ -5855,15 +5851,6 @@ function endGame() {
 }
 
 
-// Το πλαίσιο «Φιρφίρια» ευθυγραμμίζεται με τις στήλες των παικτών (αφήνει κενό όσο η στήλη των περιγραφών)
-function alignFirBar() {
-  const g = document.getElementById('scores-grid'), b = document.getElementById('firfiria-bar');
-  if (!g || !b) return;
-  const cs = getComputedStyle(g);
-  const w = parseFloat(cs.gridTemplateColumns.split(' ')[0]) || 0;
-  b.style.marginLeft = (w + (parseFloat(cs.columnGap) || 0)) + 'px';
-}
-window.addEventListener('resize', alignFirBar);
 
 // Tooltip των περιγραφών στα ταμπελάκια (δικό μας, για να έχει μεγάλα γράμματα· το native title δεν αλλάζει μέγεθος)
 (function () {
