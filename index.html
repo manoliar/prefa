@@ -5002,7 +5002,7 @@ function checkTotal() {
   } else {
     total = getBazesVal('bg-tzog') + getBazesVal('bg-def1') + getBazesVal('bg-def2');
   }
-  // Δείκτης μπαζών τζογαδόρου (ανάμεσα στο 5 και 6): λευκός κύκλος = ίσες, κόκκινο βέλος ▼ = λιγότερες, πράσινο βέλος ▲ = περισσότερες από το συμβόλαιο
+  // Δείκτης μπαζών τζογαδόρου (ανάμεσα στο 5 και 6): λευκό «cheers» (🥂) = ίσες, κόκκινο βέλος ▼ = λιγότερες, πράσινο βέλος ▲ = περισσότερες από το συμβόλαιο
   // (το ίδιο βέλος με τη λωρίδα του τελικού σκορ). Το ύψος του βέλους = ύψος των κουτιών των μπαζών, ώστε να μη μεγαλώνει η γραμμή.
   let underDot = document.getElementById('bg-tzog-under-dot');
   if (underDot) {
@@ -5011,8 +5011,9 @@ function checkTotal() {
       let th = (underDot.closest('.bazes-row') || document).querySelector('.bazes-tick');
       th = th ? th.offsetHeight : 30;
       if (bT === cB) {
-        underDot.style.cssText = 'display:inline-block;width:0.9em;height:0.9em;border-radius:50%;background:#ffffff';
-        underDot.innerHTML = '';
+        let gs = Math.round(th * 0.8);
+        underDot.style.cssText = 'display:inline-block;width:' + gs + 'px;height:' + gs + 'px;line-height:0';
+        underDot.innerHTML = '<img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxZW0iIGhlaWdodD0iMWVtIiB2aWV3Qm94PSIwIDAgMjU2IDI1NiI+PHBhdGggZmlsbD0iI2ZmZmZmZiIgZD0ibTIxNSAyMTcuOGwtMjEuNSA1Ljc3bC0xMi4zNS00Ni4wNmEzNi4wNiAzNi4wNiAwIDAgMCAyMS42Ni00Mi44NGMtMTIuNDUtNDYuNDMtMzguMzEtODcuMTItMzkuNC04OC44M2E0IDQgMCAwIDAtNC40MS0xLjcybC0yNi45NCA2LjczYy4yMy0xMS41My0uMDktMTguODQtLjA5LTE5YTQgNCAwIDAgMC0zLTMuN2wtMzItOGE0IDQgMCAwIDAtNC4zNCAxLjcyYy0xLjA5IDEuNzEtMjYuOTUgNDIuNC0zOS40IDg4LjgzYTM2LjA2IDM2LjA2IDAgMCAwIDIxLjY2IDQyLjg0bC0xMi4zNSA0Ni4wM0w0MSAxOTMuOGE0IDQgMCAwIDAtMiA3LjczbDQ4IDEyLjg2YTMuOCAzLjggMCAwIDAgMSAuMTRhNCA0IDAgMCAwIDEtNy44NmwtMTguNzctNWwxMi4zNS00Ni4wN2EzNS44IDM1LjggMCAwIDAgNDAuMTgtMjYuMzRjMS4yLTQuOTIgMi4yNS05Ljg3IDMuMTctMTQuODFhMjc1IDI3NSAwIDAgMCA3LjI1IDM4Ljg5QTM2LjA2IDM2LjA2IDAgMCAwIDE2OCAxODBhMzUgMzUgMCAwIDAgNS4zOC0uNDNsMTIuMzUgNDYuMDdsLTE4Ljc3IDVhNCA0IDAgMCAwIDEgNy44NmEzLjggMy44IDAgMCAwIDEtLjE0bDQ4LTEyLjg2YTQgNCAwIDAgMC0xLjk2LTcuN00xNTguMTMgNTIuNTljMi43OSA0LjYgOS4xMSAxNS40IDE2LjA3IDI5Ljc0bC00MiAxMC41Yy0uODEtMTQuNTgtLjYxLTI2LjMxLS40LTMyLjI4di0xLjM5Wm0tNjAuMjYtMjRsMjYuMjMgNi41NmMuMDkgNCAuMTcgMTEuNzctLjE3IDIxLjg3Yy0uMDYgMS4xOC0uMTUgMy4wOS0uMjIgNS42M3MtLjI3IDUuMjYtLjQ1IDhMODAuOTQgNjAuMTFDODguMjQgNDQuODggOTUgMzMuMzggOTcuODcgMjguNTlNODAuNzYgMTQ3QTI4IDI4IDAgMCAxIDYxIDExMi43NUEzMDAgMzAwIDAgMCAxIDc3LjUgNjcuNWw0NS4xNCAxMS4yOGEzMjAgMzIwIDAgMCAxLTcuNTkgNDguNDZBMjggMjggMCAwIDEgODAuNzYgMTQ3bTYwLjE5IDQuMmEyODMgMjgzIDAgMCAxLTguMi01MC4zbDQ0LjkzLTExLjJBMzAyLjQgMzAyLjQgMCAwIDEgMTk1IDEzNi43NWEyOCAyOCAwIDAgMS01NCAxNC40OVptNDcuNDctMTA5LjQxYTQgNCAwIDAgMSAxLjc5LTUuMzdsMTYtOGE0IDQgMCAxIDEgMy41OCA3LjE2bC0xNiA4YTQgNCAwIDAgMS01LjM3LTEuNzlNMjI4IDcyYTQgNCAwIDAgMS00IDRoLTE2YTQgNCAwIDAgMSAwLThoMTZhNCA0IDAgMCAxIDQgNE0zNi40MiAyMi4yMWE0IDQgMCAwIDEgNS4zNy0xLjc5bDE2IDhhNCA0IDAgMCAxLTMuNTggNy4xNmwtMTYtOGE0IDQgMCAwIDEtMS43OS01LjM3TTQwIDY4SDI0YTQgNCAwIDAgMSAwLThoMTZhNCA0IDAgMCAxIDAgOCIvPjwvc3ZnPg==" alt="" style="display:block;width:100%;height:100%">';
       } else {
         let up = bT > cB;
         underDot.style.cssText = 'display:inline-block;width:' + Math.round(th / 2) + 'px;height:' + th + 'px;line-height:0;animation:sgb-pulse 1.5s ease-in-out infinite';
