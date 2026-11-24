@@ -5080,12 +5080,15 @@ function checkTotal() {
 
   // Υπολογισμός αξίας μπάζας (με την εξαίρεση: x δεν ξεπερνά το άθροισμα όλων των κασών)
   let bazaHtml = '';
+  let totalKasaLimit = activePlayersNow().reduce((a,p) => a + kasa[p], 0);   // «Όριο κάσας»
+  let limitRed = false;   // το συμβόλαιο αντιστοιχεί σε κάσα μεγαλύτερη από το όριο
   if (ct !== 'firfiria') {
     let suitVal = getContractSuit();
     let cBazes = getContractBazes();
     if (cBazes > 0) {
       let pureVal = suitVal + (cBazes - 6) * 5;
-      let totalKasaAll = activePlayersNow().reduce((a,p) => a + kasa[p], 0);
+      let totalKasaAll = totalKasaLimit;
+      limitRed = pureVal > totalKasaLimit;
       let x = Math.min(pureVal, totalKasaAll);   // εξαίρεση
       let xx = getActiveFirfiria();               // ενεργά φιρφίρια
       let zz = x + xx;
@@ -5093,12 +5096,16 @@ function checkTotal() {
     }
   }
 
+  // Τρία τμήματα στην ίδια γραμμή: αριστερά οι μπάζες, στο κέντρο το «Όριο κάσας», δεξιά η αξία μπάζας
+  const barRow = (left) => `<span style="display:grid;grid-template-columns:1fr auto 1fr;align-items:center;column-gap:6px"><span style="white-space:nowrap;justify-self:start">${left}</span>` +
+    `<span id="kasa-limit" style="text-align:center;white-space:nowrap;font-weight:800;color:${limitRed ? '#C62828' : '#0d3d12'}">Όριο κάσας: ${totalKasaLimit}</span>` +
+    `<span style="white-space:nowrap;justify-self:end">${bazaHtml.replace('float:right;', '')}</span></span>`;
   if (p1 && p2) {
-    el.innerHTML = 'Και οι δύο Πάσο — χωρίς έλεγχο μπαζών' + bazaHtml;
+    el.innerHTML = barRow('Και οι δύο Πάσο — χωρίς έλεγχο μπαζών');
     el.className = 'total-check total-ok';
     return;
   }
-  el.innerHTML = `Επιλεγμένες μπάζες: ${total} / 10` + bazaHtml;
+  el.innerHTML = barRow(`Επιλεγμένες μπάζες: ${total} / 10`);
   el.className = `total-check ${total === 10 ? 'total-ok' : 'total-bad'}`;
 }
 
@@ -5375,15 +5382,19 @@ let mizType2 = ct === 'mizeria' ? 'Μιζέρια' : 'Ανοιχτή Μιζέρ�
       // Ο αμυνόμενος που μπήκε μέσα πληρώνει ΚΑΙ τον τζογ ΚΑΙ τον άλλο αμυνόμενο
       let msg = `<b>Ο παίκτης ${tzog} έβγαλε ${bTzog} μπάζες.</b>\n♦ Η Κάσα ΔΕΝ κατεβαίνει\n`;
 
-      let bazaStrDef = activeFir > 0 ? `[${pureVal}+${activeFir}]` : `[${pureVal}]`;
+      // Η αξία μπάζας δεν μπορεί να ξεπεράσει τη συνολική κάσα όλων των παικτών (όπως στον τζογαδόρο που βγαίνει/μπαίνει μέσα)
+      let totalKasaAllDef = activePlayersNow().reduce((a,p) => a + kasa[p], 0);
+      let effectivePureValDef = Math.min(pureVal, totalKasaAllDef);
+      let effectiveContractValueDef = effectivePureValDef + activeFir;
+      let bazaStrDef = activeFir > 0 ? `[${effectivePureValDef}+${activeFir}]` : `[${effectivePureValDef}]`;
 
       const penalizeDefender = (badDef, goodDef, bBad, bGood, bTzogLocal, under) => {
         if (under <= 0) return;
         if (hfDefIn.indexOf(badDef) === -1) hfDefIn.push(badDef);   // φίλτρο ιστορικού: ποιος αμυνόμενος μπήκε μέσα
         let mult = getMultiplier(under);
         let term = getTerminology(under);
-        let payToTzog = bTzogLocal * contractValue * mult;
-        let payToGood = bGood * contractValue * mult;
+        let payToTzog = bTzogLocal * effectiveContractValueDef * mult;
+        let payToGood = bGood * effectiveContractValueDef * mult;
 
         kapikia[badDef] -= (payToTzog + payToGood);
         kapikia[tzog] += payToTzog;
@@ -5410,9 +5421,9 @@ let mizType2 = ct === 'mizeria' ? 'Μιζέρια' : 'Ανοιχτή Μιζέρ�
         let n1 = Math.ceil(underTotal / 2);
         let n2 = Math.floor(underTotal / 2);
         let mult1 = getMultiplier(n1);
-        let pay1 = bTzog * contractValue * mult1;
+        let pay1 = bTzog * effectiveContractValueDef * mult1;
         let mult2 = n2 > 0 ? getMultiplier(n2) : 0;
-        let pay2 = n2 > 0 ? bTzog * contractValue * mult2 : 0;
+        let pay2 = n2 > 0 ? bTzog * effectiveContractValueDef * mult2 : 0;
         let total = pay1 + pay2;
         kapikia[taker] -= total;
         kapikia[tzog] += total;
