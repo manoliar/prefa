@@ -20,6 +20,8 @@ self.addEventListener('activate', (e) => {
 
 self.addEventListener('fetch', (e) => {
   if (e.request.method !== 'GET') return;
+  // Ραδιόφωνο/stream: ποτέ μέσω service worker (άπειρη ροή, δεν γίνεται cache)
+  if (e.request.destination === 'audio' || e.request.destination === 'video' || e.request.headers.has('range') || /radiojar\.com$/.test(new URL(e.request.url).hostname)) return;
   // Network-first: πάντα φρέσκια έκδοση όταν υπάρχει σύνδεση, cache όταν είμαστε offline
   e.respondWith(
     fetch(e.request)

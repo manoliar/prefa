@@ -40,7 +40,7 @@
   "browserRequirements": "Requires JavaScript. Chrome ή Edge για φωνητικές εντολές.",
   "screenshot": "https://manoliar.github.io/prefa/prefa-screenshot.jpg",
   "image": "https://manoliar.github.io/prefa/prefa-og-v3.jpg",
-  "softwareVersion": "2026.11.25",
+  "softwareVersion": "2026.11.25.01",
   "author": {"@type": "Person", "name": "manoliar"},
   "offers": {"@type": "Offer", "price": "0", "priceCurrency": "EUR"}
 }
@@ -761,6 +761,16 @@ if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.
     width: 100%;
   }
   #tzog-section > div:first-child { flex: 1 1 auto; min-width: 0; }
+  #tzog-section { position: relative; }
+  /* Ραδιόφωνο: μικρό εικονίδιο που κινείται σε αχνή οριζόντια γραμμή (slider) στον κενό χώρο ανάμεσα στους τζογαδόρους και τα Φιρφίρια */
+  #radio-box { position: absolute; height: 16px; display: none; touch-action: none; cursor: pointer; user-select: none; -webkit-user-select: none; z-index: 2; }
+  #radio-line { position: absolute; left: 0; right: 0; top: 50%; height: 2px; margin-top: -1px; background: #2F7BEA; opacity: .3; border-radius: 2px; transition: opacity .2s; pointer-events: none; }
+  #radio-box.drag #radio-line { opacity: .75; }
+  #radio-ico { position: absolute; top: 50%; left: 0; width: 14px; height: 14px; margin-top: -7px; color: #2F7BEA; opacity: .55; background: #0d1b2a; border-radius: 4px; pointer-events: none; transition: opacity .2s; }
+  #radio-ico svg { width: 100%; height: 100%; display: block; }
+  #radio-box.on #radio-ico { opacity: 1; }
+  #radio-box.loading #radio-ico { animation: radioPulse 1s ease-in-out infinite; }
+  @keyframes radioPulse { 0%,100% { opacity: 1; } 50% { opacity: .35; } }
 
   /* Suit colors */
   .suit-black { color: #1a1a1a !important; }
@@ -1236,7 +1246,7 @@ if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.
     <div style="display:flex;align-items:flex-end;justify-content:center;gap:16px;margin-top:8px">
       <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxZW0iIGhlaWdodD0iMWVtIiB2aWV3Qm94PSIwIDAgMjQgMjQiPjxwYXRoIGZpbGw9IiMwMEE0RUYiIGQ9Ik0zIDEyVjYuNzVsNi0xLjMydjYuNDh6bTE3LTl2OC43NWwtMTAgLjE1VjUuMjF6TTMgMTNsNiAuMDl2Ni44MWwtNi0xLjE1em0xNyAuMjVWMjJsLTEwLTEuOTFWMTMuMXoiLz48L3N2Zz4=" alt="Windows" style="height:26px;width:26px">
       <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxZW0iIGhlaWdodD0iMWVtIiB2aWV3Qm94PSIwIDAgMjQgMjQiPjxwYXRoIGZpbGw9IiMzRERDODQiIGQ9Ik0xOC40NCA1LjU1OXEtMS4wMTUgMS43NDgtMi4wMjggMy40OThxLS4wNTUtLjAyMy0uMTExLS4wNDNhMTIuMSAxMi4xIDAgMCAwLTguNjguMDMzQzcuNTM3IDguODk3IDUuODY4IDYuMDI2IDUuNiA1LjU2YTEgMSAwIDAgMC0uMTQxLS4xOWExLjEwNCAxLjEwNCAwIDAgMC0xLjc2OCAxLjI5OGMxLjk0NyAzLjM3LS4wOTYtLjIxNiAxLjk0OCAzLjM2Yy4wMTcuMDMtLjQ5NS4yNjMtMS4zOTMgMS4wMTdDMi45IDEyLjE3Ni40NTIgMTQuNzcyIDAgMTguOTloMjRhMTEuNyAxMS43IDAgMCAwLS43NDYtMy4wNjhhMTIuMSAxMi4xIDAgMCAwLTIuNzQtNC4xODRhMTIgMTIgMCAwIDAtMi4xMzEtMS42ODdjLjY2LTEuMTIyIDEuMzEyLTIuMjU2IDEuOTY1LTMuMzg1YTEuMTEgMS4xMSAwIDAgMC0uMDA4LTEuMTJhMS4xIDEuMSAwIDAgMC0uODUyLS41MzJjLS41MjItLjA1NC0uOTM5LjMxMy0xLjA0OS41NDVtLS4wNCA4LjQ2Yy4zOTUuNTkzLjMyNCAxLjMzMS0uMTU2IDEuNjVjLS40OC4zMi0xLjE4OC4xLTEuNTgyLS40OTNzLS4zMjQtMS4zMy4xNTYtMS42NWMuNDczLS4zMTYgMS4xODItLjExIDEuNTgyLjQ5NG0tMTEuMTkzLS40OTJjLjQ4LjMyLjU1IDEuMDU4LjE1NiAxLjY1Yy0uMzk0LjU5My0xLjEwMy44MTUtMS41ODQuNDk1Yy0uNDgtLjMyLS41NS0xLjA1OC0uMTU2LTEuNjVjLjQtLjYwMyAxLjEwOS0uODExIDEuNTg0LS40OTUiLz48L3N2Zz4=" alt="Android" style="height:26px;width:26px">
-      <span class="logo-sub" style="font-size:0.7rem;line-height:1;margin:0;padding-bottom:3px">version 2026.11.25</span>
+      <span class="logo-sub" style="font-size:0.7rem;line-height:1;margin:0;padding-bottom:3px">version 2026.11.25.01</span>
     </div>
 
   </div>
@@ -1761,7 +1771,7 @@ if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.
       <button id="voice-toggle" onclick="toggleVoiceCommands()" title="Φωνητικές εντολές on/off" style="background:none;border:none;cursor:pointer;padding:0;user-select:none;display:flex;align-items:center;position:relative;"><img id="voice-mic-img" src="" style="height:2.4em;width:2.4em;object-fit:contain;opacity:1;transition:opacity 0.2s"><svg id="voice-ring" class="vring" viewBox="0 0 100 100" style="display:none"><circle cx="50" cy="50" r="46" fill="none" stroke="#FF4081" stroke-width="5" stroke-linecap="round" transform="rotate(-90 50 50)" pathLength="100" stroke-dasharray="100" stroke-dashoffset="0"></circle></svg></button>
       <span style="display:inline-flex;flex-direction:column;align-items:flex-start;">
         <span id="game-clock" onclick="gameClockClick()" title="Κλικ: παύση/συνέχεια · Διπλό κλικ: μηδενισμός" style="display:inline-flex;align-items:center;font-family:'Courier New',monospace;font-weight:800;font-size:1.1rem;line-height:0.85;color:#40C4FF;background:none;border:none;padding:0;letter-spacing:1px;cursor:pointer;user-select:none">00:00:00</span>
-        <span id="notify-clock" style="display:inline-flex;align-items:center;font-family:'Courier New',monospace;font-weight:800;font-size:1.1rem;line-height:0.85;color:#40C4FF;background:none;border:none;padding:0;margin-top:-2px;letter-spacing:1px;user-select:none"><span id="notify-h" ondblclick="editNotifyHours()" title="Διπλό κλικ: αλλαγή ωρών" style="cursor:pointer">24</span>:<span id="notify-m" ondblclick="editNotifyMins()" title="Διπλό κλικ: αλλαγή λεπτών" style="cursor:pointer">00</span><span style="visibility:hidden">:</span><span id="notify-sound-toggle" onclick="toggleNotifySound()" title="Ήχος ειδοποίησης: καμπανάκι — κλικ για φωνή" style="margin-left:3px;display:inline-flex;align-items:center;cursor:pointer;font-size:1.05em;line-height:1"><span id="notify-bell-emoji" style="display:inline-flex"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxZW0iIGhlaWdodD0iMWVtIiB2aWV3Qm94PSIwIDAgMjU2IDI1NiI+PHBhdGggZmlsbD0iIzQwQzRGRiIgZD0iTTIyNS44MSA3NC42NUExMS44NiAxMS44NiAwIDAgMSAyMjAuMyA3NmExMiAxMiAwIDAgMS0xMC42Ny02LjQ3YTkwLjEgOTAuMSAwIDAgMC0zMi0zNS4zOGExMiAxMiAwIDEgMSAxMi44LTIwLjI5YTExNS4yNSAxMTUuMjUgMCAwIDEgNDAuNTQgNDQuNjJhMTIgMTIgMCAwIDEtNS4xNiAxNi4xN000Ni4zNyA2OS41M2E5MC4xIDkwLjEgMCAwIDEgMzItMzUuMzhBMTIgMTIgMCAxIDAgNjUuNiAxMy44NmExMTUuMjUgMTE1LjI1IDAgMCAwLTQwLjU0IDQ0LjYyYTEyIDEyIDAgMCAwIDUuMTMgMTYuMTdBMTEuODYgMTEuODYgMCAwIDAgMzUuNyA3NmExMiAxMiAwIDAgMCAxMC42Ny02LjQ3bTE3My41MSA5OC4zNUEyMCAyMCAwIDAgMSAyMDQgMjAwaC0zMi4xOWE0NCA0NCAwIDAgMS04Ny42MiAwSDUyYTIwIDIwIDAgMCAxLTE1LjkxLTMyLjEyYzcuMTctOS4zMyAxNS43My0yNi42MiAxNS44OC01NS45NEE3NiA3NiAwIDAgMSAyMDQgMTEyYy4xNSAyOS4yNiA4LjcxIDQ2LjU1IDE1Ljg4IDU1Ljg4TTE0Ny42IDIwMGgtMzkuMmEyMCAyMCAwIDAgMCAzOS4yIDBtNDguNzQtMjRjLTguMTYtMTMtMTYuMTktMzMuNTctMTYuMzQtNjMuOTRBNTIgNTIgMCAxIDAgNzYgMTEyYy0uMTUgMzAuNDItOC4xOCA1MS0xNi4zNCA2NFoiLz48L3N2Zz4=" alt="" class="snd-ic" style="height:0.95em;width:0.95em;display:block"></span><span id="notify-face-emoji" style="display:none"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxZW0iIGhlaWdodD0iMWVtIiB2aWV3Qm94PSIwIDAgMjQgMjQiPjxwYXRoIGZpbGw9IiM0MEM0RkYiIGQ9Ik0xMiAyQzYuNDg2IDIgMiA2LjQ4NiAyIDEyczQuNDg2IDEwIDEwIDEwczEwLTQuNDg2IDEwLTEwUzE3LjUxNCAyIDEyIDJtMCAxOGMtNC40MTEgMC04LTMuNTg5LTgtOGMwLTEuMTY4LjI1OC0yLjI3NS43MDktMy4yNzZxLjIzMi4xMzUuNDU2LjI3NmMuMzk2LjI1Ljc5MS41IDEuMjg2LjY4OGMuNDk0LjE4NyAxLjA4OC4zMTIgMS44NzkuMzEyYy43OTIgMCAxLjM4Ni0uMTI1IDEuODgxLS4zMTNzLjg5MS0uNDM3IDEuMjg3LS42ODdzLjc5Mi0uNSAxLjI4Ny0uNjg4UzEzLjg3MyA4IDE0LjY2NSA4czEuMzg2LjEyNSAxLjg4LjMxM2MuNDk1LjE4Ny44OTEuNDM3IDEuMjg3LjY4N3MuNzkyLjUgMS4yODcuNjg4cS4yNjkuMDk5LjU4MS4xNzFjLjE5MS42ODIuMyAxLjM5OC4zIDIuMTQxYzAgNC40MTEtMy41ODkgOC04IDgiLz48Y2lyY2xlIGN4PSI4LjUiIGN5PSIxMi41IiByPSIxLjUiIGZpbGw9IiM0MEM0RkYiLz48Y2lyY2xlIGN4PSIxNS41IiBjeT0iMTIuNSIgcj0iMS41IiBmaWxsPSIjNDBDNEZGIi8+PC9zdmc+" alt="" class="snd-ic" style="height:0.95em;width:0.95em;display:block"></span></span></span>
+        <span id="notify-clock" style="display:inline-flex;align-items:center;font-family:'Courier New',monospace;font-weight:800;font-size:1.1rem;line-height:0.85;color:#40C4FF;background:none;border:none;padding:0;margin-top:-2px;letter-spacing:1px;user-select:none"><span id="notify-h" ondblclick="editNotifyHours()" title="Αλλαγή ωρών για την λήξη του χρονικού ορίου της φωνητικής ειδοποίησης." style="cursor:pointer">24</span>:<span id="notify-m" ondblclick="editNotifyMins()" title="Αλλαγή λεπτών για την λήξη του χρονικού ορίου της φωνητικής ειδοποίησης." style="cursor:pointer">00</span><span style="visibility:hidden">:</span><span id="notify-sound-toggle" onclick="toggleNotifySound()" title="Ήχος ειδοποίησης: καμπανάκι — κλικ για φωνή" style="margin-left:3px;display:inline-flex;align-items:center;cursor:pointer;font-size:1.05em;line-height:1"><span id="notify-bell-emoji" style="display:inline-flex"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxZW0iIGhlaWdodD0iMWVtIiB2aWV3Qm94PSIwIDAgMjU2IDI1NiI+PHBhdGggZmlsbD0iIzQwQzRGRiIgZD0iTTIyNS44MSA3NC42NUExMS44NiAxMS44NiAwIDAgMSAyMjAuMyA3NmExMiAxMiAwIDAgMS0xMC42Ny02LjQ3YTkwLjEgOTAuMSAwIDAgMC0zMi0zNS4zOGExMiAxMiAwIDEgMSAxMi44LTIwLjI5YTExNS4yNSAxMTUuMjUgMCAwIDEgNDAuNTQgNDQuNjJhMTIgMTIgMCAwIDEtNS4xNiAxNi4xN000Ni4zNyA2OS41M2E5MC4xIDkwLjEgMCAwIDEgMzItMzUuMzhBMTIgMTIgMCAxIDAgNjUuNiAxMy44NmExMTUuMjUgMTE1LjI1IDAgMCAwLTQwLjU0IDQ0LjYyYTEyIDEyIDAgMCAwIDUuMTMgMTYuMTdBMTEuODYgMTEuODYgMCAwIDAgMzUuNyA3NmExMiAxMiAwIDAgMCAxMC42Ny02LjQ3bTE3My41MSA5OC4zNUEyMCAyMCAwIDAgMSAyMDQgMjAwaC0zMi4xOWE0NCA0NCAwIDAgMS04Ny42MiAwSDUyYTIwIDIwIDAgMCAxLTE1LjkxLTMyLjEyYzcuMTctOS4zMyAxNS43My0yNi42MiAxNS44OC01NS45NEE3NiA3NiAwIDAgMSAyMDQgMTEyYy4xNSAyOS4yNiA4LjcxIDQ2LjU1IDE1Ljg4IDU1Ljg4TTE0Ny42IDIwMGgtMzkuMmEyMCAyMCAwIDAgMCAzOS4yIDBtNDguNzQtMjRjLTguMTYtMTMtMTYuMTktMzMuNTctMTYuMzQtNjMuOTRBNTIgNTIgMCAxIDAgNzYgMTEyYy0uMTUgMzAuNDItOC4xOCA1MS0xNi4zNCA2NFoiLz48L3N2Zz4=" alt="" class="snd-ic" style="height:0.95em;width:0.95em;display:block"></span><span id="notify-face-emoji" style="display:none"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxZW0iIGhlaWdodD0iMWVtIiB2aWV3Qm94PSIwIDAgMjQgMjQiPjxwYXRoIGZpbGw9IiM0MEM0RkYiIGQ9Ik0xMiAyQzYuNDg2IDIgMiA2LjQ4NiAyIDEyczQuNDg2IDEwIDEwIDEwczEwLTQuNDg2IDEwLTEwUzE3LjUxNCAyIDEyIDJtMCAxOGMtNC40MTEgMC04LTMuNTg5LTgtOGMwLTEuMTY4LjI1OC0yLjI3NS43MDktMy4yNzZxLjIzMi4xMzUuNDU2LjI3NmMuMzk2LjI1Ljc5MS41IDEuMjg2LjY4OGMuNDk0LjE4NyAxLjA4OC4zMTIgMS44NzkuMzEyYy43OTIgMCAxLjM4Ni0uMTI1IDEuODgxLS4zMTNzLjg5MS0uNDM3IDEuMjg3LS42ODdzLjc5Mi0uNSAxLjI4Ny0uNjg4UzEzLjg3MyA4IDE0LjY2NSA4czEuMzg2LjEyNSAxLjg4LjMxM2MuNDk1LjE4Ny44OTEuNDM3IDEuMjg3LjY4N3MuNzkyLjUgMS4yODcuNjg4cS4yNjkuMDk5LjU4MS4xNzFjLjE5MS42ODIuMyAxLjM5OC4zIDIuMTQxYzAgNC40MTEtMy41ODkgOC04IDgiLz48Y2lyY2xlIGN4PSI4LjUiIGN5PSIxMi41IiByPSIxLjUiIGZpbGw9IiM0MEM0RkYiLz48Y2lyY2xlIGN4PSIxNS41IiBjeT0iMTIuNSIgcj0iMS41IiBmaWxsPSIjNDBDNEZGIi8+PC9zdmc+" alt="" class="snd-ic" style="height:0.95em;width:0.95em;display:block"></span></span></span>
       </span>
       <button id="monitor-btn" onclick="toggleFullscreenSwitch()" title="Πλήρης οθόνη on/off. Ταυτόχρονα κρύβεται η γραμμή των εικονιδίων. Επαναφορά: έξοδος από την πλήρη οθόνη (πλήκτρο Esc ή χειρονομία της συσκευής)." style="background:none;border:none;cursor:pointer;padding:0;user-select:none;display:flex;align-items:center;"><img id="monitor-img" src="" style="height:2.4em;width:2.4em;opacity:1"></button>
       <button id="repeat-btn" onclick="announceTembelis()" title="Επανάληψη ανακοίνωσης τεμπέλη/μοιράσματος" style="background:none;border:none;cursor:pointer;padding:0;user-select:none;display:flex;align-items:center;"><img id="repeat-img" src="" style="height:2.4em;width:2.4em;opacity:1"></button>
@@ -1783,6 +1793,7 @@ if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.
           <span class="firfiria-btn-inner">Φιρφίρια</span>
         </label>
       </div>
+      <div id="radio-box" title="radioapopsi.gr: πάτημα = ανοιγοκλείσιμο, σύρσιμο = ένταση (κάτω από 10% κλείνει)"><div id="radio-line"></div><div id="radio-ico"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8L19 8C20.6569 8 22 9.3431 22 11L22 17C22 18.6569 20.6569 20 19 20L5 20C3.3431 20 2 18.6569 2 17L2 11C2 9.3431 3.3431 8 5 8ZM6 8L16 4M10 14C10 15.1046 9.1046 16 8 16C6.8954 16 6 15.1046 6 14C6 12.8954 6.8954 12 8 12C9.1046 12 10 12.8954 10 14ZM14 12L18 12M14 16L18 16"/></svg></div></div>
     </div>
 
     <!-- Βήμα 2: Συμβόλαιο (εμφανίζεται μόνο αν επιλεγεί τζογαδόρος) -->
@@ -2505,6 +2516,197 @@ function playMuttley() {
   }, 2000);
 }
 // ---- END SOUND SETTINGS ----
+
+// ===== ΡΑΔΙΟΦΩΝΟ (stream on demand) =====
+// Μικρό εικονίδιο στο #radio-box: πάτημα = on/off, σύρσιμο = ένταση. Θέση < 10% = κλείσιμο (cut off).
+// Ξεκινά ΠΑΝΤΑ κλειστό (οι browsers θέλουν πάτημα χρήστη). Ο ήχος του παιχνιδιού (καμπανάκι, φωνή τεμπέλη, φιρφίρια, γέλιο)
+// και οι ενεργές φωνητικές εντολές χαμηλώνουν το ραδιόφωνο στο 18% της έντασης που έχει επιλέξει ο χρήστης.
+const RADIO_URL = 'https://link.radiojar.com/radio-apopsi';
+const RADIO_DUCK = 0.18, RADIO_CUTOFF = 0.10;
+let radioEl = null, radioOn = false, radioPos = 0, radioLastPos = 0.7, radioRetries = 0;
+let radioDuck = 0, radioDuckHold = 0, radioTween = 0, radioVolNow = 0;
+try { let s = parseFloat(localStorage.getItem('prefaRadioPos')); if (s >= RADIO_CUTOFF && s <= 1) radioLastPos = s; } catch(e) {}
+
+function radioBaseVol() { return radioOn ? Math.pow(Math.max(0, (radioPos - RADIO_CUTOFF) / (1 - RADIO_CUTOFF)), 2) : 0; }
+function radioVoiceOn() { return (typeof voiceEnabled !== 'undefined') && voiceEnabled; }
+function radioApplyVolume(ms) {
+  if (!radioEl) return;
+  let duck = radioDuck > 0 || radioVoiceOn();
+  let target = radioBaseVol() * (duck ? RADIO_DUCK : 1);
+  clearInterval(radioTween);
+  let from = radioVolNow, t0 = Date.now(), dur = Math.max(1, ms == null ? 200 : ms);
+  const step = () => {
+    let k = Math.min(1, (Date.now() - t0) / dur);
+    radioVolNow = from + (target - from) * k;
+    try { radioEl.volume = Math.max(0, Math.min(1, radioVolNow)); } catch(e) {}
+    if (k >= 1) clearInterval(radioTween);
+  };
+  step();
+  if (dur > 1) radioTween = setInterval(step, 30);
+}
+function radioDuckBegin(tokenOwner, maxMs) {
+  if (tokenOwner._rd) return;
+  tokenOwner._rd = true; radioDuck++;
+  clearTimeout(radioDuckHold);
+  radioApplyVolume(150);
+  let ended = false;
+  const end = () => {
+    if (ended) return; ended = true; tokenOwner._rd = false; radioDuck = Math.max(0, radioDuck - 1);
+    if (radioDuck === 0) { clearTimeout(radioDuckHold); radioDuckHold = setTimeout(() => radioApplyVolume(700), 800); }
+  };
+  setTimeout(end, maxMs || 20000);   // δικλείδα ασφαλείας
+  return end;
+}
+// Ήχοι παιχνιδιού: κάθε Audio.play() (εκτός ραδιοφώνου/σιωπηλού ξεκλειδώματος) χαμηλώνει το ραδιόφωνο όσο παίζει
+try {
+  const _origPlay = HTMLMediaElement.prototype.play;
+  HTMLMediaElement.prototype.play = function() {
+    let p = _origPlay.apply(this, arguments);
+    try {
+      if (this !== radioEl && !this.muted && radioOn) {
+        let end = radioDuckBegin(this, 20000);
+        if (end) {
+          ['ended', 'pause', 'error'].forEach(ev => this.addEventListener(ev, end, { once: true }));
+          if (p && p.catch) p.catch(end);
+        }
+      }
+    } catch(e) {}
+    return p;
+  };
+} catch(e) {}
+// Φωνή (speechSynthesis: τεμπέλης/μοίρασμα): χαμηλώνει όσο μιλάει
+try {
+  if (window.speechSynthesis) {
+    const _origSpeak = window.speechSynthesis.speak.bind(window.speechSynthesis);
+    window.speechSynthesis.speak = function(u) {
+      try {
+        if (radioOn) {
+          let end = radioDuckBegin(u, 15000);
+          if (end) ['end', 'error'].forEach(ev => u.addEventListener(ev, end, { once: true }));
+        }
+      } catch(e) {}
+      return _origSpeak(u);
+    };
+  }
+} catch(e) {}
+
+function radioStart() {
+  if (!radioEl) {
+    radioEl = new Audio();
+    radioEl.preload = 'none';
+    radioEl.addEventListener('playing', () => { radioRetries = 0; let b = document.getElementById('radio-box'); if (b) b.classList.remove('loading'); });
+    const fail = () => {
+      if (!radioOn) return;
+      if (radioRetries < 1) { radioRetries++; setTimeout(() => { if (radioOn) radioStart(); }, 2000); }
+      else radioSetOn(false);
+    };
+    radioEl.addEventListener('error', fail);
+    radioEl.addEventListener('ended', fail);
+  }
+  let b = document.getElementById('radio-box'); if (b) b.classList.add('loading');
+  radioEl.src = RADIO_URL;
+  radioVolNow = 0; try { radioEl.volume = 0; } catch(e) {}
+  let p = radioEl.play();
+  if (p && p.catch) p.catch(() => { radioSetOn(false); });
+  radioApplyVolume(600);
+}
+function radioStop() {
+  clearInterval(radioTween);
+  if (!radioEl) return;
+  try { radioEl.pause(); radioEl.removeAttribute('src'); radioEl.load(); } catch(e) {}   // διακόπτει τη λήψη δεδομένων
+}
+function radioSetOn(on) {
+  if (on === radioOn) { radioRender(); return; }
+  radioOn = on;
+  let b = document.getElementById('radio-box');
+  if (b) { b.classList.toggle('on', on); if (!on) b.classList.remove('loading'); }
+  if (on) { radioRetries = 0; radioStart(); clearInterval(radioVoicePoll); radioVoicePoll = setInterval(radioApplyVolumeIfVoiceChanged, 500); }
+  else { radioStop(); clearInterval(radioVoicePoll); radioDuck = 0; }
+  radioRender();
+}
+let radioVoicePoll = 0, _radioVoiceSeen = false;
+function radioApplyVolumeIfVoiceChanged() {
+  let v = radioVoiceOn();
+  if (v !== _radioVoiceSeen) { _radioVoiceSeen = v; radioApplyVolume(300); }
+}
+function radioTrackWidth() { let b = document.getElementById('radio-box'); return b ? b.clientWidth : 0; }
+function radioRender() {
+  let ico = document.getElementById('radio-ico'), b = document.getElementById('radio-box');
+  if (!ico || !b) return;
+  let w = radioTrackWidth() - 14;
+  ico.style.left = Math.max(0, radioPos * w) + 'px';
+}
+function radioLayout() {
+  // Θέση: ΑΝΑΜΕΣΑ στις δύο γραμμές «Επίλεξε τζογαδόρο ή Φιρφίρια:» και «Επίλεξε συμβόλαιο:» (στο κενό κάθετο διάστημα των κειμένων),
+  // με οριζόντιο εύρος όσο το πρώτο κείμενο (και όχι πάνω από το κουμπί «Αγορά»). Δεν αλλάζει κανένα ύψος.
+  let sec = document.getElementById('tzog-section'), box = document.getElementById('radio-box');
+  let l1 = sec && sec.querySelector('span'), l2 = document.getElementById('lbl-symvolaio-inline');
+  if (!sec || !box || !l1 || !l2) return;
+  let sb = sec.getBoundingClientRect();
+  if (sb.width < 50) { box.style.display = 'none'; return; }
+  let rg = document.createRange(); rg.selectNodeContents(l1);
+  let t1 = rg.getBoundingClientRect(); rg.selectNodeContents(l2); let t2 = rg.getBoundingClientRect();
+  let mid = (t2.top > t1.bottom) ? (t1.bottom + t2.top) / 2 : t1.bottom + 9;
+  let right = t1.right, nb = document.getElementById('lbl-normal');
+  if (nb) { let nr = nb.getBoundingClientRect(); if (nr.width > 0 && nr.left > t1.left) right = Math.min(right, nr.left - 6); }
+  let w = right - t1.left;
+  if (w < 46 || t1.width === 0) { box.style.display = 'none'; return; }
+  box.style.display = 'block';
+  box.style.left = Math.round(t1.left - sb.left) + 'px';
+  box.style.top = Math.round(mid - sb.top - 8) + 'px';
+  box.style.width = Math.round(w) + 'px';
+  radioRender();
+}
+function radioSetFromX(clientX) {
+  let b = document.getElementById('radio-box'); if (!b) return;
+  let r = b.getBoundingClientRect(), w = Math.max(1, r.width - 14);
+  let pos = Math.max(0, Math.min(1, (clientX - r.left - 7) / w));
+  radioPos = pos;
+  if (pos < RADIO_CUTOFF) radioSetOn(false);
+  else { radioLastPos = pos; if (!radioOn) radioSetOn(true); else radioApplyVolume(60); }
+  radioRender();
+}
+(function radioInit() {
+  const setup = () => {
+    let box = document.getElementById('radio-box');
+    if (!box || box._ready) return;
+    box._ready = true;
+    let down = false, moved = false, onIcon = false, startX = 0;
+    box.addEventListener('pointerdown', (e) => {
+      e.preventDefault();
+      try { box.setPointerCapture(e.pointerId); } catch(_) {}
+      let r = box.getBoundingClientRect();
+      let icoCx = r.left + 7 + radioPos * Math.max(1, r.width - 14);
+      down = true; moved = false; startX = e.clientX; onIcon = Math.abs(e.clientX - icoCx) <= 14;
+      box.classList.add('drag');
+      if (!onIcon) { moved = true; radioSetFromX(e.clientX); }
+    });
+    box.addEventListener('pointermove', (e) => {
+      if (!down) return;
+      if (!moved && Math.abs(e.clientX - startX) > 4) moved = true;
+      if (moved) radioSetFromX(e.clientX);
+    });
+    const up = () => {
+      if (!down) return; down = false;
+      box.classList.remove('drag');
+      if (!moved && onIcon) {   // πάτημα = on/off
+        if (radioOn) { radioSetOn(false); radioPos = 0; }
+        else { radioPos = radioLastPos; radioSetOn(true); }
+      } else if (radioPos < RADIO_CUTOFF) { radioPos = 0; radioSetOn(false); }
+      else { try { localStorage.setItem('prefaRadioPos', String(radioLastPos)); } catch(_) {} }
+      radioRender();
+    };
+    box.addEventListener('pointerup', up);
+    box.addEventListener('pointercancel', up);
+    let g = document.getElementById('tzog-group'), sec = document.getElementById('tzog-section');
+    try { new MutationObserver(radioLayout).observe(g, { childList: true }); } catch(_) {}
+    try { let ro = new ResizeObserver(radioLayout); ro.observe(sec); let cg = document.getElementById('contract-group'); if (cg) ro.observe(cg); } catch(_) {}
+    window.addEventListener('resize', radioLayout);
+    setTimeout(radioLayout, 300);
+  };
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', setup); else setup();
+})();
+// ===== END ΡΑΔΙΟΦΩΝΟ =====
 
 let speechEnabled = true;
 let firfiriaSpeechEnabled = true;
