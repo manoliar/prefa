@@ -40,7 +40,7 @@
   "browserRequirements": "Requires JavaScript. Chrome ή Edge για φωνητικές εντολές.",
   "screenshot": "https://manoliar.github.io/prefa/prefa-screenshot.jpg",
   "image": "https://manoliar.github.io/prefa/prefa-og-v3.jpg",
-  "softwareVersion": "2026.11.26.04",
+  "softwareVersion": "2026.11.26.05",
   "author": {"@type": "Person", "name": "manoliar"},
   "offers": {"@type": "Offer", "price": "0", "priceCurrency": "EUR"}
 }
@@ -1277,7 +1277,7 @@ if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.
     <div style="display:flex;align-items:flex-end;justify-content:center;gap:16px;margin-top:8px">
       <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxZW0iIGhlaWdodD0iMWVtIiB2aWV3Qm94PSIwIDAgMjQgMjQiPjxwYXRoIGZpbGw9IiMwMEE0RUYiIGQ9Ik0zIDEyVjYuNzVsNi0xLjMydjYuNDh6bTE3LTl2OC43NWwtMTAgLjE1VjUuMjF6TTMgMTNsNiAuMDl2Ni44MWwtNi0xLjE1em0xNyAuMjVWMjJsLTEwLTEuOTFWMTMuMXoiLz48L3N2Zz4=" alt="Windows" style="height:26px;width:26px">
       <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxZW0iIGhlaWdodD0iMWVtIiB2aWV3Qm94PSIwIDAgMjQgMjQiPjxwYXRoIGZpbGw9IiMzRERDODQiIGQ9Ik0xOC40NCA1LjU1OXEtMS4wMTUgMS43NDgtMi4wMjggMy40OThxLS4wNTUtLjAyMy0uMTExLS4wNDNhMTIuMSAxMi4xIDAgMCAwLTguNjguMDMzQzcuNTM3IDguODk3IDUuODY4IDYuMDI2IDUuNiA1LjU2YTEgMSAwIDAgMC0uMTQxLS4xOWExLjEwNCAxLjEwNCAwIDAgMC0xLjc2OCAxLjI5OGMxLjk0NyAzLjM3LS4wOTYtLjIxNiAxLjk0OCAzLjM2Yy4wMTcuMDMtLjQ5NS4yNjMtMS4zOTMgMS4wMTdDMi45IDEyLjE3Ni40NTIgMTQuNzcyIDAgMTguOTloMjRhMTEuNyAxMS43IDAgMCAwLS43NDYtMy4wNjhhMTIuMSAxMi4xIDAgMCAwLTIuNzQtNC4xODRhMTIgMTIgMCAwIDAtMi4xMzEtMS42ODdjLjY2LTEuMTIyIDEuMzEyLTIuMjU2IDEuOTY1LTMuMzg1YTEuMTEgMS4xMSAwIDAgMC0uMDA4LTEuMTJhMS4xIDEuMSAwIDAgMC0uODUyLS41MzJjLS41MjItLjA1NC0uOTM5LjMxMy0xLjA0OS41NDVtLS4wNCA4LjQ2Yy4zOTUuNTkzLjMyNCAxLjMzMS0uMTU2IDEuNjVjLS40OC4zMi0xLjE4OC4xLTEuNTgyLS40OTNzLS4zMjQtMS4zMy4xNTYtMS42NWMuNDczLS4zMTYgMS4xODItLjExIDEuNTgyLjQ5NG0tMTEuMTkzLS40OTJjLjQ4LjMyLjU1IDEuMDU4LjE1NiAxLjY1Yy0uMzk0LjU5My0xLjEwMy44MTUtMS41ODQuNDk1Yy0uNDgtLjMyLS41NS0xLjA1OC0uMTU2LTEuNjVjLjQtLjYwMyAxLjEwOS0uODExIDEuNTg0LS40OTUiLz48L3N2Zz4=" alt="Android" style="height:26px;width:26px">
-      <span class="logo-sub" style="font-size:0.7rem;line-height:1;margin:0;padding-bottom:3px">version 2026.11.26.04</span>
+      <span class="logo-sub" style="font-size:0.7rem;line-height:1;margin:0;padding-bottom:3px">version 2026.11.26.05</span>
     </div>
 
   </div>
@@ -1989,7 +1989,6 @@ function showScreen(id) {
 // Το zoom μπαίνει μόνο στο .logo και στο #setup-card, ώστε τα παράθυρα της σελίδας να μένουν όπως είναι.
 var setupFitPending = false;
 function fitSetupScreen() {
-  const MIN = 0.72;   // αν χρειάζεται μικρότερο (π.χ. κινητό πλάγια), η σελίδα μένει στο 100% με κύλιση
   let sc = document.getElementById('setup-screen');
   if (!sc || !sc.offsetHeight) { setupFitPending = true; return; }
   setupFitPending = false;
@@ -2002,8 +2001,11 @@ function fitSetupScreen() {
   // ύψος της ορατής οθόνης χωρίς την επίδραση τυχόν pinch-zoom
   let vh = window.innerHeight * ((window.visualViewport && window.visualViewport.scale) || 1);
   let fits = z => { apply(z); return sc.offsetHeight <= vh; };
+  // Κάτω όριο: μόνο στο κινητό πλάγια (οθόνη αφής, χαμηλή) η σελίδα μένει στο 100% με κύλιση αν χρειάζεται κάτω από 0,72.
+  // Αλλού χωράει πάντα: στον υπολογιστή το zoom που θυμάται ο Chrome μικραίνει το παράθυρο σε CSS px και πρέπει να αντισταθμιστεί.
+  let sideways = window.matchMedia('(pointer: coarse)').matches && window.innerWidth > window.innerHeight && vh < 500;
   // πάνω όριο: όσο χωράει σε πλάτος (στα κινητά δεν περνάει το 100%)
-  let lo = MIN, hi = Math.max(1, (document.documentElement.clientWidth - 32) / 468);
+  let lo = sideways ? 0.72 : 0.25, hi = Math.max(1, (document.documentElement.clientWidth - 32) / 468);
   if (!fits(lo)) { apply(1); return; }
   if (fits(hi)) return;
   for (let i = 0; i < 12; i++) { let mid = (lo + hi) / 2; if (fits(mid)) lo = mid; else hi = mid; }
