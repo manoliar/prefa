@@ -40,7 +40,7 @@
   "browserRequirements": "Requires JavaScript. Chrome ή Edge για φωνητικές εντολές.",
   "screenshot": "https://manoliar.github.io/prefa/prefa-screenshot.jpg",
   "image": "https://manoliar.github.io/prefa/prefa-og-v3.jpg",
-  "softwareVersion": "2026.11.26.01",
+  "softwareVersion": "2026.11.26.02",
   "author": {"@type": "Person", "name": "manoliar"},
   "offers": {"@type": "Offer", "price": "0", "priceCurrency": "EUR"}
 }
@@ -101,7 +101,7 @@ if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.
     position: relative;
     max-width: 500px;
     margin: 0 auto;
-    padding: 0.4rem 1rem 1rem 1rem;
+    padding: 0 1rem 1rem 1rem;
     background: #0D1B2A;
   }
   #setup-card #players-icon-btn {
@@ -129,10 +129,11 @@ if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.
     text-align: center;
     margin-bottom: 0.5rem;
     background: #0D1B2A;
-    padding: 0.4rem 1rem 0.75rem;
+    padding: 0 1rem;
     border-radius: var(--radius);
   }
   .logo-title {
+    margin-top: -5px;   /* αφαιρεί τον κενό χώρο της γραμματοσειράς πάνω από τα γράμματα· μένουν ~4px ως την κορυφή */
     font-size: 2rem;
     font-weight: 800;
     background: linear-gradient(135deg, #1B5E20, #69F000);
@@ -500,6 +501,8 @@ if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.
     .pc-row .pc-ico { height: clamp(28px, calc(20vw - 37px), 38px); }
     .pc-row #btn-start { margin: 0 -12px; flex-shrink: 0; position: relative; left: 4px; } @media (max-width:340px) { .pc-row #btn-start { width: 70px !important; left: 5px; } }
   }
+  /* το «Παίζουν …» είναι μία γραμμή πιο ψηλά: σε στενή οθόνη το 7♦ ανεβαίνει λίγο για να μην το καλύπτει */
+  @media (max-width: 480px) { .pc-row #seven-btn { position: relative; top: -8px; } }
   .btn-row {
     display: flex;
     gap: 8px;
@@ -879,7 +882,7 @@ if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.
     display: grid;
     grid-template-columns: 60px minmax(0, 1fr) 30px auto;
     column-gap: 8px;
-    row-gap: 5px;
+    row-gap: 4px;
     align-items: center;
   }
   /* Οι γραμμές των παικτών μπαίνουν κατευθείαν στο πλέγμα (η 1η γραμμή του πλέγματος = πλαίσιο «Ενεργά φιρφίρια», πάντα δεσμευμένη) */
@@ -911,10 +914,21 @@ if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.
   }
   .score-bar-track {
     flex: 1;
-    height: 10px;
-    background: #f0f0f0;
-    border-radius: 5px;
+    height: 15px;
     overflow: hidden;
+  }
+  /* Δύο μπάρες ανά παίκτη (7px + 1px κενό + 7px), κοινή κλίμακα: πάνω η 1η στήλη, κάτω η 3η («τελικό σκορ»)
+     στο χρώμα του παίκτη, αχνότερη (65%), με κάθετες γραμμές 1px και κενό 1px που ξεκινούν από το μηδέν και με ίσια άκρα.
+     Τα --sbl (γραμμή) και --sbp (γραμμή + κενό) τα ορίζει η fitSbStripes() σε ακέραια εικονοστοιχεία της οθόνης, ώστε όλες οι γραμμές να βγαίνουν ισοπαχείς. */
+  .sb-lane { position: absolute; left: 0; right: 0; height: 7px; background: #f0f0f0; overflow: hidden; }
+  .sb-lane.top { top: 0; border-radius: 4px; }
+  .sb-lane.bot { bottom: 0; background: #fafafa; }   /* αχνότερη λωρίδα από την πάνω, για να ξεχωρίζουν οι δύο κατηγορίες */
+  .sb-virt { position: absolute; top: 0; height: 7px; width: var(--w); min-width: 2px; opacity: .65; background: repeating-linear-gradient(to right, var(--pc) 0 var(--sbl, 1px), transparent var(--sbl, 1px) var(--sbp, 2px)); }
+  .sb-virt.neg { background: repeating-linear-gradient(to left, var(--pc) 0 var(--sbl, 1px), transparent var(--sbl, 1px) var(--sbp, 2px)); }
+  /* Η μπάρα τελειώνει σε ολόκληρη γραμμή: το κουτί σταματά στη μέση του επόμενου κενού (όριο: η μισή λωρίδα). Browser χωρίς round() κρατά το απλό πλάτος. */
+  @supports (width: round(nearest, 10px, 3px)) {
+    .sb-virt { --sbg: calc(var(--sbp, 2px) - var(--sbl, 1px)); min-width: 0;
+      width: calc(max(var(--sbp, 2px), min(round(nearest, calc(var(--w) + var(--sbg)), var(--sbp, 2px)), round(down, calc(50% + var(--sbg)), var(--sbp, 2px)))) - var(--sbg) / 2); }
   }
   .score-bar-fill {
     z-index: 2;
@@ -929,6 +943,7 @@ if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.
     text-align: right;
     white-space: nowrap;
   }
+  @media (max-width:420px) { .score-bar-val > span { min-width: 40px !important; } }   /* στενή οθόνη: πιο φαρδιές μπάρες */
 
   /* Statistics */
   .stats-table {
@@ -1262,7 +1277,7 @@ if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.
     <div style="display:flex;align-items:flex-end;justify-content:center;gap:16px;margin-top:8px">
       <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxZW0iIGhlaWdodD0iMWVtIiB2aWV3Qm94PSIwIDAgMjQgMjQiPjxwYXRoIGZpbGw9IiMwMEE0RUYiIGQ9Ik0zIDEyVjYuNzVsNi0xLjMydjYuNDh6bTE3LTl2OC43NWwtMTAgLjE1VjUuMjF6TTMgMTNsNiAuMDl2Ni44MWwtNi0xLjE1em0xNyAuMjVWMjJsLTEwLTEuOTFWMTMuMXoiLz48L3N2Zz4=" alt="Windows" style="height:26px;width:26px">
       <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxZW0iIGhlaWdodD0iMWVtIiB2aWV3Qm94PSIwIDAgMjQgMjQiPjxwYXRoIGZpbGw9IiMzRERDODQiIGQ9Ik0xOC40NCA1LjU1OXEtMS4wMTUgMS43NDgtMi4wMjggMy40OThxLS4wNTUtLjAyMy0uMTExLS4wNDNhMTIuMSAxMi4xIDAgMCAwLTguNjguMDMzQzcuNTM3IDguODk3IDUuODY4IDYuMDI2IDUuNiA1LjU2YTEgMSAwIDAgMC0uMTQxLS4xOWExLjEwNCAxLjEwNCAwIDAgMC0xLjc2OCAxLjI5OGMxLjk0NyAzLjM3LS4wOTYtLjIxNiAxLjk0OCAzLjM2Yy4wMTcuMDMtLjQ5NS4yNjMtMS4zOTMgMS4wMTdDMi45IDEyLjE3Ni40NTIgMTQuNzcyIDAgMTguOTloMjRhMTEuNyAxMS43IDAgMCAwLS43NDYtMy4wNjhhMTIuMSAxMi4xIDAgMCAwLTIuNzQtNC4xODRhMTIgMTIgMCAwIDAtMi4xMzEtMS42ODdjLjY2LTEuMTIyIDEuMzEyLTIuMjU2IDEuOTY1LTMuMzg1YTEuMTEgMS4xMSAwIDAgMC0uMDA4LTEuMTJhMS4xIDEuMSAwIDAgMC0uODUyLS41MzJjLS41MjItLjA1NC0uOTM5LjMxMy0xLjA0OS41NDVtLS4wNCA4LjQ2Yy4zOTUuNTkzLjMyNCAxLjMzMS0uMTU2IDEuNjVjLS40OC4zMi0xLjE4OC4xLTEuNTgyLS40OTNzLS4zMjQtMS4zMy4xNTYtMS42NWMuNDczLS4zMTYgMS4xODItLjExIDEuNTgyLjQ5NG0tMTEuMTkzLS40OTJjLjQ4LjMyLjU1IDEuMDU4LjE1NiAxLjY1Yy0uMzk0LjU5My0xLjEwMy44MTUtMS41ODQuNDk1Yy0uNDgtLjMyLS41NS0xLjA1OC0uMTU2LTEuNjVjLjQtLjYwMyAxLjEwOS0uODExIDEuNTg0LS40OTUiLz48L3N2Zz4=" alt="Android" style="height:26px;width:26px">
-      <span class="logo-sub" style="font-size:0.7rem;line-height:1;margin:0;padding-bottom:3px">version 2026.11.26.01</span>
+      <span class="logo-sub" style="font-size:0.7rem;line-height:1;margin:0;padding-bottom:3px">version 2026.11.26.02</span>
     </div>
 
   </div>
@@ -1319,7 +1334,7 @@ if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.
         <div class="pc-side pc-r"><img id="btn-start" src="" onclick="startGame()" style="width:80px;display:block;height:auto;cursor:pointer" title="Έναρξη Παιχνιδιού"></div>
       </div>
       <input type="checkbox" id="monimos-tembelis" style="display:none">
-      <div id="players-count-info" style="margin-top:6px;text-align:center;color:#fff;font-size:0.85rem;font-weight:600"></div>
+      <div id="players-count-info" style="margin-top:-10px;pointer-events:none;text-align:center;color:#fff;font-size:0.85rem;font-weight:600"></div>
       <div id="players-first-info" style="margin-top:2px;text-align:center;color:#fff;font-size:0.85rem;font-weight:600"></div>
       <div id="players-hint" style="margin-top:2px;text-align:center;color:#fff;font-size:0.62rem;font-weight:400;opacity:.8;min-height:1.1em"></div>
     </div>
@@ -4129,6 +4144,17 @@ function getActiveFirfiria() {
   return Math.min(10, active);
 }
 
+// Γραμμές της κάτω μπάρας στα στατιστικά: γραμμή και κενό = 1px CSS στρογγυλεμένο σε ακέραια εικονοστοιχεία της οθόνης
+// (π.χ. 1 σε κλίμακα 100–125%, 3 σε κινητό 2,625), ώστε να μη βγαίνουν άλλες παχύτερες και άλλες λεπτότερες.
+function fitSbStripes() {
+  let d = window.devicePixelRatio || 1;
+  let n = Math.max(1, Math.round(d));
+  document.documentElement.style.setProperty('--sbl', (n / d) + 'px');
+  document.documentElement.style.setProperty('--sbp', (2 * n / d) + 'px');
+}
+fitSbStripes();
+window.addEventListener('resize', fitSbStripes);
+
 function updateScoreBoard() {
   let total = Object.values(firfiria).reduce((a,b) => a+b, 0);
   let active = getActiveFirfiria();
@@ -4260,6 +4286,9 @@ function updateScoreBoard() {
       }
     });
 
+    // κοινή κλίμακα για τις δύο μπάρες (ο μόνιμος τεμπέλης δεν μετράει)
+    maxAbs = Math.max(maxAbs, ...players.map((p, i2) => isMonIdx(i2) ? 0 : Math.abs(finalKapV[p])));
+
     // Πλαίσιο φιρφιριών: πάνω από το δεξί μισό των μπαρών (θετική πλευρά)· επικεφαλίδα + πλήθος φιρφιριών ανά παίκτη, στη γραμμή της μπάρας του
     let firHd = total > 0 ? `Ενεργά φιρφίρια: ${active}/${total}` : 'Χωρίς Φιρφίρια';
     let firState = total > 0 ? 'active' : 'none';
@@ -4285,7 +4314,8 @@ function updateScoreBoard() {
         <div class="score-bar-name" style="grid-area:${i + 2} / 1;color:${col}">${p}</div>
         <div class="score-bar-track" style="grid-area:${i + 2} / 2;position:relative">
           <div style="position:absolute;left:50%;top:0;bottom:0;width:1px;background:rgba(0,0,0,0.25)"></div>
-          <div class="score-bar-fill" style="position:absolute;left:${barLeft}%;width:${barWidth}%;background:${col}"></div>
+          <div class="sb-lane top"><div class="score-bar-fill" style="position:absolute;left:${barLeft}%;width:${barWidth}%;background:${col}"></div></div>
+          <div class="sb-lane bot">${virt ? `<div class="sb-virt ${virt > 0 ? 'pos' : 'neg'}" style="${virt > 0 ? 'left:50%' : 'right:50%'};--w:${Math.min(50, Math.abs(virt) / maxAbs * 50)}%;--pc:${col}"></div>` : ''}</div>
         </div>
         <div class="score-bar-val" style="grid-area:${i + 2} / 4;color:${col};font-family:monospace;white-space:nowrap"><span style="display:inline-block;min-width:52px;text-align:right">${scoreStr}</span> <span style="display:inline-block;min-width:52px;text-align:right;font-size:0.85em;opacity:0.8">(${diffStr})</span> <span style="display:inline-block;min-width:52px;text-align:right;font-family:'PrefaNum',system-ui,-apple-system,sans-serif;font-size:0.9rem;line-height:1;margin:-1px 0;font-weight:700;font-variant-numeric:tabular-nums;font-feature-settings:'tnum' 1;color:${virtColor}">${virtStr}</span></div>
       </div>`;
