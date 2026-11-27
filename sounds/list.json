@@ -1,0 +1,28 @@
+{
+ "sounds": [
+  {
+   "name": "calm-piano",
+   "file": "calm-piano.mp3"
+  },
+  {
+   "name": "cardinal",
+   "file": "cardinal.mp3"
+  },
+  {
+   "name": "drums",
+   "file": "drums.mp3"
+  },
+  {
+   "name": "gospel",
+   "file": "gospel.mp3"
+  },
+  {
+   "name": "handbell",
+   "file": "handbell.mp3"
+  },
+  {
+   "name": "piano",
+   "file": "piano.mp3"
+  }
+ ]
+}
