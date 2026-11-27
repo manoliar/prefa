@@ -9,6 +9,22 @@
    "file": "cardinal.mp3"
   },
   {
+   "name": "Cavalry Charge",
+   "file": "Cavalry_Charge_Sound_Effect.mp3"
+  },
+  {
+   "name": "cekketto-batteria",
+   "file": "cekketto-batteria.mp3"
+  },
+  {
+   "name": "Critical Error Windows XP",
+   "file": "Critical_Error_Windows_XP_Sound_Effect.mp3"
+  },
+  {
+   "name": "dive",
+   "file": "dive.mp3"
+  },
+  {
    "name": "drums",
    "file": "drums.mp3"
   },
@@ -19,6 +35,10 @@
   {
    "name": "handbell",
    "file": "handbell.mp3"
+  },
+  {
+   "name": "notification",
+   "file": "notification.mp3"
   },
   {
    "name": "piano",
