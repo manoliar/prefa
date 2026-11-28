@@ -40,7 +40,7 @@
   "browserRequirements": "Requires JavaScript. Chrome ή Edge για φωνητικές εντολές.",
   "screenshot": "https://manoliar.github.io/prefa/prefa-screenshot.jpg",
   "image": "https://manoliar.github.io/prefa/prefa-og-v3.jpg",
-  "softwareVersion": "2026.11.28.01",
+  "softwareVersion": "2026.11.29",
   "author": {"@type": "Person", "name": "manoliar"},
   "offers": {"@type": "Offer", "price": "0", "priceCurrency": "EUR"}
 }
@@ -55,7 +55,7 @@ if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.
 </script>
 <style>
   /* Αποτροπή native context menu/callout στα εικονίδια & ρολόγια (Android long-press) */
-  .top-bar img, #game-clock, #notify-clock, #btn-info, #btn-start,
+  #tool-row img, #set-quick img, #game-clock, #notify-clock, #btn-info, #btn-start,
   #printer-btn-img, #printer-sys-img, #whatsapp-btn-img, #btn-info-history {
     -webkit-touch-callout: none;
     -webkit-user-select: none;
@@ -318,45 +318,11 @@ if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.
     border-bottom: 2px solid rgba(105,240,0,0.28);
     box-shadow: 0 2px 8px rgba(0,0,0,0.35);
   }
-  /* Πλήρης οθόνη: κρύβεται η επάνω γραμμή (τίτλος + εικονίδια)· επανέρχεται μόνη της όταν βγούμε από την πλήρη οθόνη (έξοδος: Esc ή χειρονομία συσκευής) */
-  :fullscreen #game-screen .top-bar { display: none; }
-  :-webkit-full-screen #game-screen .top-bar { display: none; }
-  /* Θήκη ρυθμίσεων/χειριστηρίων - ξεχωρίζει από τίτλο & Γύρο */
-  .settings-tray {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 3px 8px;
-    border-radius: 999px;
-    background: rgba(255,255,255,0.07);
-    border: 1px solid rgba(255,255,255,0.14);
-  }
-  /* Ελαφρώς μικρότερα εικονίδια ώστε να χωρέσει πιο άνετο κενό μεταξύ τους */
-  .settings-tray img:not(.snd-ic), .settings-tray svg { height: 2.2em !important; }
-  .settings-tray svg.vring { position: absolute; left: 0; top: 0; width: 100% !important; height: 100% !important; pointer-events: none; }
-  .settings-tray svg, .settings-tray #voice-mic-img { width: 2.2em !important; }
-  /* Σε στενές οθόνες πιο συμπαγές, για να μη ζορίζει τη γραμμή */
-  @media (max-width: 700px) { .settings-tray { gap: 6px; } }   /* χαμηλό/πλάγιο κινητό: να χωράει ολόκληρος ο τίτλος δίπλα στα 6 εικονίδια */
-  @media (max-width: 520px) {
-    .settings-tray { gap: 5px; padding: 2px 4px; }
-  }
-  /* Όρθιο κινητό: πιο συμπαγής γραμμή, ώστε να χωρούν όλα τα εικονίδια ΚΑΙ ο «Γύρος» (ο τίτλος εδώ δεν χωρούσε ήδη) */
-  @media (max-width: 520px) {
-    #game-screen .top-bar { padding-left: 4px; padding-right: 4px; justify-content: center; }
-    #game-screen .top-bar h1 { display: none !important; }
-    .settings-tray { gap: 2px; padding: 2px 3px; }
-    .settings-tray img:not(.snd-ic), .settings-tray svg { height: 1.9em !important; }
-    .settings-tray button > img:not(.snd-ic), .settings-tray button > svg, .settings-tray #voice-mic-img { width: 1.9em !important; }
-    #game-clock, #notify-clock { font-size: 0.95rem !important; letter-spacing: 0 !important; }
-    .top-bar .round-ring { margin-left: 3px; width: 62px; height: 28px; } .top-bar .round-ring #round-badge { font-size: 16px; }
-  }
-  @media (max-width: 349px) {
-    .settings-tray { gap: 1px; padding: 2px; }
-    .settings-tray img:not(.snd-ic), .settings-tray svg { height: 1.55em !important; }
-    .settings-tray button > img:not(.snd-ic), .settings-tray button > svg, .settings-tray #voice-mic-img { width: 1.55em !important; }
-    #game-clock, #notify-clock { font-size: 0.82rem !important; }
-    .top-bar .round-ring { margin-left: 2px; width: 50px; height: 24px; } .top-bar .round-ring #round-badge { font-size: 13px; }
-  }
+  /* Πλήρης οθόνη: η επάνω γραμμή (τίτλος) κρύβεται ΜΟΝΟ αν το ζητά η ρύθμιση (κλάση hide-bar)· επανέρχεται μόνη της στην έξοδο */
+  html.hide-bar:fullscreen #game-screen .top-bar { display: none !important; }
+  html.hide-bar:-webkit-full-screen #game-screen .top-bar { display: none !important; }
+  /* Επάνω γραμμή: μόνο ο τίτλος. Τα χειριστήρια είναι στη γραμμή #tool-row και στην κορυφή των Ρυθμίσεων */
+  #game-screen .top-bar { padding: 3px 10px 2px; min-height: 31px; }
   /* Παράθυρο «Ρυθμίσεις» (γρανάζι). Κάθε ομάδα ρυθμίσεων είναι ΔΙΚΟ της πλαίσιο .set-sec με έγχρωμη επικεφαλίδα που ανοιγοκλείνει·
      νέα ρύθμιση = νέο <details class="set-sec"> μέσα στο #set-body. */
   #set-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 95; align-items: center; justify-content: center; padding: 10px; }
@@ -394,7 +360,7 @@ if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.
   #set-foot button { flex: 1; border: none; border-radius: 8px; padding: 10px; font-weight: 800; cursor: pointer; color: #fff; }
   #set-save { background: #2E7D32; } #set-cancel { background: #546E7A; }
   #set-foot button:disabled { opacity: 0.4; cursor: default; }
-  /* Ο γύρος στην πάνω μπάρα: χειρόγραφος κύκλος με τον αριθμό σε ShantellNum (το χρώμα και των δύο αλλάζει από το --ring) */
+  /* Ο γύρος (στη γραμμή των εικονιδίων, δεξιά): χειρόγραφος κύκλος με τον αριθμό σε ShantellNum (το χρώμα και των δύο αλλάζει από το --ring) */
   .round-ring { --ring: #fff; position: relative; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; width: 79px; height: 34px; margin-left: 10px; color: var(--ring); }
   .round-ring svg { position: absolute; left: 0; top: 0; width: 100%; height: 100%; overflow: visible; }
   .round-ring #round-badge { position: relative; top: .13em; left: .08em; font-family: 'ShantellNum', 'Segoe Print', 'Comic Sans MS', cursive; font-size: 20px; font-weight: 400; line-height: 1; }
@@ -853,13 +819,20 @@ if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.
   #tzog-section { position: relative; }
   /* Ραδιόφωνο: μικρό εικονίδιο που κινείται σε αχνή οριζόντια γραμμή (slider) στον κενό χώρο ανάμεσα στους τζογαδόρους και τα Φιρφίρια */
   /* Φωνητικές εντολές: το εικονίδιο μετακινήθηκε εδώ (αριστερά από το ραδιόφωνο) ώστε να είναι προσβάσιμο και σε full screen */
-  #voice-slot { position: absolute; display: none; width: 16px; height: 16px; z-index: 3; }
-  #voice-slot button { width: 16px; height: 16px; }
+  /* Μία γραμμή πάνω από την «Επίλεξε τζογαδόρο…»: πλήρης οθόνη, γρανάζι, μικρόφωνο, ραδιόφωνο· δεξιά ο κύκλος του γύρου */
+  #tool-row { position: absolute; left: 4px; right: 76px; top: 3px; height: 18px; display: flex; align-items: center; gap: 18px; z-index: 3; }
+  #tool-row > button { width: 18px; height: 18px; flex-shrink: 0; background: none; border: none; padding: 0; cursor: pointer; display: flex; align-items: center; justify-content: center; position: relative; user-select: none; }
+  #tool-row > button::after { content: ''; position: absolute; left: -8px; right: -8px; top: -8px; bottom: -3px; }   /* μεγαλύτερη περιοχή πατήματος από το σχέδιο */
+  #tool-row > button > img, #tool-row > button > svg { display: block; width: 100%; height: 100%; }
+  #tzog-section .round-ring { position: absolute; right: 10px; top: 1px; width: 56px; height: 22px; margin: 0; z-index: 3; }
+  #tzog-section .round-ring #round-badge { font-size: 14px; }
+  #voice-slot { position: relative; flex-shrink: 0; width: 18px; height: 18px; }
+  #voice-slot button { width: 18px; height: 18px; }
   #voice-slot svg.vring { position: absolute; left: 0; top: 0; width: 100%; height: 100%; pointer-events: none; }
-  #radio-box { position: absolute; height: 16px; display: none; touch-action: none; cursor: pointer; user-select: none; -webkit-user-select: none; z-index: 2; }
+  #radio-box { position: relative; flex: 0 1 136px; min-width: 46px; height: 20px; margin-left: -4px; touch-action: none; cursor: pointer; user-select: none; -webkit-user-select: none; }
   #radio-line { position: absolute; left: 0; right: 0; top: 50%; height: 2px; margin-top: -1px; background: #2F7BEA; opacity: .3; border-radius: 2px; transition: opacity .2s; pointer-events: none; }
   #radio-box.drag #radio-line { opacity: .75; }
-  #radio-ico { position: absolute; top: 50%; left: 0; width: 14px; height: 14px; margin-top: -7px; color: #2F7BEA; opacity: .55; background: #0d1b2a; border-radius: 4px; pointer-events: none; transition: opacity .2s; }
+  #radio-ico { position: absolute; top: 50%; left: 0; width: 15px; height: 15px; margin-top: -7.5px; color: #2F7BEA; opacity: .55; background: #0d1b2a; border-radius: 4px; pointer-events: none; transition: opacity .2s; }
   #radio-ico svg { width: 100%; height: 100%; display: block; }
   #radio-box.on #radio-ico { opacity: 1; }
   #radio-box.loading #radio-ico { animation: radioPulse 1s ease-in-out infinite; }
@@ -1304,8 +1277,7 @@ if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.
   :root { --tick: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMzkiIGhlaWdodD0iMTQ0IiB2aWV3Qm94PSItODAgLTgwIDEzODkgMTQ0MCI+PGcgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoMCwxMjgwKSBzY2FsZSgwLjEsLTAuMSkiPjxwYXRoIGZpbGw9IiM5MTU5QjUiIGQ9Ik0xMTY5MCAxMjc5NCBjLTE5IC0yIC05OCAtOSAtMTc1IC0xNCAtNjgzIC01MiAtMTAyMiAtMTcxIC0xNjEwCi01NjMgLTMyNSAtMjE3IC01MDEgLTM2NSAtNTQwIC00NTQgLTQ1IC0xMDAgLTEzOCAtMjI0IC00NDkgLTU5OSAtNTM3IC02NDUKLTE1MjYgLTE5NTMgLTI1NzMgLTM0MDQgLTg3MiAtMTIwOSAtMTMzNCAtMTg4MyAtMTU2MSAtMjI4MCAtMTEyIC0xOTcgLTE5NwotMzI5IC0yOTYgLTQ1OSAtODggLTExNiAtMjkxIC00MjAgLTUyNiAtNzg2IC00MDMgLTYyOCAtNTc1IC04NjcgLTc2OSAtMTA2OAotODcgLTkwIC0xMjQgLTExNyAtMTYwIC0xMTcgLTMxIDAgLTEzNiAxMDQgLTE5NSAxOTQgLTcxIDEwNyAtMTE2IDE5OSAtMjQxCjQ5MCAtMjIzIDUyMyAtNDkyIDEwOTAgLTU3NCAxMjEzIC01NyA4NCAtMTM1IDE1NCAtMjAyIDE3OCAtNDcgMTcgLTc5IDIwCi0yNDkgMjAgLTE1MCAwIC0yMTQgLTQgLTI4MCAtMTggLTI0NiAtNTMgLTUyNyAtMTgwIC03OTAgLTM1OCAtMjg3IC0xOTUgLTQ1OAotMzk0IC00OTEgLTU3NCAtNDIgLTIyNCA2OCAtNjg4IDQ4MiAtMjAzNSAyNDAgLTc4MSAzOTcgLTExOTYgNTc1IC0xNTIxIDgyCi0xNTEgMjk0IC00ODggMzEzIC00OTggNDIgLTIzIDI1NiAtNzAgNDcxIC0xMDYgMzAwIC00OSA2NTYgLTQ1IDk4NSAxMCAxNzAKMjkgMjk0IDY0IDQwMSAxMTQgNzIgMzQgODggNDcgMTUxIDEyMiAxNDUgMTc1IDM4NiA1MTAgNjk4IDk3NCA1MTAgNzU5IDc0NgoxMDk3IDgzMyAxMjAwIDI5IDMzIDg2IDExOSAxMjggMTkwIDQyIDcyIDEwNyAxODIgMTQ0IDI0NSAxNzUgMjk3IDczMyAxMTA3CjE2MDUgMjMzMCAxMTE4IDE1NjggMjA5MCAyODc4IDIzMjggMzEzNiA2NiA3MiAxNTAgMTg2IDMzMiA0NDkgMjAzIDI5MiAzMTgKNDQ1IDQ0NSA1ODUgMTU4IDE3NiAzNDYgNDA2IDY4MyA4NDAgNDQ5IDU3OCA2ODIgODY4IDg5MSAxMTA1IDI0OCAyODEgNjUzCjg2NiA3NTYgMTA5MCA2NSAxNDIgNzUgMjIxIDM1IDI4MSAtMjQgMzggLTEwOCA3MSAtMjA1IDgzIC03NyAxMCAtMjg2IDEyCi0zNzAgNXoiLz48L2c+PC9zdmc+"); --tick-o: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMzkiIGhlaWdodD0iMTQ0IiB2aWV3Qm94PSItODAgLTgwIDEzODkgMTQ0MCI+PGcgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoMCwxMjgwKSBzY2FsZSgwLjEsLTAuMSkiPjxwYXRoIGZpbGw9IiM5MTU5QjUiIHN0cm9rZT0iI2ZmZiIgc3Ryb2tlLXdpZHRoPSIxMTAwIiBzdHJva2UtbGluZWpvaW49InJvdW5kIiBwYWludC1vcmRlcj0ic3Ryb2tlIiBkPSJNMTE2OTAgMTI3OTQgYy0xOSAtMiAtOTggLTkgLTE3NSAtMTQgLTY4MyAtNTIgLTEwMjIgLTE3MSAtMTYxMAotNTYzIC0zMjUgLTIxNyAtNTAxIC0zNjUgLTU0MCAtNDU0IC00NSAtMTAwIC0xMzggLTIyNCAtNDQ5IC01OTkgLTUzNyAtNjQ1Ci0xNTI2IC0xOTUzIC0yNTczIC0zNDA0IC04NzIgLTEyMDkgLTEzMzQgLTE4ODMgLTE1NjEgLTIyODAgLTExMiAtMTk3IC0xOTcKLTMyOSAtMjk2IC00NTkgLTg4IC0xMTYgLTI5MSAtNDIwIC01MjYgLTc4NiAtNDAzIC02MjggLTU3NSAtODY3IC03NjkgLTEwNjgKLTg3IC05MCAtMTI0IC0xMTcgLTE2MCAtMTE3IC0zMSAwIC0xMzYgMTA0IC0xOTUgMTk0IC03MSAxMDcgLTExNiAxOTkgLTI0MQo0OTAgLTIyMyA1MjMgLTQ5MiAxMDkwIC01NzQgMTIxMyAtNTcgODQgLTEzNSAxNTQgLTIwMiAxNzggLTQ3IDE3IC03OSAyMAotMjQ5IDIwIC0xNTAgMCAtMjE0IC00IC0yODAgLTE4IC0yNDYgLTUzIC01MjcgLTE4MCAtNzkwIC0zNTggLTI4NyAtMTk1IC00NTgKLTM5NCAtNDkxIC01NzQgLTQyIC0yMjQgNjggLTY4OCA0ODIgLTIwMzUgMjQwIC03ODEgMzk3IC0xMTk2IDU3NSAtMTUyMSA4MgotMTUxIDI5NCAtNDg4IDMxMyAtNDk4IDQyIC0yMyAyNTYgLTcwIDQ3MSAtMTA2IDMwMCAtNDkgNjU2IC00NSA5ODUgMTAgMTcwCjI5IDI5NCA2NCA0MDEgMTE0IDcyIDM0IDg4IDQ3IDE1MSAxMjIgMTQ1IDE3NSAzODYgNTEwIDY5OCA5NzQgNTEwIDc1OSA3NDYKMTA5NyA4MzMgMTIwMCAyOSAzMyA4NiAxMTkgMTI4IDE5MCA0MiA3MiAxMDcgMTgyIDE0NCAyNDUgMTc1IDI5NyA3MzMgMTEwNwoxNjA1IDIzMzAgMTExOCAxNTY4IDIwOTAgMjg3OCAyMzI4IDMxMzYgNjYgNzIgMTUwIDE4NiAzMzIgNDQ5IDIwMyAyOTIgMzE4CjQ0NSA0NDUgNTg1IDE1OCAxNzYgMzQ2IDQwNiA2ODMgODQwIDQ0OSA1NzggNjgyIDg2OCA4OTEgMTEwNSAyNDggMjgxIDY1Mwo4NjYgNzU2IDEwOTAgNjUgMTQyIDc1IDIyMSAzNSAyODEgLTI0IDM4IC0xMDggNzEgLTIwNSA4MyAtNzcgMTAgLTI4NiAxMgotMzcwIDV6Ii8+PC9nPjwvc3ZnPg=="); }
   .tzog-title { flex-shrink: 0; color: #fff; padding: 5px 4px; font-size: 0.68rem; font-weight: 800; white-space: nowrap; margin-right: 6px; }
   #contract-group { display: none !important; }   /* η γραμμή «Επίλεξε συμβόλαιο» δεν φαίνεται· τα radio της τα χρειάζεται η λογική */
-  #tzog-section { margin-bottom: 22px !important; }   /* χώρος για μικρόφωνο/ραδιόφωνο */
-  #round-panel:not(:has(#normal-fields.nc-on)) #tzog-section { margin-bottom: 14px !important; }   /* χωρίς πλαίσιο συμβολαίου τα κουμπιά ανεβαίνουν */
+  #tzog-section { padding-top: 24px !important; margin-bottom: 12px !important; }   /* πάνω: η γραμμή των εικονιδίων */
   #normal-fields.nc-on { display: grid !important; grid-template-columns: repeat(5, minmax(0, 1fr)) 24px 38px; grid-template-rows: auto auto; align-items: stretch; background: #fff; border: 1px solid #ccc; border-radius: 8px; padding: 5px 4px 4px; row-gap: 2px; column-gap: 0; }
   #normal-fields #bazes-group, #normal-fields #suit-group, #normal-fields #suit-group > div { display: contents !important; }
   #normal-fields #bazes-group > .bazes-contract-btn { grid-row: 1; min-width: 0; padding-left: 0 !important; padding-right: 0 !important; position: relative; overflow: visible !important; }
@@ -1331,13 +1303,18 @@ if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.
     content: ''; position: absolute; top: -13px; right: -7px; width: clamp(18px, 5.6vw, 26px); height: clamp(18px, 5.6vw, 26px); background: var(--tick) center / contain no-repeat; pointer-events: none; z-index: 5; }
   #normal-fields .tick-btn.suit-tick.suit-selected::after { top: -4px; }
   #normal-fields .nc-miz.selected::after { background-image: var(--tick-o); }
-  /* Δύο εικονίδια πλήρους οθόνης: με το μικρό η επάνω γραμμή μένει */
-  html.keep-bar:fullscreen #game-screen .top-bar { display: flex !important; }
-  html.keep-bar:-webkit-full-screen #game-screen .top-bar { display: flex !important; }
-  #fs-small-btn { background: none; border: none; cursor: pointer; padding: 0; display: flex; align-items: center; }
-  .settings-tray #fs-small-btn svg { height: 1.45em !important; width: 1.45em !important; }
-  @media (max-width: 520px) { .settings-tray #fs-small-btn svg { height: 1.25em !important; width: 1.25em !important; } }
-  @media (max-width: 349px) { .settings-tray #fs-small-btn svg { height: 1.05em !important; width: 1.05em !important; } }
+  /* Ρυθμίσεις, κορυφή: σκούρο πλαίσιο με πλήρη οθόνη/φωνές, την επιλογή απόκρυψης της επάνω γραμμής και τα ρολόγια */
+  #set-quick { background: #14243a; border-radius: 12px; padding: 8px 6px; flex-shrink: 0; display: flex; flex-direction: column; gap: 8px; }
+  .sq-line { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; align-items: start; justify-items: center; gap: 4px; }
+  .sq-line.sq-clocks { border-top: 1px solid rgba(255,255,255,.16); padding-top: 8px; }
+  .sq-item { display: flex; flex-direction: column; align-items: center; gap: 4px; min-width: 0; text-align: center; }
+  .sq-item small { color: #cfd8e3; font-size: .62rem; line-height: 1.15; }
+  .sq-slot { height: 34px; display: flex; align-items: center; justify-content: center; }
+  #set-quick .sq-slot > button { background: none; border: none; padding: 0; cursor: pointer; display: flex; align-items: center; user-select: none; }
+  #set-quick .sq-slot > button > img { width: 30px; height: 30px; }
+  #set-quick #game-clock, #set-quick #notify-clock { font-size: 1.35rem !important; margin: 0 !important; }
+  #fs-hide-row { display: flex; align-items: flex-start; gap: 9px; color: #e8eef5; font-size: .78rem; line-height: 1.25; padding: 0 8px 2px; cursor: pointer; text-align: left; }
+  #fs-hide-cb { width: 20px; height: 20px; margin: 0; flex-shrink: 0; accent-color: #2E7D32; }
   /* Ρυθμίσεις: χρόνος αυτόματου κλεισίματος (το παράθυρο εισαγωγής αριθμού βγαίνει πάνω από τις Ρυθμίσεις) */
   .modal-overlay.np-top { z-index: 120; }
   #secs-row { display: flex; align-items: center; gap: 10px; padding: 8px 2px 0; cursor: pointer; }
@@ -1359,7 +1336,7 @@ if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.
     <div style="display:flex;align-items:flex-end;justify-content:center;gap:16px;margin-top:8px">
       <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxZW0iIGhlaWdodD0iMWVtIiB2aWV3Qm94PSIwIDAgMjQgMjQiPjxwYXRoIGZpbGw9IiMwMEE0RUYiIGQ9Ik0zIDEyVjYuNzVsNi0xLjMydjYuNDh6bTE3LTl2OC43NWwtMTAgLjE1VjUuMjF6TTMgMTNsNiAuMDl2Ni44MWwtNi0xLjE1em0xNyAuMjVWMjJsLTEwLTEuOTFWMTMuMXoiLz48L3N2Zz4=" alt="Windows" style="height:26px;width:26px">
       <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxZW0iIGhlaWdodD0iMWVtIiB2aWV3Qm94PSIwIDAgMjQgMjQiPjxwYXRoIGZpbGw9IiMzRERDODQiIGQ9Ik0xOC40NCA1LjU1OXEtMS4wMTUgMS43NDgtMi4wMjggMy40OThxLS4wNTUtLjAyMy0uMTExLS4wNDNhMTIuMSAxMi4xIDAgMCAwLTguNjguMDMzQzcuNTM3IDguODk3IDUuODY4IDYuMDI2IDUuNiA1LjU2YTEgMSAwIDAgMC0uMTQxLS4xOWExLjEwNCAxLjEwNCAwIDAgMC0xLjc2OCAxLjI5OGMxLjk0NyAzLjM3LS4wOTYtLjIxNiAxLjk0OCAzLjM2Yy4wMTcuMDMtLjQ5NS4yNjMtMS4zOTMgMS4wMTdDMi45IDEyLjE3Ni40NTIgMTQuNzcyIDAgMTguOTloMjRhMTEuNyAxMS43IDAgMCAwLS43NDYtMy4wNjhhMTIuMSAxMi4xIDAgMCAwLTIuNzQtNC4xODRhMTIgMTIgMCAwIDAtMi4xMzEtMS42ODdjLjY2LTEuMTIyIDEuMzEyLTIuMjU2IDEuOTY1LTMuMzg1YTEuMTEgMS4xMSAwIDAgMC0uMDA4LTEuMTJhMS4xIDEuMSAwIDAgMC0uODUyLS41MzJjLS41MjItLjA1NC0uOTM5LjMxMy0xLjA0OS41NDVtLS4wNCA4LjQ2Yy4zOTUuNTkzLjMyNCAxLjMzMS0uMTU2IDEuNjVjLS40OC4zMi0xLjE4OC4xLTEuNTgyLS40OTNzLS4zMjQtMS4zMy4xNTYtMS42NWMuNDczLS4zMTYgMS4xODItLjExIDEuNTgyLjQ5NG0tMTEuMTkzLS40OTJjLjQ4LjMyLjU1IDEuMDU4LjE1NiAxLjY1Yy0uMzk0LjU5My0xLjEwMy44MTUtMS41ODQuNDk1Yy0uNDgtLjMyLS41NS0xLjA1OC0uMTU2LTEuNjVjLjQtLjYwMyAxLjEwOS0uODExIDEuNTg0LS40OTUiLz48L3N2Zz4=" alt="Android" style="height:26px;width:26px">
-      <span class="logo-sub" style="font-size:0.7rem;line-height:1;margin:0;padding-bottom:3px">version 2026.11.28.01</span>
+      <span class="logo-sub" style="font-size:0.7rem;line-height:1;margin:0;padding-bottom:3px">version 2026.11.29</span>
     </div>
 
   </div>
@@ -1523,6 +1500,18 @@ if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.
   <div id="set-modal" role="dialog" aria-modal="true" aria-labelledby="set-title">
     <div id="set-head"><span id="set-title">Ρυθμίσεις</span><button id="set-close" onclick="closeSettings()" aria-label="Κλείσιμο">✕</button></div>
     <div id="set-body">
+      <div id="set-quick">
+        <div class="sq-line">
+          <div class="sq-item"><div class="sq-slot"><button type="button" id="monitor-btn" onclick="fsClick(); closeSettings()" title="Πλήρης οθόνη" aria-label="Πλήρης οθόνη"><img id="monitor-img" src="" alt=""></button></div><small>Πλήρης οθόνη</small></div>
+          <div class="sq-item"><div class="sq-slot"><button id="speech-toggle" onclick="toggleSpeech()" title="Απενεργοποίηση φωνής τεμπέλη/μοιράσματος" style="background:none;border:none;cursor:pointer;padding:0;user-select:none;display:flex;align-items:center;"><img id="megaphone-img" src="" style="opacity:1;transition:opacity 0.2s"></button></div><small>Φωνή τεμπέλη / μοιράσματος</small></div>
+          <div class="sq-item"><div class="sq-slot"><button id="firfiria-speech-toggle" onclick="toggleFirfiriaSpeech()" title="Απενεργοποίηση φωνητικών ανακοινώσεων φιρφίρια" style="background:none;border:none;cursor:pointer;padding:0;user-select:none;display:flex;align-items:center"><img id="fir-speakers-img" src="" style="opacity:1;transition:opacity 0.2s"></button></div><small>Φωνή για φιρφίρια</small></div>
+        </div>
+        <label id="fs-hide-row"><input type="checkbox" id="fs-hide-cb" onchange="fsSetHideBar(this.checked)"><span>Στην πλήρη οθόνη να κρύβεται και η πάνω γραμμή</span></label>
+        <div class="sq-line sq-clocks">
+          <div class="sq-item"><div class="sq-slot"><span id="game-clock" onclick="gameClockClick()" title="Κλικ: παύση/συνέχεια · Διπλό κλικ: μηδενισμός" style="display:inline-flex;align-items:center;font-family:'Courier New',monospace;font-weight:800;font-size:1.1rem;line-height:0.85;color:#40C4FF;background:none;border:none;padding:0;letter-spacing:1px;cursor:pointer;user-select:none">00:00:00</span></div><small>Χρόνος παιχνιδιού</small></div>
+          <div class="sq-item"><div class="sq-slot"><span id="notify-clock" style="display:inline-flex;align-items:center;font-family:'Courier New',monospace;font-weight:800;font-size:1.1rem;line-height:0.85;color:#40C4FF;background:none;border:none;padding:0;margin-top:-2px;letter-spacing:1px;user-select:none"><span id="notify-h" ondblclick="editNotifyHours()" title="Αλλαγή ωρών για την λήξη του χρονικού ορίου της φωνητικής ειδοποίησης." style="cursor:pointer">24</span>:<span id="notify-m" ondblclick="editNotifyMins()" title="Αλλαγή λεπτών για την λήξη του χρονικού ορίου της φωνητικής ειδοποίησης." style="cursor:pointer">00</span><span style="visibility:hidden">:</span><span id="notify-sound-toggle" onclick="toggleNotifySound()" title="Ήχος ειδοποίησης: καμπανάκι — κλικ για φωνή" style="margin-left:3px;display:inline-flex;align-items:center;cursor:pointer;font-size:1.05em;line-height:1"><span id="notify-bell-emoji" style="display:inline-flex"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxZW0iIGhlaWdodD0iMWVtIiB2aWV3Qm94PSIwIDAgMjU2IDI1NiI+PHBhdGggZmlsbD0iIzQwQzRGRiIgZD0iTTIyNS44MSA3NC42NUExMS44NiAxMS44NiAwIDAgMSAyMjAuMyA3NmExMiAxMiAwIDAgMS0xMC42Ny02LjQ3YTkwLjEgOTAuMSAwIDAgMC0zMi0zNS4zOGExMiAxMiAwIDEgMSAxMi44LTIwLjI5YTExNS4yNSAxMTUuMjUgMCAwIDEgNDAuNTQgNDQuNjJhMTIgMTIgMCAwIDEtNS4xNiAxNi4xN000Ni4zNyA2OS41M2E5MC4xIDkwLjEgMCAwIDEgMzItMzUuMzhBMTIgMTIgMCAxIDAgNjUuNiAxMy44NmExMTUuMjUgMTE1LjI1IDAgMCAwLTQwLjU0IDQ0LjYyYTEyIDEyIDAgMCAwIDUuMTMgMTYuMTdBMTEuODYgMTEuODYgMCAwIDAgMzUuNyA3NmExMiAxMiAwIDAgMCAxMC42Ny02LjQ3bTE3My41MSA5OC4zNUEyMCAyMCAwIDAgMSAyMDQgMjAwaC0zMi4xOWE0NCA0NCAwIDAgMS04Ny42MiAwSDUyYTIwIDIwIDAgMCAxLTE1LjkxLTMyLjEyYzcuMTctOS4zMyAxNS43My0yNi42MiAxNS44OC01NS45NEE3NiA3NiAwIDAgMSAyMDQgMTEyYy4xNSAyOS4yNiA4LjcxIDQ2LjU1IDE1Ljg4IDU1Ljg4TTE0Ny42IDIwMGgtMzkuMmEyMCAyMCAwIDAgMCAzOS4yIDBtNDguNzQtMjRjLTguMTYtMTMtMTYuMTktMzMuNTctMTYuMzQtNjMuOTRBNTIgNTIgMCAxIDAgNzYgMTEyYy0uMTUgMzAuNDItOC4xOCA1MS0xNi4zNCA2NFoiLz48L3N2Zz4=" alt="" class="snd-ic" style="height:0.95em;width:0.95em;display:block"></span><span id="notify-face-emoji" style="display:none"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxZW0iIGhlaWdodD0iMWVtIiB2aWV3Qm94PSIwIDAgMjQgMjQiPjxwYXRoIGZpbGw9IiM0MEM0RkYiIGQ9Ik0xMiAyQzYuNDg2IDIgMiA2LjQ4NiAyIDEyczQuNDg2IDEwIDEwIDEwczEwLTQuNDg2IDEwLTEwUzE3LjUxNCAyIDEyIDJtMCAxOGMtNC40MTEgMC04LTMuNTg5LTgtOGMwLTEuMTY4LjI1OC0yLjI3NS43MDktMy4yNzZxLjIzMi4xMzUuNDU2LjI3NmMuMzk2LjI1Ljc5MS41IDEuMjg2LjY4OGMuNDk0LjE4NyAxLjA4OC4zMTIgMS44NzkuMzEyYy43OTIgMCAxLjM4Ni0uMTI1IDEuODgxLS4zMTNzLjg5MS0uNDM3IDEuMjg3LS42ODdzLjc5Mi0uNSAxLjI4Ny0uNjg4UzEzLjg3MyA4IDE0LjY2NSA4czEuMzg2LjEyNSAxLjg4LjMxM2MuNDk1LjE4Ny44OTEuNDM3IDEuMjg3LjY4N3MuNzkyLjUgMS4yODcuNjg4cS4yNjkuMDk5LjU4MS4xNzFjLjE5MS42ODIuMyAxLjM5OC4zIDIuMTQxYzAgNC40MTEtMy41ODkgOC04IDgiLz48Y2lyY2xlIGN4PSI4LjUiIGN5PSIxMi41IiByPSIxLjUiIGZpbGw9IiM0MEM0RkYiLz48Y2lyY2xlIGN4PSIxNS41IiBjeT0iMTIuNSIgcj0iMS41IiBmaWxsPSIjNDBDNEZGIi8+PC9zdmc+" alt="" class="snd-ic" style="height:0.95em;width:0.95em;display:block"></span></span></span></div><small>Ώρα ειδοποίησης</small></div>
+        </div>
+      </div>
       <details class="set-sec" id="set-sec-autoclose" open>
         <summary>Αυτόματο κλείσιμο παραθύρων</summary>
         <div class="set-sec-body">
@@ -1611,12 +1600,12 @@ if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.
 				<p><span style="color:#C62828">♦</span> Δεξιά από τον τίτλο «Ιστορικό Γύρων» υπάρχει το φίλτρο (μπλε χωνί). Πατώντας το επιλέγεις κριτήρια (παίκτη και ρόλο, συμβόλαιο, χρώμα, μπάζες από–έως, πλήθος παικτών, είδος «μπήκε μέσα», κείμενο) και στο ιστορικό εμφανίζονται μόνο οι γύροι που τα ικανοποιούν όλα. Αν επιλέξεις παίκτη και «μπήκε μέσα», το κριτήριο αφορά τον ίδιο τον παίκτη (π.χ. «Άμυνα» = ο παίκτης ήταν αμυνόμενος και μπήκε μέσα). Το πλήθος παικτών αφορά μόνο τις κανονικές αγορές: 1 = και οι δύο αμυνόμενοι πήγαν πάσο, 2 = ο ένας πήγε πάσο, 3 = κανένας δεν πήγε πάσο, «Πήρε τον άλλο» = ο ένας αμυνόμενος πήρε τον άλλο· μπορείς να επιλέξεις περισσότερα από ένα (π.χ. 1 και 2). Γύροι που καταχωρήθηκαν πριν προστεθεί αυτή η επιλογή δεν έχουν τιμή και δεν εμφανίζονται όταν τη χρησιμοποιείς. Το φίλτρο ισχύει μόνο για την οθόνη: τα στατιστικά και το PDF περιλαμβάνουν πάντα όλους τους γύρους. Όταν είναι ενεργό, το εικονίδιο φαίνεται έντονο με τον αριθμό των γύρων που εμφανίζονται.</p>
 				<p><span style="color:#C62828">♦</span> Στο διπλό κουμπί των στατιστικών, δεξιά από το εικονίδιο των στατιστικών, υπάρχει το κουμπί με τον πίνακα (πλέγμα): δείχνει για κάθε παίκτη τις αγορές που δήλωσε, ανάλογα με τις μπάζες (6 έως 10). Ο αριθμός αριστερά από τις στήλες των μπαζών είναι το σύνολο των αγορών του παίκτη (μετράνε και όσες μπήκε μέσα)· ακόμα πιο αριστερά φαίνεται το ποσοστό των αγορών του (με ένα δεκαδικό), δηλαδή το πόσες από όλες τις αγορές των παικτών έκανε εκείνος. Κάτω από κάθε αριθμό μπάζες υπάρχουν πέντε νοητές στήλες, με τη σειρά μπαστούνια, σπαθιά, καρά, κούπες, άχροα (κίτρινος κύκλος). Κάθε συμβόλαιο εμφανίζεται ως εικονίδιο του χρώματός του· αν ξαναδηλωθεί το ίδιο, μπαίνει δεύτερο εικονίδιο από κάτω. Όταν ο τζογαδόρος μπήκε μέσα, το εικονίδιο έχει μια κόκκινη λοξή γραμμή. Για τη Μιζέρια και την Ανοιχτή Μιζέρια εμφανίζεται ένα πράσινο χαρούμενο πρόσωπο για κάθε φορά που την έβγαλε και ένα κόκκινο λυπημένο για κάθε φορά που μπήκε μέσα, το ένα κάτω από το άλλο. Για τα Φιρφίρια εμφανίζονται οι μονάδες που έγραψε ο παίκτης σε γύρο Φιρφίρια, αυτές που ανέβασε όταν μπήκε μέσα ως τζογαδόρος, αυτές που έσβησε ως τζογαδόρος (όσα φιρφίρια κι αν ανήκαν σε άλλους), και το τελικό αλγεβρικό άθροισμα (Έγραψε + Ανέβασε − Έσβησε): θετικό = παθητικό (κόκκινο), αρνητικό = ενεργητικό (πράσινο). Ο πίνακας μετράει πάντα όλους τους γύρους (δεν επηρεάζεται από το φίλτρο) και ενημερώνεται αυτόματα, π.χ. μετά από αναίρεση.</p>
 				<p><span style="color:#C62828">♦</span> Δεξιά από το διπλό κουμπί των στατιστικών υπάρχει ένα δεύτερο διπλό κουμπί με τρία ανθρωπάκια: ανοίγει το ραβδόγραμμα «Αναμονή για αγορά». Ο οριζόντιος άξονας έχει τους γύρους με τη σειρά και σε κάθε γύρο υπάρχει μια λεπτή ράβδος για κάθε παίκτη, με το χρώμα του και με τη σειρά των παικτών. Το ύψος της ράβδου δείχνει πόσοι γύροι πέρασαν από την τελευταία αγορά του παίκτη· στον γύρο που αγόρασε το ύψος είναι 0 και σημειώνεται με μια τελεία στη βάση. Όποιος δεν έχει αγοράσει ακόμα μετράει από την αρχή του παιχνιδιού. Αγορά μετράει και η Μιζέρια ή η Ανοιχτή Μιζέρια (και όταν μπει μέσα)· στα Φιρφίρια δεν αγοράζει κανείς, οπότε όλες οι ράβδοι ανεβαίνουν κατά ένα. Ο αριθμός του γύρου που ήταν Φιρφίρια εμφανίζεται μέσα σε κίτρινο κύκλο. Μετράνε όλοι οι γύροι, και εκείνοι που ο παίκτης ήταν τεμπέλης. Πάνω από το γράφημα φαίνεται για κάθε παίκτη πόσους γύρους περιμένει τώρα και ποιο ήταν το μεγαλύτερο διάστημα αναμονής του. Με την οριζόντια μπάρα κύλισης βλέπεις τους γύρους που δεν χωράνε στην οθόνη (το γράφημα ανοίγει στους τελευταίους γύρους). Με Μόνιμο Τεμπέλη εμφανίζονται μόνο οι τρεις παίκτες που παίζουν. Το γράφημα μετράει πάντα όλους τους γύρους (δεν επηρεάζεται από το φίλτρο), ενημερώνεται αυτόματα και δεν περιλαμβάνεται στο PDF των στατιστικών.</p>
-				<p><span style="color:#C62828">♦</span> Το κουμπί μεγάφωνο ενεργοποιεί και απενεργοποιεί την φωνητική ανακοίνωση του τεμπέλη ή στην περίπτωση τριών μόνο παικτών το όνομα αυτού που έχει σειρά να μοιράσει. Το κουμπί ηχείο ενεργοποιεί και απενεργοποιεί την φωνητική ανακοίνωση για τα φιρφίρια.</p>
-				<p><span style="color:#C62828">♦</span> Δεξιά από το κουμπί ηχείο υπάρχει το γρανάζι <svg style="height:1.15em;width:1.15em;vertical-align:-.22em" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="-0.2 -0.2 24.4 24.4" fill="none" stroke="#1B5E20" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg> των <strong>Ρυθμίσεων</strong>. Στην ενότητα «Ήχοι για φιρφίρια» μπορείς να διαλέξεις άλλον ήχο για την ανακοίνωση των 9 και των 10 φιρφιριών. Με το ▶ ακούς κάθε ήχο. Κάθε στήλη (9 και 10) έχει το πολύ μία επιλογή, ένας ήχος μπαίνει μόνο σε έναν από τους δύο αριθμούς και με δεύτερο πάτημα η επιλογή αναιρείται. Με την επιλογή «Τυχαίος ήχος» παίζει κάθε φορά τυχαία ένας από τους ήχους της λίστας· αυτή η επιλογή μπορεί να μπει και στα 9 και στα 10. Με την «Αποθήκευση» η επιλογή κρατιέται στη συσκευή. Για να γυρίσεις στους προεπιλεγμένους ήχους πάτησε «Επαναφορά προεπιλογών» και μετά «Αποθήκευση». Οι ήχοι της λίστας χρειάζονται σύνδεση στο internet: χωρίς σύνδεση, ή αν ο ήχος δεν κατέβει εγκαίρως, ακούγεται ο προεπιλεγμένος. Στις ίδιες Ρυθμίσεις, στην ενότητα «Muttley», ο διακόπτης On/Off ορίζει αν θα εμφανίζεται ο Muttley με την εικόνα και το γέλιο του όταν ο τζογαδόρος μπαίνει μέσα. Στην ενότητα «Αυτόματο κλείσιμο παραθύρων» ορίζεις σε πόσα δευτερόλεπτα (1-99) κλείνουν μόνα τους τα παράθυρα πληροφοριών· και αυτή η αλλαγή κρατιέται με την «Αποθήκευση».</p>
+				<p><span style="color:#C62828">♦</span> Στην κορυφή των Ρυθμίσεων (γρανάζι) υπάρχουν το εικονίδιο πλήρους οθόνης, το κουμπί μεγάφωνο και το κουμπί ηχείο. Το κουμπί μεγάφωνο ενεργοποιεί και απενεργοποιεί την φωνητική ανακοίνωση του τεμπέλη ή στην περίπτωση τριών μόνο παικτών το όνομα αυτού που έχει σειρά να μοιράσει. Το κουμπί ηχείο ενεργοποιεί και απενεργοποιεί την φωνητική ανακοίνωση για τα φιρφίρια.</p>
+				<p><span style="color:#C62828">♦</span> Πάνω από τη φράση «Επίλεξε τζογαδόρο ή Φιρφίρια:» υπάρχει μία γραμμή με το εικονίδιο πλήρους οθόνης, το γρανάζι, το μικρόφωνο των φωνητικών εντολών, το ραδιόφωνο και, δεξιά, τον κύκλο με τον αριθμό του γύρου. Το γρανάζι <svg style="height:1.15em;width:1.15em;vertical-align:-.22em" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="-0.2 -0.2 24.4 24.4" fill="none" stroke="#1B5E20" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg> ανοίγει τις <strong>Ρυθμίσεις</strong>. Στην ενότητα «Ήχοι για φιρφίρια» μπορείς να διαλέξεις άλλον ήχο για την ανακοίνωση των 9 και των 10 φιρφιριών. Με το ▶ ακούς κάθε ήχο. Κάθε στήλη (9 και 10) έχει το πολύ μία επιλογή, ένας ήχος μπαίνει μόνο σε έναν από τους δύο αριθμούς και με δεύτερο πάτημα η επιλογή αναιρείται. Με την επιλογή «Τυχαίος ήχος» παίζει κάθε φορά τυχαία ένας από τους ήχους της λίστας· αυτή η επιλογή μπορεί να μπει και στα 9 και στα 10. Με την «Αποθήκευση» η επιλογή κρατιέται στη συσκευή. Για να γυρίσεις στους προεπιλεγμένους ήχους πάτησε «Επαναφορά προεπιλογών» και μετά «Αποθήκευση». Οι ήχοι της λίστας χρειάζονται σύνδεση στο internet: χωρίς σύνδεση, ή αν ο ήχος δεν κατέβει εγκαίρως, ακούγεται ο προεπιλεγμένος. Στις ίδιες Ρυθμίσεις, στην ενότητα «Muttley», ο διακόπτης On/Off ορίζει αν θα εμφανίζεται ο Muttley με την εικόνα και το γέλιο του όταν ο τζογαδόρος μπαίνει μέσα. Στην ενότητα «Αυτόματο κλείσιμο παραθύρων» ορίζεις σε πόσα δευτερόλεπτα (1-99) κλείνουν μόνα τους τα παράθυρα πληροφοριών· και αυτή η αλλαγή κρατιέται με την «Αποθήκευση».</p>
 				<p><span style="color:#C62828">♦</span> Στην περίπτωση των τριών παικτών, στο «αυτοκόλλητο» του παίκτη που μοιράζει, κάτω από το όνομά του, εμφανίζεται η ένδειξη «ΜΟΙΡΑΖΕΙ» και το πλαίσιό του αναβοσβήνει με χρυσό φως.</p>
 				<p><span style="color:#C62828">♦</span> Στην περίπτωση τριών παικτών (μόνιμος τεμπέλης) ο τεμπέλης μπαίνει πάντα στη θέση 4. Πατώντας το εικονίδιο 7<span style="color:#C62828">♦</span> που αναβοσβήνει πάνω από την επιλογή «Πλήθος παικτών» επιλέγεις ποιος έχει το 7<span style="color:#C62828">♦</span> και παίζει πρώτος. Εικονικά θεωρείται ότι μοίρασε ο προηγούμενος παίκτης.</p>
-				<p><span style="color:#C62828">♦</span> Στην επάνω γραμμή υπάρχουν δύο εικονίδια πλήρους οθόνης. Με το μεγάλο (η οθόνη) γίνεται πλήρης οθόνη και ταυτόχρονα κρύβεται η γραμμή των εικονιδίων· η επαναφορά γίνεται με έξοδο από την πλήρη οθόνη (πλήκτρο Esc ή χειρονομία της συσκευής). Με το μικρό, δεξιά του (τέσσερις γωνίες), γίνεται πλήρης οθόνη χωρίς να κρύβεται η γραμμή, και με δεύτερο πάτημα γίνεται επαναφορά της οθόνης.</p>
-				<p><span style="color:#C62828">♦</span> Το ψηφιακό ρολόι μετράει τον ενεργό χρόνο του παιχνιδιού. Ο ενεργός χρόνος αρχίζει να μετράει από την στιγμή που πατήθηκε το κουμπί της έναρξης. Με απλό κλικ επάνω στο ρολόι το μέτρημα του χρόνου παγώνει ή συνεχίζει. Ο ενεργός χρόνος αποθηκεύεται σε αρχείο κάθε φορά που ολοκληρώνεται η καταχώρηση ενός γύρου. Κάτω από το ψηφιακό ρολόι εμφανίζεται ο χρόνος ηχητικής ειδοποίησης σε ώρες και λεπτά. Τα νούμερα αυτά μπορούν να αλλάξουν. Όταν συμπληρωθεί ο χρόνος της ηχητικής ειδοποίησης που ορίστηκε, ακούγεται ένας ήχος. Αυτή η ηχητική ειδοποίηση επιλέγεται αν θα γίνει με φωνή ή με ήχο (καμπανάκι πλοίου, που χτυπά 4 φορές).</p>
+				<p><span style="color:#C62828">♦</span> Με το εικονίδιο πλήρους οθόνης (στη γραμμή πάνω από την «Επίλεξε τζογαδόρο ή Φιρφίρια:» ή στην κορυφή των Ρυθμίσεων) γίνεται πλήρης οθόνη. Όσο η οθόνη είναι πλήρης, το εικονίδιο γίνεται εικονίδιο επαναφοράς και με πάτημα η οθόνη επανέρχεται (όπως και με το πλήκτρο Esc ή τη χειρονομία της συσκευής). Με την επιλογή «Στην πλήρη οθόνη να κρύβεται και η πάνω γραμμή», στις Ρυθμίσεις, ορίζεις αν θα κρύβεται και η γραμμή του τίτλου. Αρχικά δεν κρύβεται. Η επιλογή ισχύει αμέσως και κρατιέται στη συσκευή.</p>
+				<p><span style="color:#C62828">♦</span> Το ψηφιακό ρολόι, στην κορυφή των Ρυθμίσεων, μετράει τον ενεργό χρόνο του παιχνιδιού. Ο ενεργός χρόνος αρχίζει να μετράει από την στιγμή που πατήθηκε το κουμπί της έναρξης. Με απλό κλικ επάνω στο ρολόι το μέτρημα του χρόνου παγώνει ή συνεχίζει. Ο ενεργός χρόνος αποθηκεύεται σε αρχείο κάθε φορά που ολοκληρώνεται η καταχώρηση ενός γύρου. Δίπλα στο ψηφιακό ρολόι εμφανίζεται ο χρόνος ηχητικής ειδοποίησης σε ώρες και λεπτά. Τα νούμερα αυτά μπορούν να αλλάξουν. Όταν συμπληρωθεί ο χρόνος της ηχητικής ειδοποίησης που ορίστηκε, ακούγεται ένας ήχος. Αυτή η ηχητική ειδοποίηση επιλέγεται αν θα γίνει με φωνή ή με ήχο (καμπανάκι πλοίου, που χτυπά 4 φορές).</p>
 			</p>
 			<p style="margin-top:6pt; margin-bottom:6pt; background-color:#ffccff">
 				<strong>Συμβόλαια. Υποχρεώσεις Τζογαδόρου</strong>
@@ -1958,19 +1947,7 @@ if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.
 <!-- GAME SCREEN -->
 <div id="game-screen" class="screen">
   <div class="top-bar" style="flex-wrap:nowrap;gap:4px">
-    <h1 style="font-size:1rem;display:flex;justify-content:space-between;align-items:flex-end;white-space:nowrap;overflow:hidden;gap:8px;flex:1;min-width:0"><span style="flex-shrink:0;background:linear-gradient(135deg,#1B5E20,#69F000);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-weight:800">♠ Το τεφτέρι της πρέφας</span></h1>
-    <span style="display:inline-flex;align-items:center;gap:4px;flex-shrink:0"><span class="settings-tray">
-      <span style="display:inline-flex;flex-direction:column;align-items:flex-start;">
-        <span id="game-clock" onclick="gameClockClick()" title="Κλικ: παύση/συνέχεια · Διπλό κλικ: μηδενισμός" style="display:inline-flex;align-items:center;font-family:'Courier New',monospace;font-weight:800;font-size:1.1rem;line-height:0.85;color:#40C4FF;background:none;border:none;padding:0;letter-spacing:1px;cursor:pointer;user-select:none">00:00:00</span>
-        <span id="notify-clock" style="display:inline-flex;align-items:center;font-family:'Courier New',monospace;font-weight:800;font-size:1.1rem;line-height:0.85;color:#40C4FF;background:none;border:none;padding:0;margin-top:-2px;letter-spacing:1px;user-select:none"><span id="notify-h" ondblclick="editNotifyHours()" title="Αλλαγή ωρών για την λήξη του χρονικού ορίου της φωνητικής ειδοποίησης." style="cursor:pointer">24</span>:<span id="notify-m" ondblclick="editNotifyMins()" title="Αλλαγή λεπτών για την λήξη του χρονικού ορίου της φωνητικής ειδοποίησης." style="cursor:pointer">00</span><span style="visibility:hidden">:</span><span id="notify-sound-toggle" onclick="toggleNotifySound()" title="Ήχος ειδοποίησης: καμπανάκι — κλικ για φωνή" style="margin-left:3px;display:inline-flex;align-items:center;cursor:pointer;font-size:1.05em;line-height:1"><span id="notify-bell-emoji" style="display:inline-flex"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxZW0iIGhlaWdodD0iMWVtIiB2aWV3Qm94PSIwIDAgMjU2IDI1NiI+PHBhdGggZmlsbD0iIzQwQzRGRiIgZD0iTTIyNS44MSA3NC42NUExMS44NiAxMS44NiAwIDAgMSAyMjAuMyA3NmExMiAxMiAwIDAgMS0xMC42Ny02LjQ3YTkwLjEgOTAuMSAwIDAgMC0zMi0zNS4zOGExMiAxMiAwIDEgMSAxMi44LTIwLjI5YTExNS4yNSAxMTUuMjUgMCAwIDEgNDAuNTQgNDQuNjJhMTIgMTIgMCAwIDEtNS4xNiAxNi4xN000Ni4zNyA2OS41M2E5MC4xIDkwLjEgMCAwIDEgMzItMzUuMzhBMTIgMTIgMCAxIDAgNjUuNiAxMy44NmExMTUuMjUgMTE1LjI1IDAgMCAwLTQwLjU0IDQ0LjYyYTEyIDEyIDAgMCAwIDUuMTMgMTYuMTdBMTEuODYgMTEuODYgMCAwIDAgMzUuNyA3NmExMiAxMiAwIDAgMCAxMC42Ny02LjQ3bTE3My41MSA5OC4zNUEyMCAyMCAwIDAgMSAyMDQgMjAwaC0zMi4xOWE0NCA0NCAwIDAgMS04Ny42MiAwSDUyYTIwIDIwIDAgMCAxLTE1LjkxLTMyLjEyYzcuMTctOS4zMyAxNS43My0yNi42MiAxNS44OC01NS45NEE3NiA3NiAwIDAgMSAyMDQgMTEyYy4xNSAyOS4yNiA4LjcxIDQ2LjU1IDE1Ljg4IDU1Ljg4TTE0Ny42IDIwMGgtMzkuMmEyMCAyMCAwIDAgMCAzOS4yIDBtNDguNzQtMjRjLTguMTYtMTMtMTYuMTktMzMuNTctMTYuMzQtNjMuOTRBNTIgNTIgMCAxIDAgNzYgMTEyYy0uMTUgMzAuNDItOC4xOCA1MS0xNi4zNCA2NFoiLz48L3N2Zz4=" alt="" class="snd-ic" style="height:0.95em;width:0.95em;display:block"></span><span id="notify-face-emoji" style="display:none"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxZW0iIGhlaWdodD0iMWVtIiB2aWV3Qm94PSIwIDAgMjQgMjQiPjxwYXRoIGZpbGw9IiM0MEM0RkYiIGQ9Ik0xMiAyQzYuNDg2IDIgMiA2LjQ4NiAyIDEyczQuNDg2IDEwIDEwIDEwczEwLTQuNDg2IDEwLTEwUzE3LjUxNCAyIDEyIDJtMCAxOGMtNC40MTEgMC04LTMuNTg5LTgtOGMwLTEuMTY4LjI1OC0yLjI3NS43MDktMy4yNzZxLjIzMi4xMzUuNDU2LjI3NmMuMzk2LjI1Ljc5MS41IDEuMjg2LjY4OGMuNDk0LjE4NyAxLjA4OC4zMTIgMS44NzkuMzEyYy43OTIgMCAxLjM4Ni0uMTI1IDEuODgxLS4zMTNzLjg5MS0uNDM3IDEuMjg3LS42ODdzLjc5Mi0uNSAxLjI4Ny0uNjg4UzEzLjg3MyA4IDE0LjY2NSA4czEuMzg2LjEyNSAxLjg4LjMxM2MuNDk1LjE4Ny44OTEuNDM3IDEuMjg3LjY4N3MuNzkyLjUgMS4yODcuNjg4cS4yNjkuMDk5LjU4MS4xNzFjLjE5MS42ODIuMyAxLjM5OC4zIDIuMTQxYzAgNC40MTEtMy41ODkgOC04IDgiLz48Y2lyY2xlIGN4PSI4LjUiIGN5PSIxMi41IiByPSIxLjUiIGZpbGw9IiM0MEM0RkYiLz48Y2lyY2xlIGN4PSIxNS41IiBjeT0iMTIuNSIgcj0iMS41IiBmaWxsPSIjNDBDNEZGIi8+PC9zdmc+" alt="" class="snd-ic" style="height:0.95em;width:0.95em;display:block"></span></span></span>
-      </span>
-      <button id="monitor-btn" onclick="fsHideBarClick()" title="Πλήρης οθόνη με απόκρυψη της γραμμής των εικονιδίων. Επαναφορά: έξοδος από την πλήρη οθόνη (πλήκτρο Esc ή χειρονομία της συσκευής)." style="background:none;border:none;cursor:pointer;padding:0;user-select:none;display:flex;align-items:center;"><img id="monitor-img" src="" style="height:2.4em;width:2.4em;opacity:1"></button>
-      <button type="button" id="fs-small-btn" onclick="fsKeepBarClick()"></button>
-      <button id="speech-toggle" onclick="toggleSpeech()" title="Απενεργοποίηση φωνής τεμπέλη/μοιράσματος" style="background:none;border:none;cursor:pointer;padding:0;user-select:none;display:flex;align-items:center;"><img id="megaphone-img" src="" style="height:2.4em;width:2.4em;opacity:1;transition:opacity 0.2s"></button>
-      <button id="firfiria-speech-toggle" onclick="toggleFirfiriaSpeech()" title="Απενεργοποίηση φωνητικών ανακοινώσεων φιρφίρια" style="background:none;border:none;cursor:pointer;padding:0;user-select:none;display:flex;align-items:center"><img id="fir-speakers-img" src="" style="height:2.4em;width:2.4em;opacity:1;transition:opacity 0.2s"></button>
-      <button id="fir-settings-btn" onclick="openFirSoundSettings()" title="Ρυθμίσεις" aria-label="Ρυθμίσεις" style="background:none;border:none;cursor:pointer;padding:0;user-select:none;display:flex;align-items:center"><svg id="fir-settings-img" aria-hidden="true" viewBox="-2.4 -2.4 28.8 28.8" fill="none" stroke="#69F000" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button>
-      </span><span class="round-ring" title="Γύρος"><svg viewBox="170 812 935 402" aria-hidden="true"><path fill="currentColor" stroke="currentColor" stroke-width="7" stroke-linejoin="round" d="M 599 922.6 C 562.2 918.7 524.7 916.9 487.7 920.5 C 450.6 924.2 414.2 932.9 379.2 945.4 C 344.3 957.8 310.8 974 279.5 993.8 C 248.9 1013.2 219.2 1035.6 199.6 1066.5 C 181.5 1094.9 174.8 1131.5 195.2 1160.6 C 212.7 1185.7 242.8 1197 271.8 1202.2 C 307.6 1208.7 344.8 1208.9 381 1209.3 C 421.8 1209.8 462.6 1208.5 503.2 1205.5 C 584.5 1199.5 665.2 1186.8 744.3 1167.5 C 822.2 1148.4 899.7 1123.3 972.9 1090.4 C 1028 1065.7 1093.1 1020 1079.4 950.6 C 1072.4 915.3 1045.7 886.6 1015 869.6 C 981.1 850.7 941.9 842.8 904 836.1 C 827 822.7 748.1 820 670.3 828.2 C 592.2 836.5 515.2 855.6 442.8 886.1 C 425.2 893.5 408.1 901.7 391 910 C 380.8 914.9 389.7 930.1 399.8 925.2 C 433.5 908.9 468.9 896.4 504.4 885.1 C 540 873.7 576.3 864.7 613 858.2 C 686.4 845.1 761.5 841.6 835.8 848.2 C 872.7 851.5 909.6 857.1 945.7 865.9 C 979.4 874 1013.6 886.5 1037.4 912.8 C 1057.8 935.3 1067.1 965.8 1056.3 994.9 C 1046.5 1021.1 1022.4 1040.3 999.2 1054.5 C 970.1 1072.2 937.7 1084.6 905.9 1096.8 C 869.5 1110.7 832.6 1123.1 795.2 1134.1 C 720.4 1155.9 643.8 1171.9 566.4 1181.4 C 488.8 1190.9 410.4 1194.2 332.3 1191 C 302.1 1189.8 270.6 1188.6 242.2 1176.8 C 216.2 1166 196.7 1143.8 198.8 1114.2 C 201.1 1081.5 227.3 1053 251.3 1033.1 C 278.3 1010.9 309.5 992.8 341 977.8 C 405 947.4 476.3 929.5 547.1 925.3 C 564.5 924.2 581.7 924.3 599 925.7 C 601.1 925.9 601 922.8 599 922.6"/></svg><span id="round-badge" aria-label="Γύρος">1</span></span>
-    </span>
+    <h1 style="font-size:.95rem;line-height:1.2;margin:0;display:flex;align-items:center;white-space:nowrap;overflow:hidden;flex:1;min-width:0"><span style="flex-shrink:0;background:linear-gradient(135deg,#1B5E20,#69F000);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-weight:800">♠ Το τεφτέρι της πρέφας</span></h1>
   </div>
 
   <div class="round-panel" id="round-panel">
@@ -1985,8 +1962,13 @@ if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.
           <span class="firfiria-btn-inner">Φιρφίρια</span>
         </label>
       </div>
-      <div id="voice-slot"><button id="voice-toggle" onclick="toggleVoiceCommands()" title="Φωνητικές εντολές on/off" style="background:none;border:none;cursor:pointer;padding:0;user-select:none;display:flex;align-items:center;position:relative;"><img id="voice-mic-img" src="" style="height:16px;width:16px;object-fit:contain;opacity:1;transition:opacity 0.2s"><svg id="voice-ring" class="vring" viewBox="0 0 100 100" style="display:none"><circle cx="50" cy="50" r="46" fill="none" stroke="#FF4081" stroke-width="5" stroke-linecap="round" transform="rotate(-90 50 50)" pathLength="100" stroke-dasharray="100" stroke-dashoffset="0"></circle></svg></button></div>
-      <div id="radio-box" title="radioapopsi.gr: πάτημα = ανοιγοκλείσιμο, σύρσιμο = ένταση (κάτω από 10% κλείνει)"><div id="radio-line"></div><div id="radio-ico"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8L19 8C20.6569 8 22 9.3431 22 11L22 17C22 18.6569 20.6569 20 19 20L5 20C3.3431 20 2 18.6569 2 17L2 11C2 9.3431 3.3431 8 5 8ZM6 8L16 4M10 14C10 15.1046 9.1046 16 8 16C6.8954 16 6 15.1046 6 14C6 12.8954 6.8954 12 8 12C9.1046 12 10 12.8954 10 14ZM14 12L18 12M14 16L18 16"/></svg></div></div>
+      <div id="tool-row">
+      <button type="button" id="fs-btn" onclick="fsClick()" title="Πλήρης οθόνη" aria-label="Πλήρης οθόνη"><img id="fs-img" src="" alt=""></button>
+      <button id="fir-settings-btn" onclick="openFirSoundSettings()" title="Ρυθμίσεις" aria-label="Ρυθμίσεις" type="button"><svg id="fir-settings-img" aria-hidden="true" viewBox="-2.4 -2.4 28.8 28.8" fill="none" stroke="#69F000" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button>
+      <div id="voice-slot"><button id="voice-toggle" onclick="toggleVoiceCommands()" title="Φωνητικές εντολές on/off" style="background:none;border:none;cursor:pointer;padding:0;user-select:none;display:flex;align-items:center;position:relative;"><img id="voice-mic-img" src="" style="height:18px;width:18px;object-fit:contain;opacity:1;transition:opacity 0.2s"><svg id="voice-ring" class="vring" viewBox="0 0 100 100" style="display:none"><circle cx="50" cy="50" r="46" fill="none" stroke="#FF4081" stroke-width="5" stroke-linecap="round" transform="rotate(-90 50 50)" pathLength="100" stroke-dasharray="100" stroke-dashoffset="0"></circle></svg></button></div>
+        <div id="radio-box" title="radioapopsi.gr: πάτημα = ανοιγοκλείσιμο, σύρσιμο = ένταση (κάτω από 10% κλείνει)"><div id="radio-line"></div><div id="radio-ico"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8L19 8C20.6569 8 22 9.3431 22 11L22 17C22 18.6569 20.6569 20 19 20L5 20C3.3431 20 2 18.6569 2 17L2 11C2 9.3431 3.3431 8 5 8ZM6 8L16 4M10 14C10 15.1046 9.1046 16 8 16C6.8954 16 6 15.1046 6 14C6 12.8954 6.8954 12 8 12C9.1046 12 10 12.8954 10 14ZM14 12L18 12M14 16L18 16"/></svg></div></div>
+    </div>
+    <span class="round-ring" title="Γύρος"><svg viewBox="170 812 935 402" aria-hidden="true"><path fill="currentColor" stroke="currentColor" stroke-width="7" stroke-linejoin="round" d="M 599 922.6 C 562.2 918.7 524.7 916.9 487.7 920.5 C 450.6 924.2 414.2 932.9 379.2 945.4 C 344.3 957.8 310.8 974 279.5 993.8 C 248.9 1013.2 219.2 1035.6 199.6 1066.5 C 181.5 1094.9 174.8 1131.5 195.2 1160.6 C 212.7 1185.7 242.8 1197 271.8 1202.2 C 307.6 1208.7 344.8 1208.9 381 1209.3 C 421.8 1209.8 462.6 1208.5 503.2 1205.5 C 584.5 1199.5 665.2 1186.8 744.3 1167.5 C 822.2 1148.4 899.7 1123.3 972.9 1090.4 C 1028 1065.7 1093.1 1020 1079.4 950.6 C 1072.4 915.3 1045.7 886.6 1015 869.6 C 981.1 850.7 941.9 842.8 904 836.1 C 827 822.7 748.1 820 670.3 828.2 C 592.2 836.5 515.2 855.6 442.8 886.1 C 425.2 893.5 408.1 901.7 391 910 C 380.8 914.9 389.7 930.1 399.8 925.2 C 433.5 908.9 468.9 896.4 504.4 885.1 C 540 873.7 576.3 864.7 613 858.2 C 686.4 845.1 761.5 841.6 835.8 848.2 C 872.7 851.5 909.6 857.1 945.7 865.9 C 979.4 874 1013.6 886.5 1037.4 912.8 C 1057.8 935.3 1067.1 965.8 1056.3 994.9 C 1046.5 1021.1 1022.4 1040.3 999.2 1054.5 C 970.1 1072.2 937.7 1084.6 905.9 1096.8 C 869.5 1110.7 832.6 1123.1 795.2 1134.1 C 720.4 1155.9 643.8 1171.9 566.4 1181.4 C 488.8 1190.9 410.4 1194.2 332.3 1191 C 302.1 1189.8 270.6 1188.6 242.2 1176.8 C 216.2 1166 196.7 1143.8 198.8 1114.2 C 201.1 1081.5 227.3 1053 251.3 1033.1 C 278.3 1010.9 309.5 992.8 341 977.8 C 405 947.4 476.3 929.5 547.1 925.3 C 564.5 924.2 581.7 924.3 599 925.7 C 601.1 925.9 601 922.8 599 922.6"/></svg><span id="round-badge" aria-label="Γύρος">1</span></span>
     </div>
 
     <!-- Βήμα 2: Συμβόλαιο (εμφανίζεται μόνο αν επιλεγεί τζογαδόρος) -->
@@ -2890,38 +2872,14 @@ function radioTrackWidth() { let b = document.getElementById('radio-box'); retur
 function radioRender() {
   let ico = document.getElementById('radio-ico'), b = document.getElementById('radio-box');
   if (!ico || !b) return;
-  let w = radioTrackWidth() - 14;
+  let w = radioTrackWidth() - 15;
   ico.style.left = Math.max(0, radioPos * w) + 'px';
 }
-function radioLayout() {
-  // Θέση: ΑΝΑΜΕΣΑ στις δύο γραμμές «Επίλεξε τζογαδόρο ή Φιρφίρια:» και «Επίλεξε συμβόλαιο:» (στο κενό κάθετο διάστημα των κειμένων),
-  // με οριζόντιο εύρος όσο το πρώτο κείμενο (και όχι πάνω από το κουμπί «Αγορά»). Δεν αλλάζει κανένα ύψος.
-  let sec = document.getElementById('tzog-section'), box = document.getElementById('radio-box');
-  let l1 = sec && sec.querySelector('span'), l2 = document.getElementById('lbl-symvolaio-inline');
-  if (!sec || !box || !l1 || !l2) return;
-  let sb = sec.getBoundingClientRect();
-  if (sb.width < 50) { box.style.display = 'none'; return; }
-  let rg = document.createRange(); rg.selectNodeContents(l1);
-  let t1 = rg.getBoundingClientRect(); rg.selectNodeContents(l2); let t2 = rg.getBoundingClientRect();
-  let mid = (t2.top > t1.bottom) ? (t1.bottom + t2.top) / 2 : t1.bottom + 9;
-  let right = t1.right, nb = document.getElementById('lbl-normal');
-  if (nb) { let nr = nb.getBoundingClientRect(); if (nr.width > 0 && nr.left > t1.left) right = Math.min(right, nr.left - 6); }
-  let w = right - t1.left;
-  if (w < 46 || t1.width === 0) { box.style.display = 'none'; return; }
-  // Αριστερά το εικονίδιο φωνητικών εντολών (16px + 6px κενό), δεξιά του η γραμμή του ραδιοφώνου (στενεύει ανάλογα)
-  let vs = document.getElementById('voice-slot'), vw = vs ? 22 : 0;
-  if (w - vw < 46) { box.style.display = 'none'; if (vs) vs.style.display = 'none'; return; }
-  if (vs) { vs.style.display = 'block'; vs.style.left = Math.round(t1.left - sb.left) + 'px'; vs.style.top = Math.round(mid - sb.top - 8) + 'px'; }
-  box.style.display = 'block';
-  box.style.left = Math.round(t1.left - sb.left + vw) + 'px';
-  box.style.top = Math.round(mid - sb.top - 8) + 'px';
-  box.style.width = Math.round(w - vw) + 'px';
-  radioRender();
-}
+function radioLayout() { radioRender(); }   // η θέση ορίζεται από το CSS (#tool-row)· εδώ ξαναμπαίνει το εικονίδιο στη γραμμή όταν αλλάζει το πλάτος
 function radioSetFromX(clientX) {
   let b = document.getElementById('radio-box'); if (!b) return;
-  let r = b.getBoundingClientRect(), w = Math.max(1, r.width - 14);
-  let pos = Math.max(0, Math.min(1, (clientX - r.left - 7) / w));
+  let r = b.getBoundingClientRect(), w = Math.max(1, r.width - 15);
+  let pos = Math.max(0, Math.min(1, (clientX - r.left - 7.5) / w));
   radioPos = pos;
   if (pos < RADIO_CUTOFF) radioSetOn(false);
   else { radioLastPos = pos; if (!radioOn) radioSetOn(true); else radioApplyVolume(60); }
@@ -2937,7 +2895,7 @@ function radioSetFromX(clientX) {
       e.preventDefault();
       try { box.setPointerCapture(e.pointerId); } catch(_) {}
       let r = box.getBoundingClientRect();
-      let icoCx = r.left + 7 + radioPos * Math.max(1, r.width - 14);
+      let icoCx = r.left + 7.5 + radioPos * Math.max(1, r.width - 15);
       down = true; moved = false; startX = e.clientX; onIcon = Math.abs(e.clientX - icoCx) <= 14;
       box.classList.add('drag');
       if (!onIcon) { moved = true; radioSetFromX(e.clientX); }
@@ -2959,9 +2917,7 @@ function radioSetFromX(clientX) {
     };
     box.addEventListener('pointerup', up);
     box.addEventListener('pointercancel', up);
-    let g = document.getElementById('tzog-group'), sec = document.getElementById('tzog-section');
-    try { new MutationObserver(radioLayout).observe(g, { childList: true }); } catch(_) {}
-    try { let ro = new ResizeObserver(radioLayout); ro.observe(sec); let cg = document.getElementById('contract-group'); if (cg) ro.observe(cg); } catch(_) {}
+    try { new ResizeObserver(radioLayout).observe(box); } catch(_) {}
     window.addEventListener('resize', radioLayout);
     setTimeout(radioLayout, 300);
   };
@@ -3381,32 +3337,33 @@ function toggleFullscreenSwitch() {
 }
 
 function isFullscreenNow() { return !!(document.fullscreenElement || document.webkitFullscreenElement); }
-// Μικρό εικονίδιο: μόνο πλήρης οθόνη / επαναφορά, η επάνω γραμμή μένει (κλάση keep-bar)
-function fsKeepBarClick() {
-  if (!isFullscreenNow()) document.documentElement.classList.add('keep-bar');
-  toggleFullscreenSwitch();
+// Ένα εικονίδιο πλήρους οθόνης (στη γραμμή των εικονιδίων και στις Ρυθμίσεις)· σε πλήρη οθόνη γίνεται «επαναφορά».
+// Αν κρύβεται και η επάνω γραμμή το ορίζει το checkbox των Ρυθμίσεων (προεπιλογή: όχι).
+const FS_HIDE_KEY = 'prefaFsHideBar';
+const FS_EXIT_ICON = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxZW0iIGhlaWdodD0iMWVtIiB2aWV3Qm94PSIwIDAgMTAyNCAxMDI0Ij48cGF0aCBmaWxsPSIjNjlGMDAwIiBkPSJNMzkxIDI0MC45Yy0uOC02LjYtOC45LTkuNC0xMy42LTQuN2wtNDMuNyA0My43TDIwMCAxNDYuM2E4LjAzIDguMDMgMCAwIDAtMTEuMyAwbC00Mi40IDQyLjNhOC4wMyA4LjAzIDAgMCAwIDAgMTEuM0wyODAgMzMzLjZsLTQzLjkgNDMuOWE4LjAxIDguMDEgMCAwIDAgNC43IDEzLjZMNDAxIDQxMGM1LjEuNiA5LjUtMy43IDguOS04Ljl6bTEwLjEgMzczLjJMMjQwLjggNjMzYy02LjYuOC05LjQgOC45LTQuNyAxMy42bDQzLjkgNDMuOUwxNDYuMyA4MjRhOC4wMyA4LjAzIDAgMCAwIDAgMTEuM2w0Mi40IDQyLjNjMy4xIDMuMSA4LjIgMy4xIDExLjMgMEwzMzMuNyA3NDRsNDMuNyA0My43QTguMDEgOC4wMSAwIDAgMCAzOTEgNzgzbDE4LjktMTYwLjFjLjYtNS4xLTMuNy05LjQtOC44LTguOG0yMjEuOC0yMDQuMkw3ODMuMiAzOTFjNi42LS44IDkuNC04LjkgNC43LTEzLjZMNzQ0IDMzMy42TDg3Ny43IDIwMGMzLjEtMy4xIDMuMS04LjIgMC0xMS4zbC00Mi40LTQyLjNhOC4wMyA4LjAzIDAgMCAwLTExLjMgMEw2OTAuMyAyNzkuOWwtNDMuNy00My43YTguMDEgOC4wMSAwIDAgMC0xMy42IDQuN0w2MTQuMSA0MDFjLS42IDUuMiAzLjcgOS41IDguOCA4LjlNNzQ0IDY5MC40bDQzLjktNDMuOWE4LjAxIDguMDEgMCAwIDAtNC43LTEzLjZMNjIzIDYxNGMtNS4xLS42LTkuNSAzLjctOC45IDguOUw2MzMgNzgzLjFjLjggNi42IDguOSA5LjQgMTMuNiA0LjdsNDMuNy00My43TDgyNCA4NzcuN2MzLjEgMy4xIDguMiAzLjEgMTEuMyAwbDQyLjQtNDIuM2MzLjEtMy4xIDMuMS04LjIgMC0xMS4zeiIvPjwvc3ZnPg==';
+let fsHideBar = false;
+try { fsHideBar = localStorage.getItem(FS_HIDE_KEY) === '1'; } catch(_) {}
+function fsApplyBar() {
+  document.documentElement.classList.toggle('hide-bar', fsHideBar);
+  let cb = document.getElementById('fs-hide-cb');
+  if (cb) cb.checked = fsHideBar;
 }
-// Μεγάλο εικονίδιο: πλήρης οθόνη ΚΑΙ κρύβεται η επάνω γραμμή. Αν είμαστε ήδη σε πλήρη οθόνη με τη γραμμή, απλώς κρύβεται
-function fsHideBarClick() {
-  let keep = document.documentElement.classList.contains('keep-bar');
-  document.documentElement.classList.remove('keep-bar');
-  if (!(keep && isFullscreenNow())) toggleFullscreenSwitch();
+function fsSetHideBar(on) {
+  fsHideBar = !!on;
+  try { localStorage.setItem(FS_HIDE_KEY, fsHideBar ? '1' : '0'); } catch(_) {}
+  fsApplyBar();
 }
-function fsSmallPaint() {
-  let b = document.getElementById('fs-small-btn');
-  if (!b) return;
-  let fs = isFullscreenNow();
-  let label = fs ? 'Επαναφορά οθόνης' : 'Πλήρης οθόνη (η γραμμή των εικονιδίων μένει)';
-  let path = fs ? 'M4 10h6V4M20 10h-6V4M4 14h6v6M20 14h-6v6' : 'M4 10V4h6M20 10V4h-6M4 14v6h6M20 14v6h-6';
-  b.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="#69F000" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="' + path + '"/></svg>';
-  b.title = label;
-  b.setAttribute('aria-label', label);
+function fsClick() { toggleFullscreenSwitch(); }
+function fsPaint() {
+  let fs = isFullscreenNow(), label = fs ? 'Επαναφορά οθόνης' : 'Πλήρης οθόνη';
+  ['fs', 'monitor'].forEach(id => {
+    let img = document.getElementById(id + '-img'), btn = document.getElementById(id + '-btn');
+    if (img) img.src = fs ? FS_EXIT_ICON : MONITOR_B64;
+    if (btn) { btn.title = label; btn.setAttribute('aria-label', label); }
+  });
 }
-['fullscreenchange', 'webkitfullscreenchange'].forEach(ev => document.addEventListener(ev, () => {
-  if (!isFullscreenNow()) document.documentElement.classList.remove('keep-bar');
-  fsSmallPaint();
-}));
-fsSmallPaint();
+['fullscreenchange', 'webkitfullscreenchange'].forEach(ev => document.addEventListener(ev, fsPaint));
+fsApplyBar();
 
 function toggleSwitch() {
   let cb = document.getElementById('monimos-tembelis');
@@ -3697,8 +3654,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let fimg = document.getElementById('fir-speakers-img');
   if (fimg) fimg.src = FIR_SPEAKERS_B64;
 
-  let monimg = document.getElementById('monitor-img');
-  if (monimg) monimg.src = MONITOR_B64;
+  fsPaint();
   let sImg = document.getElementById('suit-img-spades'); if (sImg) sImg.src = SPADES_B64;
   let cImg = document.getElementById('suit-img-clubs'); if (cImg) cImg.src = CLUBS_B64;
   let dImg = document.getElementById('suit-img-diamonds'); if (dImg) dImg.src = DIAMONDS_B64;
